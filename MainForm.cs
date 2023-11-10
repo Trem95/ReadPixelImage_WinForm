@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -15,8 +16,7 @@ namespace ReadPixelImage
 {
     public partial class MainForm : Form
     {
-        List<Image> imageList = new List<Image>();
-        List<string> imagePathList = new List<string>();
+        Dictionary<string, Bitmap> imageDict= new Dictionary<string,Bitmap>();
 
         ScreenReader screenReader = new ScreenReader();
         public MainForm()
@@ -36,7 +36,7 @@ namespace ReadPixelImage
 
         }
 
-        private void DrawRectangle(PaintEventArgs e, float x = 10, float y = 10, float width = 200, float height = 200)
+        private void DrawRectangle(PaintEventArgs e, float x = 10, float y = 10, float width = 4, float height = 4)
         {
             Pen pen = new Pen(Color.LimeGreen, 2);
             e.Graphics.DrawRectangle(pen, x, y, width, height);
@@ -44,20 +44,39 @@ namespace ReadPixelImage
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
-            //DrawRectangle(e);//Test to see what pixel to read
+            DrawRectangle(e);//Test to see what pixel to read
         }
 
         private void LoadImages()
         {
-
-            foreach (var item in Directory.EnumerateFiles(@"C:\Users\antoi\Pictures\Screenshots\ReadPixelImage\ImageToRead"))
+            string path = @"C:\Users\antoi\Pictures\Screenshots\ReadPixelImage\ImageToRead";
+            foreach (var item in Directory.EnumerateFiles(path))
             {
                 if (item.ToString().Contains(".png"))//TODO find better solution even if only for test
                 { 
-                    Console.WriteLine(item);//TODO transform item into image to show
-                    imagePathList.Add(item);
+                    Bitmap imgToAdd = new Bitmap(item.ToString());
+                    string imgName = item.Substring(path.Length + 1);
+                    imageDict.Add(imgName,imgToAdd);
+                    imageChooseCb.Items.Add(imgName);
                 }
             }
+        }
+
+        public Image GetTopLoadedImage(Bitmap bitmapToCrop)
+        {
+            Bitmap cropBitmap = new Bitmap(bitmapToCrop);
+            Rectangle cropRectangle = new Rectangle(0, 0, cropBitmap.Width, 216);//TODO Crop top and bottom of loaded image
+            cropBitmap.Clone(cropRectangle, PixelFormat.DontCare);
+
+            return cropBitmap;
+        }
+
+        private void imageChooseCb_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            Bitmap imgToShow = null;
+            if (imageDict.TryGetValue(imageChooseCb.SelectedItem.ToString(), out imgToShow))
+                pictureBox1.BackgroundImage = GetTopLoadedImage(imgToShow);
+
         }
     }
 }
