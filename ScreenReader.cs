@@ -13,7 +13,7 @@ namespace ReadPixelImage
 {
     internal class ScreenReader
     {
-        public Image GetTopScreen()
+        public Bitmap GetTopScreen()
         {
             //Creating a new Bitmap object
             //Bitmap captureBitmap = new Bitmap(1920, 1080);//Capture full screen
@@ -35,7 +35,7 @@ namespace ReadPixelImage
             return captureBitmap;
         }
 
-        public Image GetBottomScreen()
+        public Bitmap GetBottomScreen()
         {
             Bitmap captureBitmap = new Bitmap(1920, 216);//
 
