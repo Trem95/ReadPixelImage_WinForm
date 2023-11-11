@@ -1,4 +1,5 @@
-﻿using stdole;
+﻿using ReadPixelImage.CaptureSettings;
+using stdole;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,20 +17,27 @@ namespace ReadPixelImage
 {
     public partial class SettingsCaptureForm : Form
     {
+
         CaptureForm captureForm;
         Dictionary<string, Bitmap> imageDict = new Dictionary<string, Bitmap>();
+        Dictionary<string, CaptureSetting> captureSettings = new Dictionary<string, CaptureSetting>();
         Bitmap currentImage;
-
+        CaptureSetting currentSetting = new DefaultCaptureSettings();
 
         ScreenReader screenReader = new ScreenReader();
         public SettingsCaptureForm()
         {
+            InitializeComponent();
+            InitializeSettings();
+        }
+        private void InitializeSettings()
+        {
+            LoadImages();
+            LoadCaptureSettings();
             captureForm = new CaptureForm();
             captureForm.Show();
-            InitializeComponent();
-            LoadImages();
-        }
 
+        }
         private void CaptureBtn_Click(object sender, EventArgs e)
         {
             this.Hide();
@@ -37,7 +45,7 @@ namespace ReadPixelImage
             Thread.Sleep(400);
             currentImage = rbBottom.Checked ? screenReader.GetBottomScreen() : screenReader.GetTopScreen();
             captureForm.CaptureImg.Size = currentImage.Size;
-            captureForm.CaptureImg.BackgroundImage= currentImage;
+            captureForm.CaptureImg.BackgroundImage = currentImage;
             this.Show();
 
         }
@@ -56,6 +64,21 @@ namespace ReadPixelImage
                     loadedImgCb.Items.Add(imgName);
                 }
             }
+        }
+
+        private void LoadCaptureSettings()
+        {
+            captureSettings.Add("Default", new DefaultCaptureSettings());
+            captureSettings.Add("Top Screen", new TopScreenCaptureSettings());
+            captureSettings.Add("Down Screen", new DownScreenCaptureSetting());
+            captureSettings.Add("Mafia II Setting", new Mafia2HealthCaptureSetting());
+
+            foreach (KeyValuePair<string, CaptureSetting> kvp in captureSettings)
+            {
+                savedSettingsCb.Items.Add(kvp.Key);
+            }
+
+            savedSettingsCb.SelectedIndex = 0;
         }
 
         public Bitmap GetTopLoadedImage(Bitmap bitmapToCrop)
@@ -83,6 +106,17 @@ namespace ReadPixelImage
                 captureForm.CaptureImg.BackgroundImage = cropImgToShow;
             }
 
+        }
+
+        private void savedSettingsCb_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (captureSettings.TryGetValue(savedSettingsCb.SelectedItem.ToString(), out currentSetting))
+            {
+                xCaptureNb.Value = currentSetting.X;
+                yCaptureNb.Value = currentSetting.Y;
+                widthCaptureNb.Value = currentSetting.Width;
+                heightCaptureNb.Value = currentSetting.Height;
+            }
         }
     }
 }
