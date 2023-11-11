@@ -1,6 +1,6 @@
 ﻿namespace ReadPixelImage
 {
-    partial class MainForm
+    partial class SettingsCaptureForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,9 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.panel1 = new System.Windows.Forms.Panel();
             this.captureBtn = new System.Windows.Forms.Button();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.imageChooseCb = new System.Windows.Forms.ComboBox();
             this.rbTop = new System.Windows.Forms.RadioButton();
             this.rbBottom = new System.Windows.Forms.RadioButton();
@@ -46,11 +45,7 @@
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.pixelsRdTb = new System.Windows.Forms.TextBox();
             this.pixelRdPb = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
-            this.splitContainer.Panel1.SuspendLayout();
-            this.splitContainer.Panel2.SuspendLayout();
-            this.splitContainer.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.pixelsReadedGb.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
@@ -59,67 +54,43 @@
             ((System.ComponentModel.ISupportInitialize)(this.pixelRdPb)).BeginInit();
             this.SuspendLayout();
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.captureBtn);
+            this.panel1.Controls.Add(this.imageChooseCb);
+            this.panel1.Controls.Add(this.rbTop);
+            this.panel1.Controls.Add(this.rbBottom);
+            this.panel1.Controls.Add(this.pixelsReadedGb);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(1, 1);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(1167, 308);
+            this.panel1.TabIndex = 0;
+            // 
             // captureBtn
             // 
             this.captureBtn.AutoSize = true;
             this.captureBtn.Dock = System.Windows.Forms.DockStyle.Fill;
             this.captureBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.captureBtn.Font = new System.Drawing.Font("Verdana", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.captureBtn.Location = new System.Drawing.Point(5, 5);
+            this.captureBtn.Location = new System.Drawing.Point(0, 0);
             this.captureBtn.Margin = new System.Windows.Forms.Padding(20);
             this.captureBtn.Name = "captureBtn";
-            this.captureBtn.Size = new System.Drawing.Size(473, 108);
-            this.captureBtn.TabIndex = 0;
+            this.captureBtn.Size = new System.Drawing.Size(241, 286);
+            this.captureBtn.TabIndex = 5;
             this.captureBtn.Text = "Capture";
             this.captureBtn.UseVisualStyleBackColor = true;
             this.captureBtn.Click += new System.EventHandler(this.CaptureBtn_Click);
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(1930, 1080);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.pictureBox1.TabIndex = 1;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
-            // 
-            // splitContainer
-            // 
-            this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-            this.splitContainer.Location = new System.Drawing.Point(1, 1);
-            this.splitContainer.Name = "splitContainer";
-            this.splitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // splitContainer.Panel1
-            // 
-            this.splitContainer.Panel1.AutoScroll = true;
-            this.splitContainer.Panel1.Controls.Add(this.pictureBox1);
-            // 
-            // splitContainer.Panel2
-            // 
-            this.splitContainer.Panel2.Controls.Add(this.captureBtn);
-            this.splitContainer.Panel2.Controls.Add(this.imageChooseCb);
-            this.splitContainer.Panel2.Controls.Add(this.rbTop);
-            this.splitContainer.Panel2.Controls.Add(this.rbBottom);
-            this.splitContainer.Panel2.Controls.Add(this.pixelsReadedGb);
-            this.splitContainer.Panel2.Margin = new System.Windows.Forms.Padding(5);
-            this.splitContainer.Panel2.Padding = new System.Windows.Forms.Padding(5);
-            this.splitContainer.Size = new System.Drawing.Size(1409, 379);
-            this.splitContainer.SplitterDistance = 235;
-            this.splitContainer.TabIndex = 2;
             // 
             // imageChooseCb
             // 
             this.imageChooseCb.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.imageChooseCb.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.imageChooseCb.FormattingEnabled = true;
-            this.imageChooseCb.Location = new System.Drawing.Point(5, 113);
+            this.imageChooseCb.Location = new System.Drawing.Point(0, 286);
             this.imageChooseCb.Name = "imageChooseCb";
-            this.imageChooseCb.Size = new System.Drawing.Size(473, 22);
-            this.imageChooseCb.TabIndex = 3;
+            this.imageChooseCb.Size = new System.Drawing.Size(241, 22);
+            this.imageChooseCb.TabIndex = 8;
             this.imageChooseCb.SelectionChangeCommitted += new System.EventHandler(this.imageChooseCb_SelectionChangeCommitted);
             // 
             // rbTop
@@ -128,11 +99,11 @@
             this.rbTop.Checked = true;
             this.rbTop.Dock = System.Windows.Forms.DockStyle.Right;
             this.rbTop.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbTop.Location = new System.Drawing.Point(478, 5);
+            this.rbTop.Location = new System.Drawing.Point(241, 0);
             this.rbTop.Name = "rbTop";
             this.rbTop.Padding = new System.Windows.Forms.Padding(5);
-            this.rbTop.Size = new System.Drawing.Size(61, 130);
-            this.rbTop.TabIndex = 2;
+            this.rbTop.Size = new System.Drawing.Size(61, 308);
+            this.rbTop.TabIndex = 7;
             this.rbTop.TabStop = true;
             this.rbTop.Text = "Top";
             this.rbTop.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -144,10 +115,10 @@
             this.rbBottom.AutoSize = true;
             this.rbBottom.Dock = System.Windows.Forms.DockStyle.Right;
             this.rbBottom.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbBottom.Location = new System.Drawing.Point(539, 5);
+            this.rbBottom.Location = new System.Drawing.Point(302, 0);
             this.rbBottom.Name = "rbBottom";
-            this.rbBottom.Size = new System.Drawing.Size(79, 130);
-            this.rbBottom.TabIndex = 1;
+            this.rbBottom.Size = new System.Drawing.Size(79, 308);
+            this.rbBottom.TabIndex = 6;
             this.rbBottom.Text = "Bottom";
             this.rbBottom.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.rbBottom.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
@@ -168,17 +139,17 @@
             this.pixelsReadedGb.Controls.Add(this.pixelRdPb);
             this.pixelsReadedGb.Dock = System.Windows.Forms.DockStyle.Right;
             this.pixelsReadedGb.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.pixelsReadedGb.Location = new System.Drawing.Point(618, 5);
+            this.pixelsReadedGb.Location = new System.Drawing.Point(381, 0);
             this.pixelsReadedGb.Name = "pixelsReadedGb";
-            this.pixelsReadedGb.Size = new System.Drawing.Size(786, 130);
-            this.pixelsReadedGb.TabIndex = 4;
+            this.pixelsReadedGb.Size = new System.Drawing.Size(786, 308);
+            this.pixelsReadedGb.TabIndex = 9;
             this.pixelsReadedGb.TabStop = false;
             this.pixelsReadedGb.Text = "Pixels Readed";
             // 
             // drawButton
             // 
             this.drawButton.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.drawButton.Location = new System.Drawing.Point(3, 99);
+            this.drawButton.Location = new System.Drawing.Point(3, 277);
             this.drawButton.Name = "drawButton";
             this.drawButton.Size = new System.Drawing.Size(288, 28);
             this.drawButton.TabIndex = 13;
@@ -265,7 +236,7 @@
             this.pixelsRdTb.Name = "pixelsRdTb";
             this.pixelsRdTb.ReadOnly = true;
             this.pixelsRdTb.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.pixelsRdTb.Size = new System.Drawing.Size(255, 108);
+            this.pixelsRdTb.Size = new System.Drawing.Size(255, 286);
             this.pixelsRdTb.TabIndex = 0;
             // 
             // pixelRdPb
@@ -274,28 +245,23 @@
             this.pixelRdPb.Dock = System.Windows.Forms.DockStyle.Right;
             this.pixelRdPb.Location = new System.Drawing.Point(546, 19);
             this.pixelRdPb.Name = "pixelRdPb";
-            this.pixelRdPb.Size = new System.Drawing.Size(237, 108);
+            this.pixelRdPb.Size = new System.Drawing.Size(237, 286);
             this.pixelRdPb.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pixelRdPb.TabIndex = 1;
             this.pixelRdPb.TabStop = false;
             // 
-            // MainForm
+            // SettingsCaptureForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1411, 381);
-            this.Controls.Add(this.splitContainer);
+            this.ClientSize = new System.Drawing.Size(1169, 310);
+            this.Controls.Add(this.panel1);
             this.MaximumSize = new System.Drawing.Size(1920, 420);
-            this.Name = "MainForm";
+            this.Name = "SettingsCaptureForm";
             this.Padding = new System.Windows.Forms.Padding(1);
             this.Text = "Form1";
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            this.splitContainer.Panel1.ResumeLayout(false);
-            this.splitContainer.Panel1.PerformLayout();
-            this.splitContainer.Panel2.ResumeLayout(false);
-            this.splitContainer.Panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
-            this.splitContainer.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.pixelsReadedGb.ResumeLayout(false);
             this.pixelsReadedGb.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).EndInit();
@@ -309,24 +275,23 @@
 
         #endregion
 
+        private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button captureBtn;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.SplitContainer splitContainer;
+        private System.Windows.Forms.ComboBox imageChooseCb;
         private System.Windows.Forms.RadioButton rbTop;
         private System.Windows.Forms.RadioButton rbBottom;
-        private System.Windows.Forms.ComboBox imageChooseCb;
         private System.Windows.Forms.GroupBox pixelsReadedGb;
-        private System.Windows.Forms.TextBox pixelsRdTb;
-        private System.Windows.Forms.PictureBox pixelRdPb;
-        private System.Windows.Forms.NumericUpDown numericUpDown4;
-        private System.Windows.Forms.NumericUpDown numericUpDown3;
-        private System.Windows.Forms.NumericUpDown numericUpDown2;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.Button drawButton;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label widthLbl;
         private System.Windows.Forms.Label yCoordLbl;
         private System.Windows.Forms.Label xCoordLbl;
-        private System.Windows.Forms.Button drawButton;
+        private System.Windows.Forms.NumericUpDown numericUpDown4;
+        private System.Windows.Forms.NumericUpDown numericUpDown3;
+        private System.Windows.Forms.NumericUpDown numericUpDown2;
+        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.TextBox pixelsRdTb;
+        private System.Windows.Forms.PictureBox pixelRdPb;
     }
 }
 

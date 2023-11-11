@@ -1,9 +1,18 @@
 ﻿using System;
 using System.Drawing.Drawing2D;
 using System.Drawing;
+using System.Windows.Forms;
 
 public static class ScreenReaderOption
 {
+    public static int DefaultHeightScreen =  Screen.PrimaryScreen.Bounds.Height;
+    public static int DefaultWidthScreen =  Screen.PrimaryScreen.Bounds.Width;
+    public const float DEFAULT_SCREEN_CAPTURE_HEIGHT = 1080;
+    public const float DEFAULT_SCREEN_CAPTURE_WIDTH = 1920;//TODO
+    public const float MAFIA_II_LIFE_CAPTURE_X = 0;//TODO
+    public const float MAFIA_II_LIFE_CAPTURE_Y = 0;//TODO
+    public const float MAFIA_II_SCREEN_CAPTURE_HEIGHT = 264;//TODO
+    public const float MAFIA_II_SCREEN_CAPTURE_WIDTH = 1080;//TODO
     public static System.Drawing.Image ResizeImage(System.Drawing.Bitmap imgToResize, Size size)
     {
         // Get the image current width
