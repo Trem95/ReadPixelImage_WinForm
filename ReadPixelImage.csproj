@@ -46,7 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CaptureSetting.cs" />
+    <Compile Include="CaptureReadSettings\CaptureSetting.cs" />
+    <Compile Include="CaptureReadSettings\ReadedPixelsSettings.cs" />
     <Compile Include="Forms\CaptureForm.cs">
       <SubType>Form</SubType>
     </Compile>

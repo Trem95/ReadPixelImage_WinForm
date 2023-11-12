@@ -20,12 +20,14 @@ namespace ReadPixelImage
 
         #region Variables
         CaptureForm captureForm;
-        Dictionary<string, Bitmap> imageDict = new Dictionary<string, Bitmap>();
-        Dictionary<string, CaptureSetting> captureSettings = new Dictionary<string, CaptureSetting>();
+        Dictionary<string, Bitmap> imageDict;
+        Dictionary<int, CaptureSetting> captureSettings;
+        List<Rectangle> pixelsReadedRectangles;
         Bitmap currentImage;
-        CaptureSetting currentSetting = new CaptureSetting();
-        CaptureSetting personalizedSettings = new CaptureSetting();
-        int persSettingsCdw = 1; 
+        CaptureSetting currentSetting;
+        
+        int persSettingsCdw = 1;
+        int newId;
 
         ScreenReader screenReader = new ScreenReader();
 
@@ -40,6 +42,11 @@ namespace ReadPixelImage
         }
         private void InitializeSettings()
         {
+            imageDict = new Dictionary<string, Bitmap>();
+            captureSettings = new Dictionary<int, CaptureSetting>();
+            pixelsReadedRectangles = new List<Rectangle>();
+            currentSetting = new CaptureSetting();
+
             LoadImages();
             LoadCaptureSettings();
             captureForm = new CaptureForm();
@@ -83,40 +90,42 @@ namespace ReadPixelImage
         private void LoadCaptureSettings()//TODO Create CSV (or other) file to load parameterized settings
         {
             captureSettings.Add(
-                "Default",
-                new CaptureSetting("Default",
+                1,
+                new CaptureSetting(0, "Default",
                     0,
                     0,
                     Screen.PrimaryScreen.Bounds.Width,
                     Screen.PrimaryScreen.Bounds.Height));
 
             captureSettings.Add(
-                "Top Screen",
-                new CaptureSetting("Top Screen",
+                2,
+                new CaptureSetting(1, "Top Screen",
                     0,
                     0,
                     Screen.PrimaryScreen.Bounds.Width,
                     Screen.PrimaryScreen.Bounds.Height / 4));
 
             captureSettings.Add(
-                "Bottom Screen",
-                new CaptureSetting("Bottom Screen",
+                3,
+                new CaptureSetting(2, "Bottom Screen",
                     0,
                     Screen.PrimaryScreen.Bounds.Height - (Screen.PrimaryScreen.Bounds.Height / 4),
                     Screen.PrimaryScreen.Bounds.Width,
                     Screen.PrimaryScreen.Bounds.Height / 4));
 
             captureSettings.Add(
-                "Mafia II Health",
-                new CaptureSetting("Mafia II Health",
+                4,
+                new CaptureSetting(3,"Mafia II Health",
                     Screen.PrimaryScreen.Bounds.Width - (Screen.PrimaryScreen.Bounds.Width / 4),
                     Screen.PrimaryScreen.Bounds.Height - (Screen.PrimaryScreen.Bounds.Height / 3),
                     Screen.PrimaryScreen.Bounds.Width / 4,
                     Screen.PrimaryScreen.Bounds.Height / 3));
 
-            foreach (KeyValuePair<string, CaptureSetting> kvp in captureSettings)
+            newId = captureSettings.Last().Value.Id ++;
+
+            foreach (KeyValuePair<int, CaptureSetting> kvp in captureSettings)
             {
-                savedSettingsCb.Items.Add(kvp.Key);
+                savedSettingsCb.Items.Add(kvp.Value);
             }
 
             savedSettingsCb.SelectedIndex = 0;
@@ -137,7 +146,7 @@ namespace ReadPixelImage
 
         private void savedSettingsCb_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            if (captureSettings.TryGetValue(savedSettingsCb.SelectedItem.ToString(), out currentSetting))
+            if (captureSettings.TryGetValue( (savedSettingsCb.SelectedItem as CaptureSetting).Id, out currentSetting))
             {
                 xCaptureNb.Value = currentSetting.X;
                 yCaptureNb.Value = currentSetting.Y;
@@ -153,10 +162,11 @@ namespace ReadPixelImage
             if (XCoordCapture > 0 && YCoordCapture > 0
                 && WidthCoordCapture > 0 && HeightCoordCapture > 0)
             {
-                captureSettings.Add("Personnalized " + persSettingsCdw, new CaptureSetting("Personnalized" + persSettingsCdw, XCoordCapture, YCoordCapture, WidthCoordCapture, HeightCoordCapture));
+                captureSettings.Add(newId, new CaptureSetting( newId, "Personnalized" + persSettingsCdw, XCoordCapture, YCoordCapture, WidthCoordCapture, HeightCoordCapture));
                 savedSettingsCb.Items.Add("Personnalized " + persSettingsCdw);
                 savedSettingsCb.SelectedItem = "Personnalized " + persSettingsCdw;
                 persSettingsCdw++;
+                newId++;
 
                 DisplayCapture();
             }

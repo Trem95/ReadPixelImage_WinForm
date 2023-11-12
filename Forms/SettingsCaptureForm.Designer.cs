@@ -32,7 +32,6 @@
             this.captureBtn = new System.Windows.Forms.Button();
             this.settingsGb = new System.Windows.Forms.GroupBox();
             this.pixelsReadedGb = new System.Windows.Forms.GroupBox();
-            this.pixelsRdTb = new System.Windows.Forms.TextBox();
             this.yCoordLbl = new System.Windows.Forms.Label();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.drawButton = new System.Windows.Forms.Button();
@@ -56,6 +55,9 @@
             this.heightCaptureNb = new System.Windows.Forms.NumericUpDown();
             this.xCaptureLbl = new System.Windows.Forms.Label();
             this.applySettingsBtn = new System.Windows.Forms.Button();
+            this.pixelReadedRectsListBox = new System.Windows.Forms.ListBox();
+            this.modifyBtn = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.settingsGb.SuspendLayout();
             this.pixelsReadedGb.SuspendLayout();
@@ -113,7 +115,9 @@
             // 
             // pixelsReadedGb
             // 
-            this.pixelsReadedGb.Controls.Add(this.pixelsRdTb);
+            this.pixelsReadedGb.Controls.Add(this.button1);
+            this.pixelsReadedGb.Controls.Add(this.modifyBtn);
+            this.pixelsReadedGb.Controls.Add(this.pixelReadedRectsListBox);
             this.pixelsReadedGb.Controls.Add(this.yCoordLbl);
             this.pixelsReadedGb.Controls.Add(this.numericUpDown1);
             this.pixelsReadedGb.Controls.Add(this.drawButton);
@@ -130,16 +134,6 @@
             this.pixelsReadedGb.TabIndex = 15;
             this.pixelsReadedGb.TabStop = false;
             this.pixelsReadedGb.Text = "Pixels Readed";
-            // 
-            // pixelsRdTb
-            // 
-            this.pixelsRdTb.Location = new System.Drawing.Point(29, 129);
-            this.pixelsRdTb.Multiline = true;
-            this.pixelsRdTb.Name = "pixelsRdTb";
-            this.pixelsRdTb.ReadOnly = true;
-            this.pixelsRdTb.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.pixelsRdTb.Size = new System.Drawing.Size(308, 86);
-            this.pixelsRdTb.TabIndex = 0;
             // 
             // yCoordLbl
             // 
@@ -161,9 +155,9 @@
             // 
             // drawButton
             // 
-            this.drawButton.Location = new System.Drawing.Point(107, 92);
+            this.drawButton.Location = new System.Drawing.Point(16, 92);
             this.drawButton.Name = "drawButton";
-            this.drawButton.Size = new System.Drawing.Size(122, 28);
+            this.drawButton.Size = new System.Drawing.Size(104, 28);
             this.drawButton.TabIndex = 13;
             this.drawButton.Text = "Draw";
             this.drawButton.UseVisualStyleBackColor = true;
@@ -387,6 +381,36 @@
             this.applySettingsBtn.UseVisualStyleBackColor = true;
             this.applySettingsBtn.Click += new System.EventHandler(this.applySettingsBtn_Click);
             // 
+            // pixelReadedRectsListBox
+            // 
+            this.pixelReadedRectsListBox.FormattingEnabled = true;
+            this.pixelReadedRectsListBox.HorizontalScrollbar = true;
+            this.pixelReadedRectsListBox.ItemHeight = 16;
+            this.pixelReadedRectsListBox.Location = new System.Drawing.Point(16, 126);
+            this.pixelReadedRectsListBox.Name = "pixelReadedRectsListBox";
+            this.pixelReadedRectsListBox.Size = new System.Drawing.Size(354, 84);
+            this.pixelReadedRectsListBox.TabIndex = 14;
+            // 
+            // modifyBtn
+            // 
+            this.modifyBtn.Location = new System.Drawing.Point(144, 92);
+            this.modifyBtn.Name = "modifyBtn";
+            this.modifyBtn.Size = new System.Drawing.Size(104, 28);
+            this.modifyBtn.TabIndex = 15;
+            this.modifyBtn.Text = "Modify";
+            this.modifyBtn.UseVisualStyleBackColor = true;
+            this.modifyBtn.Visible = false;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(272, 92);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(104, 28);
+            this.button1.TabIndex = 16;
+            this.button1.Text = "Modify";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Visible = false;
+            // 
             // SettingsCaptureForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -425,7 +449,6 @@
         private System.Windows.Forms.Label loadedImgLbl;
         private System.Windows.Forms.GroupBox settingsGb;
         private System.Windows.Forms.GroupBox pixelsReadedGb;
-        private System.Windows.Forms.TextBox pixelsRdTb;
         private System.Windows.Forms.Label yCoordLbl;
         private System.Windows.Forms.NumericUpDown numericUpDown1;
         private System.Windows.Forms.Button drawButton;
@@ -447,6 +470,9 @@
         private System.Windows.Forms.ComboBox savedSettingsCb;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button applySettingsBtn;
+        private System.Windows.Forms.ListBox pixelReadedRectsListBox;
+        private System.Windows.Forms.Button modifyBtn;
+        private System.Windows.Forms.Button button1;
     }
 }
 
