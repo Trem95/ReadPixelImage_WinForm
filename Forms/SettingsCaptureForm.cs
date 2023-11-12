@@ -184,5 +184,14 @@ namespace ReadPixelImage
 
         }
         #endregion
+       
+        List<Rectangle> _rectangles = new List<Rectangle>();//ATR TEST
+        private void drawButton_Click(object sender, EventArgs e)
+        {
+            //ATR TEST TODO maange rectangle settings
+            Rectangle rectangle = new Rectangle((int)xPixelsNb.Value, (int)yPixelsNb.Value,(int)widthPixelsNb.Value, (int)heightCaptureNb.Value);
+            _rectangles.Add(rectangle);
+            captureForm.SetAndDrawRectangles(_rectangles);
+        }
     }
 }

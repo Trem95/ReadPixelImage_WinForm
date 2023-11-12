@@ -12,23 +12,28 @@ namespace ReadPixelImage
 {
     public partial class CaptureForm : Form
     {
+        List<Rectangle> rectanglesToDraw;
         public CaptureForm()
         {
+            rectanglesToDraw = new List<Rectangle>();
             InitializeComponent();
         }
 
         public PictureBox CaptureImg { get { return pictureBox1; } set { pictureBox1 = value; } }
 
-        private void DrawRectangle(PaintEventArgs e, float x = 10, float y = 10, float width = 4, float height = 4)
+        public void SetAndDrawRectangles(List<Rectangle> rectangles)
         {
-            Pen pen = new Pen(Color.LimeGreen, 2);
-            e.Graphics.DrawRectangle(pen, x, y, width, height);
-        }
-        private void pictureBox1_Paint(object sender, PaintEventArgs e)
-        {
-            DrawRectangle(e);//Test to see what pixel to read
+            rectanglesToDraw = rectangles;
+            pictureBox1.Invalidate(); // force Redraw the form
         }
 
-        
+        private void pictureBox1_Paint(object sender, PaintEventArgs e)
+        {
+            foreach (Rectangle rectangle in rectanglesToDraw)
+            {
+                e.Graphics.DrawRectangle(Pens.Lime, rectangle);
+            }
+        }
+
     }
 }

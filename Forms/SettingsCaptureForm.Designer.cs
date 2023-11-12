@@ -32,18 +32,22 @@
             this.captureBtn = new System.Windows.Forms.Button();
             this.settingsGb = new System.Windows.Forms.GroupBox();
             this.pixelsReadedGb = new System.Windows.Forms.GroupBox();
-            this.yCoordLbl = new System.Windows.Forms.Label();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.deleteRectangleButton = new System.Windows.Forms.Button();
+            this.modifyRectangleBtn = new System.Windows.Forms.Button();
+            this.pixelReadedRectsListBox = new System.Windows.Forms.ListBox();
+            this.yPixelsLbl = new System.Windows.Forms.Label();
+            this.xPixelsNb = new System.Windows.Forms.NumericUpDown();
             this.drawButton = new System.Windows.Forms.Button();
-            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
-            this.label4 = new System.Windows.Forms.Label();
-            this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
-            this.widthLbl = new System.Windows.Forms.Label();
-            this.numericUpDown4 = new System.Windows.Forms.NumericUpDown();
-            this.xCoordLbl = new System.Windows.Forms.Label();
+            this.widthPixelsNb = new System.Windows.Forms.NumericUpDown();
+            this.heightPixelsLbl = new System.Windows.Forms.Label();
+            this.yPixelsNb = new System.Windows.Forms.NumericUpDown();
+            this.widthPixelsLbl = new System.Windows.Forms.Label();
+            this.heightPixelsNb = new System.Windows.Forms.NumericUpDown();
+            this.xPixelsLbl = new System.Windows.Forms.Label();
             this.captureSettingsGb = new System.Windows.Forms.GroupBox();
+            this.applySettingsBtn = new System.Windows.Forms.Button();
             this.loadedImgLbl = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.savedCaptureSettingsLb = new System.Windows.Forms.Label();
             this.loadedImgCb = new System.Windows.Forms.ComboBox();
             this.savedSettingsCb = new System.Windows.Forms.ComboBox();
             this.yCaptureLbl = new System.Windows.Forms.Label();
@@ -54,17 +58,15 @@
             this.widthCaptureLbl = new System.Windows.Forms.Label();
             this.heightCaptureNb = new System.Windows.Forms.NumericUpDown();
             this.xCaptureLbl = new System.Windows.Forms.Label();
-            this.applySettingsBtn = new System.Windows.Forms.Button();
-            this.pixelReadedRectsListBox = new System.Windows.Forms.ListBox();
-            this.modifyBtn = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.savedPixelSettingsLb = new System.Windows.Forms.Label();
+            this.savedPixelSettingsCb = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
             this.settingsGb.SuspendLayout();
             this.pixelsReadedGb.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.xPixelsNb)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.widthPixelsNb)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.yPixelsNb)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.heightPixelsNb)).BeginInit();
             this.captureSettingsGb.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.xCaptureNb)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.widthCaptureNb)).BeginInit();
@@ -75,7 +77,9 @@
             // panel1
             // 
             this.panel1.Controls.Add(this.captureBtn);
+            this.panel1.Controls.Add(this.loadedImgLbl);
             this.panel1.Controls.Add(this.settingsGb);
+            this.panel1.Controls.Add(this.loadedImgCb);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(1, 1);
             this.panel1.Name = "panel1";
@@ -115,18 +119,20 @@
             // 
             // pixelsReadedGb
             // 
-            this.pixelsReadedGb.Controls.Add(this.button1);
-            this.pixelsReadedGb.Controls.Add(this.modifyBtn);
+            this.pixelsReadedGb.Controls.Add(this.savedPixelSettingsLb);
+            this.pixelsReadedGb.Controls.Add(this.savedPixelSettingsCb);
+            this.pixelsReadedGb.Controls.Add(this.deleteRectangleButton);
+            this.pixelsReadedGb.Controls.Add(this.modifyRectangleBtn);
             this.pixelsReadedGb.Controls.Add(this.pixelReadedRectsListBox);
-            this.pixelsReadedGb.Controls.Add(this.yCoordLbl);
-            this.pixelsReadedGb.Controls.Add(this.numericUpDown1);
+            this.pixelsReadedGb.Controls.Add(this.yPixelsLbl);
+            this.pixelsReadedGb.Controls.Add(this.xPixelsNb);
             this.pixelsReadedGb.Controls.Add(this.drawButton);
-            this.pixelsReadedGb.Controls.Add(this.numericUpDown2);
-            this.pixelsReadedGb.Controls.Add(this.label4);
-            this.pixelsReadedGb.Controls.Add(this.numericUpDown3);
-            this.pixelsReadedGb.Controls.Add(this.widthLbl);
-            this.pixelsReadedGb.Controls.Add(this.numericUpDown4);
-            this.pixelsReadedGb.Controls.Add(this.xCoordLbl);
+            this.pixelsReadedGb.Controls.Add(this.widthPixelsNb);
+            this.pixelsReadedGb.Controls.Add(this.heightPixelsLbl);
+            this.pixelsReadedGb.Controls.Add(this.yPixelsNb);
+            this.pixelsReadedGb.Controls.Add(this.widthPixelsLbl);
+            this.pixelsReadedGb.Controls.Add(this.heightPixelsNb);
+            this.pixelsReadedGb.Controls.Add(this.xPixelsLbl);
             this.pixelsReadedGb.Dock = System.Windows.Forms.DockStyle.Right;
             this.pixelsReadedGb.Location = new System.Drawing.Point(401, 19);
             this.pixelsReadedGb.Name = "pixelsReadedGb";
@@ -135,93 +141,122 @@
             this.pixelsReadedGb.TabStop = false;
             this.pixelsReadedGb.Text = "Pixels Readed";
             // 
-            // yCoordLbl
+            // deleteRectangleButton
             // 
-            this.yCoordLbl.AutoSize = true;
-            this.yCoordLbl.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.yCoordLbl.Location = new System.Drawing.Point(26, 65);
-            this.yCoordLbl.Name = "yCoordLbl";
-            this.yCoordLbl.Size = new System.Drawing.Size(27, 14);
-            this.yCoordLbl.TabIndex = 11;
-            this.yCoordLbl.Text = "Y : ";
+            this.deleteRectangleButton.Location = new System.Drawing.Point(267, 79);
+            this.deleteRectangleButton.Name = "deleteRectangleButton";
+            this.deleteRectangleButton.Size = new System.Drawing.Size(104, 28);
+            this.deleteRectangleButton.TabIndex = 16;
+            this.deleteRectangleButton.Text = "Delete";
+            this.deleteRectangleButton.UseVisualStyleBackColor = true;
+            this.deleteRectangleButton.Visible = false;
             // 
-            // numericUpDown1
+            // modifyRectangleBtn
             // 
-            this.numericUpDown1.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.numericUpDown1.Location = new System.Drawing.Point(86, 35);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(65, 22);
-            this.numericUpDown1.TabIndex = 6;
+            this.modifyRectangleBtn.Location = new System.Drawing.Point(139, 79);
+            this.modifyRectangleBtn.Name = "modifyRectangleBtn";
+            this.modifyRectangleBtn.Size = new System.Drawing.Size(104, 28);
+            this.modifyRectangleBtn.TabIndex = 15;
+            this.modifyRectangleBtn.Text = "Modify";
+            this.modifyRectangleBtn.UseVisualStyleBackColor = true;
+            this.modifyRectangleBtn.Visible = false;
+            // 
+            // pixelReadedRectsListBox
+            // 
+            this.pixelReadedRectsListBox.FormattingEnabled = true;
+            this.pixelReadedRectsListBox.HorizontalScrollbar = true;
+            this.pixelReadedRectsListBox.ItemHeight = 16;
+            this.pixelReadedRectsListBox.Location = new System.Drawing.Point(16, 158);
+            this.pixelReadedRectsListBox.Name = "pixelReadedRectsListBox";
+            this.pixelReadedRectsListBox.Size = new System.Drawing.Size(354, 52);
+            this.pixelReadedRectsListBox.TabIndex = 14;
+            // 
+            // yPixelsLbl
+            // 
+            this.yPixelsLbl.AutoSize = true;
+            this.yPixelsLbl.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.yPixelsLbl.Location = new System.Drawing.Point(21, 52);
+            this.yPixelsLbl.Name = "yPixelsLbl";
+            this.yPixelsLbl.Size = new System.Drawing.Size(27, 14);
+            this.yPixelsLbl.TabIndex = 11;
+            this.yPixelsLbl.Text = "Y : ";
+            // 
+            // xPixelsNb
+            // 
+            this.xPixelsNb.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.xPixelsNb.Location = new System.Drawing.Point(81, 22);
+            this.xPixelsNb.Name = "xPixelsNb";
+            this.xPixelsNb.Size = new System.Drawing.Size(65, 22);
+            this.xPixelsNb.TabIndex = 6;
             // 
             // drawButton
             // 
-            this.drawButton.Location = new System.Drawing.Point(16, 92);
+            this.drawButton.Location = new System.Drawing.Point(11, 79);
             this.drawButton.Name = "drawButton";
             this.drawButton.Size = new System.Drawing.Size(104, 28);
             this.drawButton.TabIndex = 13;
             this.drawButton.Text = "Draw";
             this.drawButton.UseVisualStyleBackColor = true;
+            this.drawButton.Click += new System.EventHandler(this.drawButton_Click);
             // 
-            // numericUpDown2
+            // widthPixelsNb
             // 
-            this.numericUpDown2.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.numericUpDown2.Location = new System.Drawing.Point(217, 64);
-            this.numericUpDown2.Name = "numericUpDown2";
-            this.numericUpDown2.Size = new System.Drawing.Size(65, 22);
-            this.numericUpDown2.TabIndex = 7;
+            this.widthPixelsNb.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.widthPixelsNb.Location = new System.Drawing.Point(240, 51);
+            this.widthPixelsNb.Name = "widthPixelsNb";
+            this.widthPixelsNb.Size = new System.Drawing.Size(65, 22);
+            this.widthPixelsNb.TabIndex = 7;
             // 
-            // label4
+            // heightPixelsLbl
             // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(157, 38);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(55, 14);
-            this.label4.TabIndex = 5;
-            this.label4.Text = "Height :";
+            this.heightPixelsLbl.AutoSize = true;
+            this.heightPixelsLbl.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.heightPixelsLbl.Location = new System.Drawing.Point(180, 25);
+            this.heightPixelsLbl.Name = "heightPixelsLbl";
+            this.heightPixelsLbl.Size = new System.Drawing.Size(55, 14);
+            this.heightPixelsLbl.TabIndex = 5;
+            this.heightPixelsLbl.Text = "Height :";
             // 
-            // numericUpDown3
+            // yPixelsNb
             // 
-            this.numericUpDown3.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.numericUpDown3.Location = new System.Drawing.Point(86, 64);
-            this.numericUpDown3.Name = "numericUpDown3";
-            this.numericUpDown3.Size = new System.Drawing.Size(65, 22);
-            this.numericUpDown3.TabIndex = 8;
+            this.yPixelsNb.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.yPixelsNb.Location = new System.Drawing.Point(81, 51);
+            this.yPixelsNb.Name = "yPixelsNb";
+            this.yPixelsNb.Size = new System.Drawing.Size(65, 22);
+            this.yPixelsNb.TabIndex = 8;
             // 
-            // widthLbl
+            // widthPixelsLbl
             // 
-            this.widthLbl.AutoSize = true;
-            this.widthLbl.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.widthLbl.Location = new System.Drawing.Point(157, 65);
-            this.widthLbl.Name = "widthLbl";
-            this.widthLbl.Size = new System.Drawing.Size(51, 14);
-            this.widthLbl.TabIndex = 12;
-            this.widthLbl.Text = "Width :";
+            this.widthPixelsLbl.AutoSize = true;
+            this.widthPixelsLbl.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.widthPixelsLbl.Location = new System.Drawing.Point(180, 52);
+            this.widthPixelsLbl.Name = "widthPixelsLbl";
+            this.widthPixelsLbl.Size = new System.Drawing.Size(51, 14);
+            this.widthPixelsLbl.TabIndex = 12;
+            this.widthPixelsLbl.Text = "Width :";
             // 
-            // numericUpDown4
+            // heightPixelsNb
             // 
-            this.numericUpDown4.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.numericUpDown4.Location = new System.Drawing.Point(217, 35);
-            this.numericUpDown4.Name = "numericUpDown4";
-            this.numericUpDown4.Size = new System.Drawing.Size(65, 22);
-            this.numericUpDown4.TabIndex = 9;
+            this.heightPixelsNb.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.heightPixelsNb.Location = new System.Drawing.Point(240, 22);
+            this.heightPixelsNb.Name = "heightPixelsNb";
+            this.heightPixelsNb.Size = new System.Drawing.Size(65, 22);
+            this.heightPixelsNb.TabIndex = 9;
             // 
-            // xCoordLbl
+            // xPixelsLbl
             // 
-            this.xCoordLbl.AutoSize = true;
-            this.xCoordLbl.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.xCoordLbl.Location = new System.Drawing.Point(26, 38);
-            this.xCoordLbl.Name = "xCoordLbl";
-            this.xCoordLbl.Size = new System.Drawing.Size(24, 14);
-            this.xCoordLbl.TabIndex = 10;
-            this.xCoordLbl.Text = "X :";
+            this.xPixelsLbl.AutoSize = true;
+            this.xPixelsLbl.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.xPixelsLbl.Location = new System.Drawing.Point(21, 25);
+            this.xPixelsLbl.Name = "xPixelsLbl";
+            this.xPixelsLbl.Size = new System.Drawing.Size(24, 14);
+            this.xPixelsLbl.TabIndex = 10;
+            this.xPixelsLbl.Text = "X :";
             // 
             // captureSettingsGb
             // 
             this.captureSettingsGb.Controls.Add(this.applySettingsBtn);
-            this.captureSettingsGb.Controls.Add(this.loadedImgLbl);
-            this.captureSettingsGb.Controls.Add(this.label1);
-            this.captureSettingsGb.Controls.Add(this.loadedImgCb);
+            this.captureSettingsGb.Controls.Add(this.savedCaptureSettingsLb);
             this.captureSettingsGb.Controls.Add(this.savedSettingsCb);
             this.captureSettingsGb.Controls.Add(this.yCaptureLbl);
             this.captureSettingsGb.Controls.Add(this.xCaptureNb);
@@ -239,31 +274,41 @@
             this.captureSettingsGb.TabStop = false;
             this.captureSettingsGb.Text = "Capture";
             // 
+            // applySettingsBtn
+            // 
+            this.applySettingsBtn.Location = new System.Drawing.Point(109, 79);
+            this.applySettingsBtn.Name = "applySettingsBtn";
+            this.applySettingsBtn.Size = new System.Drawing.Size(122, 28);
+            this.applySettingsBtn.TabIndex = 14;
+            this.applySettingsBtn.Text = "Apply";
+            this.applySettingsBtn.UseVisualStyleBackColor = true;
+            this.applySettingsBtn.Click += new System.EventHandler(this.applySettingsBtn_Click);
+            // 
             // loadedImgLbl
             // 
             this.loadedImgLbl.AutoSize = true;
             this.loadedImgLbl.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.loadedImgLbl.Location = new System.Drawing.Point(18, 166);
+            this.loadedImgLbl.Location = new System.Drawing.Point(10, 189);
             this.loadedImgLbl.Name = "loadedImgLbl";
             this.loadedImgLbl.Size = new System.Drawing.Size(107, 14);
             this.loadedImgLbl.TabIndex = 21;
             this.loadedImgLbl.Text = "Loaded Images :";
             // 
-            // label1
+            // savedCaptureSettingsLb
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(19, 115);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(106, 14);
-            this.label1.TabIndex = 22;
-            this.label1.Text = "Saved Settings :";
+            this.savedCaptureSettingsLb.AutoSize = true;
+            this.savedCaptureSettingsLb.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.savedCaptureSettingsLb.Location = new System.Drawing.Point(19, 112);
+            this.savedCaptureSettingsLb.Name = "savedCaptureSettingsLb";
+            this.savedCaptureSettingsLb.Size = new System.Drawing.Size(106, 14);
+            this.savedCaptureSettingsLb.TabIndex = 22;
+            this.savedCaptureSettingsLb.Text = "Saved Settings :";
             // 
             // loadedImgCb
             // 
             this.loadedImgCb.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.loadedImgCb.FormattingEnabled = true;
-            this.loadedImgCb.Location = new System.Drawing.Point(18, 183);
+            this.loadedImgCb.Location = new System.Drawing.Point(10, 206);
             this.loadedImgCb.Name = "loadedImgCb";
             this.loadedImgCb.Size = new System.Drawing.Size(362, 22);
             this.loadedImgCb.TabIndex = 8;
@@ -273,7 +318,7 @@
             // 
             this.savedSettingsCb.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.savedSettingsCb.FormattingEnabled = true;
-            this.savedSettingsCb.Location = new System.Drawing.Point(18, 132);
+            this.savedSettingsCb.Location = new System.Drawing.Point(18, 129);
             this.savedSettingsCb.Name = "savedSettingsCb";
             this.savedSettingsCb.Size = new System.Drawing.Size(362, 22);
             this.savedSettingsCb.TabIndex = 21;
@@ -283,7 +328,7 @@
             // 
             this.yCaptureLbl.AutoSize = true;
             this.yCaptureLbl.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.yCaptureLbl.Location = new System.Drawing.Point(18, 60);
+            this.yCaptureLbl.Location = new System.Drawing.Point(13, 52);
             this.yCaptureLbl.Name = "yCaptureLbl";
             this.yCaptureLbl.Size = new System.Drawing.Size(27, 14);
             this.yCaptureLbl.TabIndex = 19;
@@ -292,7 +337,7 @@
             // xCaptureNb
             // 
             this.xCaptureNb.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.xCaptureNb.Location = new System.Drawing.Point(78, 30);
+            this.xCaptureNb.Location = new System.Drawing.Point(73, 22);
             this.xCaptureNb.Maximum = new decimal(new int[] {
             9999,
             0,
@@ -305,7 +350,7 @@
             // widthCaptureNb
             // 
             this.widthCaptureNb.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.widthCaptureNb.Location = new System.Drawing.Point(209, 59);
+            this.widthCaptureNb.Location = new System.Drawing.Point(236, 51);
             this.widthCaptureNb.Maximum = new decimal(new int[] {
             9999,
             0,
@@ -319,7 +364,7 @@
             // 
             this.heightCpatureLbl.AutoSize = true;
             this.heightCpatureLbl.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.heightCpatureLbl.Location = new System.Drawing.Point(149, 33);
+            this.heightCpatureLbl.Location = new System.Drawing.Point(176, 25);
             this.heightCpatureLbl.Name = "heightCpatureLbl";
             this.heightCpatureLbl.Size = new System.Drawing.Size(55, 14);
             this.heightCpatureLbl.TabIndex = 13;
@@ -328,7 +373,7 @@
             // yCaptureNb
             // 
             this.yCaptureNb.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.yCaptureNb.Location = new System.Drawing.Point(78, 59);
+            this.yCaptureNb.Location = new System.Drawing.Point(73, 51);
             this.yCaptureNb.Maximum = new decimal(new int[] {
             9999,
             0,
@@ -342,7 +387,7 @@
             // 
             this.widthCaptureLbl.AutoSize = true;
             this.widthCaptureLbl.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.widthCaptureLbl.Location = new System.Drawing.Point(149, 60);
+            this.widthCaptureLbl.Location = new System.Drawing.Point(176, 52);
             this.widthCaptureLbl.Name = "widthCaptureLbl";
             this.widthCaptureLbl.Size = new System.Drawing.Size(51, 14);
             this.widthCaptureLbl.TabIndex = 20;
@@ -351,7 +396,7 @@
             // heightCaptureNb
             // 
             this.heightCaptureNb.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.heightCaptureNb.Location = new System.Drawing.Point(209, 30);
+            this.heightCaptureNb.Location = new System.Drawing.Point(236, 22);
             this.heightCaptureNb.Maximum = new decimal(new int[] {
             9999,
             0,
@@ -365,51 +410,30 @@
             // 
             this.xCaptureLbl.AutoSize = true;
             this.xCaptureLbl.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.xCaptureLbl.Location = new System.Drawing.Point(18, 33);
+            this.xCaptureLbl.Location = new System.Drawing.Point(13, 25);
             this.xCaptureLbl.Name = "xCaptureLbl";
             this.xCaptureLbl.Size = new System.Drawing.Size(24, 14);
             this.xCaptureLbl.TabIndex = 18;
             this.xCaptureLbl.Text = "X :";
             // 
-            // applySettingsBtn
+            // savedPixelSettingsLb
             // 
-            this.applySettingsBtn.Location = new System.Drawing.Point(114, 87);
-            this.applySettingsBtn.Name = "applySettingsBtn";
-            this.applySettingsBtn.Size = new System.Drawing.Size(122, 28);
-            this.applySettingsBtn.TabIndex = 14;
-            this.applySettingsBtn.Text = "Apply";
-            this.applySettingsBtn.UseVisualStyleBackColor = true;
-            this.applySettingsBtn.Click += new System.EventHandler(this.applySettingsBtn_Click);
+            this.savedPixelSettingsLb.AutoSize = true;
+            this.savedPixelSettingsLb.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.savedPixelSettingsLb.Location = new System.Drawing.Point(17, 112);
+            this.savedPixelSettingsLb.Name = "savedPixelSettingsLb";
+            this.savedPixelSettingsLb.Size = new System.Drawing.Size(106, 14);
+            this.savedPixelSettingsLb.TabIndex = 24;
+            this.savedPixelSettingsLb.Text = "Saved Settings :";
             // 
-            // pixelReadedRectsListBox
+            // savedPixelSettingsCb
             // 
-            this.pixelReadedRectsListBox.FormattingEnabled = true;
-            this.pixelReadedRectsListBox.HorizontalScrollbar = true;
-            this.pixelReadedRectsListBox.ItemHeight = 16;
-            this.pixelReadedRectsListBox.Location = new System.Drawing.Point(16, 126);
-            this.pixelReadedRectsListBox.Name = "pixelReadedRectsListBox";
-            this.pixelReadedRectsListBox.Size = new System.Drawing.Size(354, 84);
-            this.pixelReadedRectsListBox.TabIndex = 14;
-            // 
-            // modifyBtn
-            // 
-            this.modifyBtn.Location = new System.Drawing.Point(144, 92);
-            this.modifyBtn.Name = "modifyBtn";
-            this.modifyBtn.Size = new System.Drawing.Size(104, 28);
-            this.modifyBtn.TabIndex = 15;
-            this.modifyBtn.Text = "Modify";
-            this.modifyBtn.UseVisualStyleBackColor = true;
-            this.modifyBtn.Visible = false;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(272, 92);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(104, 28);
-            this.button1.TabIndex = 16;
-            this.button1.Text = "Modify";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Visible = false;
+            this.savedPixelSettingsCb.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.savedPixelSettingsCb.FormattingEnabled = true;
+            this.savedPixelSettingsCb.Location = new System.Drawing.Point(16, 129);
+            this.savedPixelSettingsCb.Name = "savedPixelSettingsCb";
+            this.savedPixelSettingsCb.Size = new System.Drawing.Size(354, 22);
+            this.savedPixelSettingsCb.TabIndex = 23;
             // 
             // SettingsCaptureForm
             // 
@@ -427,10 +451,10 @@
             this.settingsGb.ResumeLayout(false);
             this.pixelsReadedGb.ResumeLayout(false);
             this.pixelsReadedGb.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.xPixelsNb)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.widthPixelsNb)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.yPixelsNb)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.heightPixelsNb)).EndInit();
             this.captureSettingsGb.ResumeLayout(false);
             this.captureSettingsGb.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.xCaptureNb)).EndInit();
@@ -449,15 +473,15 @@
         private System.Windows.Forms.Label loadedImgLbl;
         private System.Windows.Forms.GroupBox settingsGb;
         private System.Windows.Forms.GroupBox pixelsReadedGb;
-        private System.Windows.Forms.Label yCoordLbl;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.Label yPixelsLbl;
+        private System.Windows.Forms.NumericUpDown xPixelsNb;
         private System.Windows.Forms.Button drawButton;
-        private System.Windows.Forms.NumericUpDown numericUpDown2;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.NumericUpDown numericUpDown3;
-        private System.Windows.Forms.Label widthLbl;
-        private System.Windows.Forms.NumericUpDown numericUpDown4;
-        private System.Windows.Forms.Label xCoordLbl;
+        private System.Windows.Forms.NumericUpDown widthPixelsNb;
+        private System.Windows.Forms.Label heightPixelsLbl;
+        private System.Windows.Forms.NumericUpDown yPixelsNb;
+        private System.Windows.Forms.Label widthPixelsLbl;
+        private System.Windows.Forms.NumericUpDown heightPixelsNb;
+        private System.Windows.Forms.Label xPixelsLbl;
         private System.Windows.Forms.GroupBox captureSettingsGb;
         private System.Windows.Forms.Label yCaptureLbl;
         private System.Windows.Forms.NumericUpDown xCaptureNb;
@@ -468,11 +492,13 @@
         private System.Windows.Forms.NumericUpDown heightCaptureNb;
         private System.Windows.Forms.Label xCaptureLbl;
         private System.Windows.Forms.ComboBox savedSettingsCb;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label savedCaptureSettingsLb;
         private System.Windows.Forms.Button applySettingsBtn;
         private System.Windows.Forms.ListBox pixelReadedRectsListBox;
-        private System.Windows.Forms.Button modifyBtn;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button modifyRectangleBtn;
+        private System.Windows.Forms.Button deleteRectangleButton;
+        private System.Windows.Forms.Label savedPixelSettingsLb;
+        private System.Windows.Forms.ComboBox savedPixelSettingsCb;
     }
 }
 
