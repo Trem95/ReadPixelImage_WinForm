@@ -49,14 +49,13 @@
             this.savedSettingsCb = new System.Windows.Forms.ComboBox();
             this.yCaptureLbl = new System.Windows.Forms.Label();
             this.xCaptureNb = new System.Windows.Forms.NumericUpDown();
-            this.rbTop = new System.Windows.Forms.RadioButton();
-            this.rbBottom = new System.Windows.Forms.RadioButton();
             this.widthCaptureNb = new System.Windows.Forms.NumericUpDown();
             this.heightCpatureLbl = new System.Windows.Forms.Label();
             this.yCaptureNb = new System.Windows.Forms.NumericUpDown();
             this.widthCaptureLbl = new System.Windows.Forms.Label();
             this.heightCaptureNb = new System.Windows.Forms.NumericUpDown();
             this.xCaptureLbl = new System.Windows.Forms.Label();
+            this.applySettingsBtn = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.settingsGb.SuspendLayout();
             this.pixelsReadedGb.SuspendLayout();
@@ -225,14 +224,13 @@
             // 
             // captureSettingsGb
             // 
+            this.captureSettingsGb.Controls.Add(this.applySettingsBtn);
             this.captureSettingsGb.Controls.Add(this.loadedImgLbl);
             this.captureSettingsGb.Controls.Add(this.label1);
             this.captureSettingsGb.Controls.Add(this.loadedImgCb);
             this.captureSettingsGb.Controls.Add(this.savedSettingsCb);
             this.captureSettingsGb.Controls.Add(this.yCaptureLbl);
             this.captureSettingsGb.Controls.Add(this.xCaptureNb);
-            this.captureSettingsGb.Controls.Add(this.rbTop);
-            this.captureSettingsGb.Controls.Add(this.rbBottom);
             this.captureSettingsGb.Controls.Add(this.widthCaptureNb);
             this.captureSettingsGb.Controls.Add(this.heightCpatureLbl);
             this.captureSettingsGb.Controls.Add(this.yCaptureNb);
@@ -273,7 +271,7 @@
             this.loadedImgCb.FormattingEnabled = true;
             this.loadedImgCb.Location = new System.Drawing.Point(18, 183);
             this.loadedImgCb.Name = "loadedImgCb";
-            this.loadedImgCb.Size = new System.Drawing.Size(365, 22);
+            this.loadedImgCb.Size = new System.Drawing.Size(362, 22);
             this.loadedImgCb.TabIndex = 8;
             this.loadedImgCb.SelectionChangeCommitted += new System.EventHandler(this.imageChooseCb_SelectionChangeCommitted);
             // 
@@ -281,7 +279,7 @@
             // 
             this.savedSettingsCb.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.savedSettingsCb.FormattingEnabled = true;
-            this.savedSettingsCb.Location = new System.Drawing.Point(21, 132);
+            this.savedSettingsCb.Location = new System.Drawing.Point(18, 132);
             this.savedSettingsCb.Name = "savedSettingsCb";
             this.savedSettingsCb.Size = new System.Drawing.Size(362, 22);
             this.savedSettingsCb.TabIndex = 21;
@@ -309,35 +307,6 @@
             this.xCaptureNb.Name = "xCaptureNb";
             this.xCaptureNb.Size = new System.Drawing.Size(65, 22);
             this.xCaptureNb.TabIndex = 14;
-            // 
-            // rbTop
-            // 
-            this.rbTop.AutoSize = true;
-            this.rbTop.Checked = true;
-            this.rbTop.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbTop.Location = new System.Drawing.Point(213, 96);
-            this.rbTop.Name = "rbTop";
-            this.rbTop.Padding = new System.Windows.Forms.Padding(5);
-            this.rbTop.Size = new System.Drawing.Size(61, 30);
-            this.rbTop.TabIndex = 7;
-            this.rbTop.TabStop = true;
-            this.rbTop.Text = "Top";
-            this.rbTop.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.rbTop.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
-            this.rbTop.UseVisualStyleBackColor = true;
-            // 
-            // rbBottom
-            // 
-            this.rbBottom.AutoSize = true;
-            this.rbBottom.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbBottom.Location = new System.Drawing.Point(280, 101);
-            this.rbBottom.Name = "rbBottom";
-            this.rbBottom.Size = new System.Drawing.Size(79, 20);
-            this.rbBottom.TabIndex = 6;
-            this.rbBottom.Text = "Bottom";
-            this.rbBottom.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.rbBottom.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
-            this.rbBottom.UseVisualStyleBackColor = true;
             // 
             // widthCaptureNb
             // 
@@ -408,6 +377,16 @@
             this.xCaptureLbl.TabIndex = 18;
             this.xCaptureLbl.Text = "X :";
             // 
+            // applySettingsBtn
+            // 
+            this.applySettingsBtn.Location = new System.Drawing.Point(114, 87);
+            this.applySettingsBtn.Name = "applySettingsBtn";
+            this.applySettingsBtn.Size = new System.Drawing.Size(122, 28);
+            this.applySettingsBtn.TabIndex = 14;
+            this.applySettingsBtn.Text = "Apply";
+            this.applySettingsBtn.UseVisualStyleBackColor = true;
+            this.applySettingsBtn.Click += new System.EventHandler(this.applySettingsBtn_Click);
+            // 
             // SettingsCaptureForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -459,8 +438,6 @@
         private System.Windows.Forms.GroupBox captureSettingsGb;
         private System.Windows.Forms.Label yCaptureLbl;
         private System.Windows.Forms.NumericUpDown xCaptureNb;
-        private System.Windows.Forms.RadioButton rbTop;
-        private System.Windows.Forms.RadioButton rbBottom;
         private System.Windows.Forms.NumericUpDown widthCaptureNb;
         private System.Windows.Forms.Label heightCpatureLbl;
         private System.Windows.Forms.NumericUpDown yCaptureNb;
@@ -469,6 +446,7 @@
         private System.Windows.Forms.Label xCaptureLbl;
         private System.Windows.Forms.ComboBox savedSettingsCb;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button applySettingsBtn;
     }
 }
 

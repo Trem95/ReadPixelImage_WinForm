@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
 using stdole;
+using ReadPixelImage.CaptureSettings;
 
 namespace ReadPixelImage
 {
@@ -22,7 +23,7 @@ namespace ReadPixelImage
 
             //Creating a Rectangle object which will
             //capture our Current Screen
-            Rectangle captureRectangle = new Rectangle(0,0, captureBitmap.Width, captureBitmap.Height);
+            Rectangle captureRectangle = new Rectangle(0, 0, captureBitmap.Width, captureBitmap.Height);
             //Creating a New Graphics Object
             Graphics captureGraphics = Graphics.FromImage(captureBitmap);
 
@@ -49,11 +50,30 @@ namespace ReadPixelImage
             return captureBitmap;
         }
 
-        public void SaveImage(Image imgToSave,string fileLoc = null)
+        public Bitmap GetParametredCapture(CaptureSetting captureSett, Bitmap img = null)
+        {
+            Rectangle captureRectangle = new Rectangle(captureSett.X, captureSett.Y, captureSett.Width, captureSett.Height);
+
+            if (img == null)
+            {
+                Bitmap captureBitmap = new Bitmap(captureSett.Width, captureSett.Height);
+                Graphics captureGraphics = Graphics.FromImage((Bitmap)captureBitmap);
+                captureGraphics.CopyFromScreen(captureRectangle.Left, captureRectangle.Top, 0, 0, captureRectangle.Size);
+
+                return captureBitmap;
+            }
+            else
+            {
+                Bitmap cropBitmap = new Bitmap(img);
+                return cropBitmap.Clone(captureRectangle, cropBitmap.PixelFormat);
+            }
+        }
+
+        public void SaveImage(Image imgToSave, string fileLoc = null)
         {
             if (fileLoc == null)
                 imgToSave.Save(@"C:\Users\antoi\Pictures\Screenshots\ReadPixelImage\ReadImg" + DateTime.Now.GetHashCode(), ImageFormat.Jpeg);
-            else imgToSave.Save(fileLoc +"ReadImg"+ DateTime.Now.GetHashCode(), ImageFormat.Jpeg);
+            else imgToSave.Save(fileLoc + "ReadImg" + DateTime.Now.GetHashCode(), ImageFormat.Jpeg);
 
         }
     }

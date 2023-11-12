@@ -46,11 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CaptureSettings\DownScreenCaptureSetting.cs" />
-    <Compile Include="CaptureSettings\DefaultCaptureSetting.cs" />
-    <Compile Include="CaptureSettings\Mafia2HealthCaptureSetting.cs" />
-    <Compile Include="CaptureSettings\CaptureSetting.cs" />
-    <Compile Include="CaptureSettings\TopScreenCaptureSetting.cs" />
+    <Compile Include="CaptureSetting.cs" />
     <Compile Include="Forms\CaptureForm.cs">
       <SubType>Form</SubType>
     </Compile>

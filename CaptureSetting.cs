@@ -6,8 +6,17 @@ using System.Threading.Tasks;
 
 namespace ReadPixelImage.CaptureSettings
 {
-    public abstract class CaptureSetting
+    public class CaptureSetting
     {
+        public CaptureSetting() {}
+        public CaptureSetting(string name, int x, int y, int width, int height)
+        {
+            Name = name;
+            X = x;
+            Y = y;
+            Width = width;
+            Height = height;
+        }
         public string Name { get; set; }
         public int X { get; set; }
         public int Y { get; set; }

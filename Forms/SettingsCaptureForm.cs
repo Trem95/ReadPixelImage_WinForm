@@ -18,13 +18,21 @@ namespace ReadPixelImage
     public partial class SettingsCaptureForm : Form
     {
 
+        #region Variables
         CaptureForm captureForm;
         Dictionary<string, Bitmap> imageDict = new Dictionary<string, Bitmap>();
         Dictionary<string, CaptureSetting> captureSettings = new Dictionary<string, CaptureSetting>();
         Bitmap currentImage;
-        CaptureSetting currentSetting = new DefaultCaptureSettings();
+        CaptureSetting currentSetting = new CaptureSetting();
+        CaptureSetting personalizedSettings = new CaptureSetting();
+        int persSettingsCdw = 1; 
 
         ScreenReader screenReader = new ScreenReader();
+
+        #endregion
+
+        #region Constructor
+
         public SettingsCaptureForm()
         {
             InitializeComponent();
@@ -38,25 +46,24 @@ namespace ReadPixelImage
             captureForm.Show();
 
         }
-        private void CaptureBtn_Click(object sender, EventArgs e)
-        {
-            this.Hide();
-            //Console.WriteLine("SCREEN SIZE : " + Screen.PrimaryScreen.Bounds.Width + " / " + Screen.PrimaryScreen.Bounds.Height);
-            Thread.Sleep(400);
-            currentImage = rbBottom.Checked ? screenReader.GetBottomScreen() : screenReader.GetTopScreen();
-            captureForm.CaptureImg.Size = currentImage.Size;
-            captureForm.CaptureImg.BackgroundImage = currentImage;
-            this.Show();
+        #endregion
 
-        }
+        #region Properties
 
+        public int XCoordCapture { get { return (int)xCaptureNb.Value; } }
+        public int YCoordCapture { get { return (int)yCaptureNb.Value; } }
+        public int HeightCoordCapture { get { return (int)heightCaptureNb.Value; } }
+        public int WidthCoordCapture { get { return (int)widthCaptureNb.Value; } }
 
+        #endregion
+
+        #region Methods
         private void LoadImages()
         {
             string path = @"C:\Users\antoi\Pictures\Screenshots\ReadPixelImage\ImageToRead";
             foreach (var item in Directory.EnumerateFiles(path))
             {
-                if (item.ToString().Contains(".png"))//TODO find better solution even if only for test
+                if (item.ToString().Contains(".png"))
                 {
                     Bitmap imgToAdd = new Bitmap(item.ToString());
                     string imgName = item.Substring(path.Length + 1);
@@ -66,12 +73,46 @@ namespace ReadPixelImage
             }
         }
 
-        private void LoadCaptureSettings()
+        private void DisplayCapture()
         {
-            captureSettings.Add("Default", new DefaultCaptureSettings());
-            captureSettings.Add("Top Screen", new TopScreenCaptureSettings());
-            captureSettings.Add("Down Screen", new DownScreenCaptureSetting());
-            captureSettings.Add("Mafia II Setting", new Mafia2HealthCaptureSetting());
+            Bitmap cropImgToShow = screenReader.GetParametredCapture(currentSetting, currentImage);
+            captureForm.CaptureImg.Size = cropImgToShow.Size;
+            captureForm.CaptureImg.BackgroundImage = cropImgToShow;
+        }
+
+        private void LoadCaptureSettings()//TODO Create CSV (or other) file to load parameterized settings
+        {
+            captureSettings.Add(
+                "Default",
+                new CaptureSetting("Default",
+                    0,
+                    0,
+                    Screen.PrimaryScreen.Bounds.Width,
+                    Screen.PrimaryScreen.Bounds.Height));
+
+            captureSettings.Add(
+                "Top Screen",
+                new CaptureSetting("Top Screen",
+                    0,
+                    0,
+                    Screen.PrimaryScreen.Bounds.Width,
+                    Screen.PrimaryScreen.Bounds.Height / 4));
+
+            captureSettings.Add(
+                "Bottom Screen",
+                new CaptureSetting("Bottom Screen",
+                    0,
+                    Screen.PrimaryScreen.Bounds.Height - (Screen.PrimaryScreen.Bounds.Height / 4),
+                    Screen.PrimaryScreen.Bounds.Width,
+                    Screen.PrimaryScreen.Bounds.Height / 4));
+
+            captureSettings.Add(
+                "Mafia II Health",
+                new CaptureSetting("Mafia II Health",
+                    Screen.PrimaryScreen.Bounds.Width - (Screen.PrimaryScreen.Bounds.Width / 4),
+                    Screen.PrimaryScreen.Bounds.Height - (Screen.PrimaryScreen.Bounds.Height / 3),
+                    Screen.PrimaryScreen.Bounds.Width / 4,
+                    Screen.PrimaryScreen.Bounds.Height / 3));
 
             foreach (KeyValuePair<string, CaptureSetting> kvp in captureSettings)
             {
@@ -81,29 +122,15 @@ namespace ReadPixelImage
             savedSettingsCb.SelectedIndex = 0;
         }
 
-        public Bitmap GetTopLoadedImage(Bitmap bitmapToCrop)
-        {
-            Bitmap cropBitmap = new Bitmap(bitmapToCrop);
-            Rectangle cropRectangle = new Rectangle(0, 0, cropBitmap.Width, 216);
+        #endregion
+        #region Event Handler
 
-            return cropBitmap.Clone(cropRectangle, cropBitmap.PixelFormat);
-        }
-
-        public Bitmap GetBottomLoadedImage(Bitmap bitmapToCrop)
-        {
-            Bitmap cropBitmap = new Bitmap(bitmapToCrop);
-            Rectangle cropRectangle = new Rectangle(0, 864, cropBitmap.Width, 216);
-
-            return cropBitmap.Clone(cropRectangle, cropBitmap.PixelFormat);
-        }
 
         private void imageChooseCb_SelectionChangeCommitted(object sender, EventArgs e)
         {
             if (imageDict.TryGetValue(loadedImgCb.SelectedItem.ToString(), out currentImage))
             {
-                Bitmap cropImgToShow = rbBottom.Checked ? GetBottomLoadedImage(currentImage) : GetTopLoadedImage(currentImage);
-                captureForm.CaptureImg.Size = cropImgToShow.Size;
-                captureForm.CaptureImg.BackgroundImage = cropImgToShow;
+                DisplayCapture();
             }
 
         }
@@ -116,7 +143,36 @@ namespace ReadPixelImage
                 yCaptureNb.Value = currentSetting.Y;
                 widthCaptureNb.Value = currentSetting.Width;
                 heightCaptureNb.Value = currentSetting.Height;
+
+                DisplayCapture();
             }
         }
+
+        private void applySettingsBtn_Click(object sender, EventArgs e)
+        {
+            if (XCoordCapture > 0 && YCoordCapture > 0
+                && WidthCoordCapture > 0 && HeightCoordCapture > 0)
+            {
+                captureSettings.Add("Personnalized " + persSettingsCdw, new CaptureSetting("Personnalized" + persSettingsCdw, XCoordCapture, YCoordCapture, WidthCoordCapture, HeightCoordCapture));
+                savedSettingsCb.Items.Add("Personnalized " + persSettingsCdw);
+                savedSettingsCb.SelectedItem = "Personnalized " + persSettingsCdw;
+                persSettingsCdw++;
+
+                DisplayCapture();
+            }
+        }
+
+        private void CaptureBtn_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            //Console.WriteLine("SCREEN SIZE : " + Screen.PrimaryScreen.Bounds.Width + " / " + Screen.PrimaryScreen.Bounds.Height);
+            Thread.Sleep(400);
+            currentImage = screenReader.GetParametredCapture(currentSetting);
+            captureForm.CaptureImg.Size = currentImage.Size;
+            captureForm.CaptureImg.BackgroundImage = currentImage;
+            this.Show();
+
+        }
+        #endregion
     }
 }
