@@ -50,7 +50,7 @@
             this.captureSettingsGb = new System.Windows.Forms.GroupBox();
             this.applySettingsBtn = new System.Windows.Forms.Button();
             this.savedCaptureSettingsLb = new System.Windows.Forms.Label();
-            this.savedSettingsCb = new System.Windows.Forms.ComboBox();
+            this.savedCaptureSettingsCb = new System.Windows.Forms.ComboBox();
             this.yCaptureLbl = new System.Windows.Forms.Label();
             this.xCaptureNb = new System.Windows.Forms.NumericUpDown();
             this.widthCaptureNb = new System.Windows.Forms.NumericUpDown();
@@ -60,6 +60,7 @@
             this.heightCaptureNb = new System.Windows.Forms.NumericUpDown();
             this.xCaptureLbl = new System.Windows.Forms.Label();
             this.loadedImgCb = new System.Windows.Forms.ComboBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.settingsGb.SuspendLayout();
             this.pixelsReadedGb.SuspendLayout();
@@ -285,9 +286,10 @@
             // 
             // captureSettingsGb
             // 
+            this.captureSettingsGb.Controls.Add(this.button1);
             this.captureSettingsGb.Controls.Add(this.applySettingsBtn);
             this.captureSettingsGb.Controls.Add(this.savedCaptureSettingsLb);
-            this.captureSettingsGb.Controls.Add(this.savedSettingsCb);
+            this.captureSettingsGb.Controls.Add(this.savedCaptureSettingsCb);
             this.captureSettingsGb.Controls.Add(this.yCaptureLbl);
             this.captureSettingsGb.Controls.Add(this.xCaptureNb);
             this.captureSettingsGb.Controls.Add(this.widthCaptureNb);
@@ -318,21 +320,20 @@
             // 
             this.savedCaptureSettingsLb.AutoSize = true;
             this.savedCaptureSettingsLb.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.savedCaptureSettingsLb.Location = new System.Drawing.Point(19, 112);
+            this.savedCaptureSettingsLb.Location = new System.Drawing.Point(13, 140);
             this.savedCaptureSettingsLb.Name = "savedCaptureSettingsLb";
             this.savedCaptureSettingsLb.Size = new System.Drawing.Size(106, 14);
             this.savedCaptureSettingsLb.TabIndex = 22;
             this.savedCaptureSettingsLb.Text = "Saved Settings :";
             // 
-            // savedSettingsCb
+            // savedCaptureSettingsCb
             // 
-            this.savedSettingsCb.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.savedSettingsCb.FormattingEnabled = true;
-            this.savedSettingsCb.Location = new System.Drawing.Point(18, 129);
-            this.savedSettingsCb.Name = "savedSettingsCb";
-            this.savedSettingsCb.Size = new System.Drawing.Size(362, 22);
-            this.savedSettingsCb.TabIndex = 21;
-            this.savedSettingsCb.SelectionChangeCommitted += new System.EventHandler(this.savedSettingsCb_SelectionChangeCommitted);
+            this.savedCaptureSettingsCb.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.savedCaptureSettingsCb.FormattingEnabled = true;
+            this.savedCaptureSettingsCb.Location = new System.Drawing.Point(12, 157);
+            this.savedCaptureSettingsCb.Name = "savedCaptureSettingsCb";
+            this.savedCaptureSettingsCb.Size = new System.Drawing.Size(362, 22);
+            this.savedCaptureSettingsCb.TabIndex = 21;
             // 
             // yCaptureLbl
             // 
@@ -436,6 +437,16 @@
             this.loadedImgCb.TabIndex = 8;
             this.loadedImgCb.SelectionChangeCommitted += new System.EventHandler(this.imageChooseCb_SelectionChangeCommitted);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(12, 185);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(122, 28);
+            this.button1.TabIndex = 23;
+            this.button1.Text = "Apply";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.savedCaptureSettingsBtn_Click);
+            // 
             // SettingsCaptureForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -492,7 +503,7 @@
         private System.Windows.Forms.Label widthCaptureLbl;
         private System.Windows.Forms.NumericUpDown heightCaptureNb;
         private System.Windows.Forms.Label xCaptureLbl;
-        private System.Windows.Forms.ComboBox savedSettingsCb;
+        private System.Windows.Forms.ComboBox savedCaptureSettingsCb;
         private System.Windows.Forms.Label savedCaptureSettingsLb;
         private System.Windows.Forms.Button applySettingsBtn;
         private System.Windows.Forms.ListBox pixelReadedRectsListBox;
@@ -500,6 +511,7 @@
         private System.Windows.Forms.Button deleteRectangleButton;
         private System.Windows.Forms.Label savedPixelSettingsLb;
         private System.Windows.Forms.ComboBox savedPixelSettingsCb;
+        private System.Windows.Forms.Button button1;
     }
 }
 

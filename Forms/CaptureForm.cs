@@ -19,12 +19,12 @@ namespace ReadPixelImage
             InitializeComponent();
         }
 
-        public PictureBox CaptureImg { get { return pictureBox1; } set { pictureBox1 = value; } }
+        public PictureBox CaptureImg { get { return capturePicBox; }}
 
         public void SetAndDrawRectangles(List<Rectangle> rectangles)
         {
             rectanglesToDraw = rectangles;
-            pictureBox1.Invalidate(); // force Redraw the form
+            capturePicBox.Invalidate(); // force Redraw the form
         }
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
@@ -35,5 +35,9 @@ namespace ReadPixelImage
             }
         }
 
+        private void CaptureForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Application.Exit();
+        }
     }
 }

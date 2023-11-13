@@ -100,6 +100,11 @@ namespace ReadPixelImage
             xPixelsNb.Maximum = captureForm.CaptureImg.Size.Width;
             heightPixelsNb.Maximum = captureForm.CaptureImg.Size.Height;
             widthPixelsNb.Maximum = captureForm.CaptureImg.Size.Width;
+
+            if (savedCaptureSettingsCb.SelectedIndex == 1) captureForm.WindowState = FormWindowState.Maximized;// Preset saved where (Width && Height == Screen.Primary.Bounds)
+            else captureForm.WindowState = FormWindowState.Normal;
+
+            this.WindowState = FormWindowState.Normal;
         }
 
         private void LoadCaptureSettings()//TODO Create CSV (or other) file to load parameterized settings
@@ -119,7 +124,7 @@ namespace ReadPixelImage
 
             captureSettings.Add(
                 1,
-                new CaptureSetting(0, "Default",
+                new CaptureSetting(1, "Default",
                     0,
                     0,
                     Screen.PrimaryScreen.Bounds.Width,
@@ -127,7 +132,7 @@ namespace ReadPixelImage
 
             captureSettings.Add(
                 2,
-                new CaptureSetting(1, "Top Screen",
+                new CaptureSetting(2, "Top Screen",
                     0,
                     0,
                     Screen.PrimaryScreen.Bounds.Width,
@@ -135,7 +140,7 @@ namespace ReadPixelImage
 
             captureSettings.Add(
                 3,
-                new CaptureSetting(2, "Bottom Screen",
+                new CaptureSetting(3, "Bottom Screen",
                     0,
                     Screen.PrimaryScreen.Bounds.Height - (Screen.PrimaryScreen.Bounds.Height / 4),
                     Screen.PrimaryScreen.Bounds.Width,
@@ -143,7 +148,7 @@ namespace ReadPixelImage
 
             captureSettings.Add(
                 4,
-                new CaptureSetting(3, "Mafia II Health",
+                new CaptureSetting(4, "Mafia II Health",
                     Screen.PrimaryScreen.Bounds.Width - (Screen.PrimaryScreen.Bounds.Width / 4),
                     Screen.PrimaryScreen.Bounds.Height - (Screen.PrimaryScreen.Bounds.Height / 3),
                     Screen.PrimaryScreen.Bounds.Width / 4,
@@ -153,11 +158,11 @@ namespace ReadPixelImage
 
             foreach (KeyValuePair<int, CaptureSetting> kvp in captureSettings)
             {
-                savedSettingsCb.Items.Add(kvp.Value);
+                savedCaptureSettingsCb.Items.Add(kvp.Value);
             }
 
             currentCaptureSetting = captureSettings[1];
-            savedSettingsCb.SelectedIndex = 1;//Set on default 
+            savedCaptureSettingsCb.SelectedIndex = 1;//Set on default 
         }
 
         private void LoadReadedPixelsSetings()
@@ -207,30 +212,22 @@ namespace ReadPixelImage
 
         }
 
-        private void savedSettingsCb_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            if (captureSettings.TryGetValue((savedSettingsCb.SelectedItem as CaptureSetting).Id, out currentCaptureSetting))
-            {
-                xCaptureNb.Value = currentCaptureSetting.X;
-                yCaptureNb.Value = currentCaptureSetting.Y;
-                widthCaptureNb.Value = currentCaptureSetting.Width;
-                heightCaptureNb.Value = currentCaptureSetting.Height;
-
-                DisplayCapture();
-            }
-        }
-
         private void applySettingsBtn_Click(object sender, EventArgs e)
         {
             if (XCoordCapture > 0 && YCoordCapture > 0
                 && WidthCoordCapture > 0 && HeightCoordCapture > 0)
             {
-                CaptureSetting newCaptSett = new CaptureSetting(newCaptureSettingsId, "New Settings" + persCaptSettingsCdw, XCoordCapture, YCoordCapture, WidthCoordCapture, HeightCoordCapture);
-                captureSettings.Add(newCaptSett.Id, newCaptSett);
-                savedSettingsCb.Items.Add(newCaptSett);
-                savedSettingsCb.SelectedItem = "New Settings " + persCaptSettingsCdw;
-                persCaptSettingsCdw++;
-                newCaptureSettingsId++;
+                if (savedCaptureSettingsCb.SelectedIndex == 0)//Create
+                {
+                    CaptureSetting newCaptSett = new CaptureSetting(newCaptureSettingsId, "New Settings" + persCaptSettingsCdw, XCoordCapture, YCoordCapture, WidthCoordCapture, HeightCoordCapture);
+                    captureSettings.Add(newCaptSett.Id, newCaptSett);
+                    savedCaptureSettingsCb.Items.Add(newCaptSett);
+                    savedCaptureSettingsCb.SelectedItem = "New Settings " + persCaptSettingsCdw;
+                    persCaptSettingsCdw++;
+                    newCaptureSettingsId++;
+                }
+                else
+                    currentCaptureSetting = new CaptureSetting(0, "TEMPORARY_SETTINGS", XCoordCapture, YCoordCapture, WidthCoordCapture, HeightCoordCapture);
 
                 DisplayCapture();
             }
@@ -268,7 +265,7 @@ namespace ReadPixelImage
             }
             else
             {
-               currentReadedPixelsSettings.Rectangles.Add(rectangle);
+                currentReadedPixelsSettings.Rectangles.Add(rectangle);
                 captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles);
             }
         }
@@ -276,8 +273,13 @@ namespace ReadPixelImage
         private void savedPixelSettingsCb_SelectionChangeCommitted(object sender, EventArgs e)
         {
             currentReadedPixelsSettings = readedPixSettings.Values.ToList()[(savedPixelSettingsCb.SelectedItem as ReadedPixelsSettings).Id];
-            if(MessageBox.Show("Confirm","Confirm Action", MessageBoxButtons.OKCancel) == DialogResult.OK) 
-                captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles);                
+            if (MessageBox.Show("Confirm", "Confirm Action", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles);
+        }
+
+        private void savedCaptureSettingsBtn_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
