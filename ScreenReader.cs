@@ -14,44 +14,10 @@ namespace ReadPixelImage
 {
     internal class ScreenReader
     {
-        public Bitmap GetTopScreen()
-        {
-            //Creating a new Bitmap object
-            //Bitmap captureBitmap = new Bitmap(1920, 1080);//Capture full screen
-            Bitmap captureBitmap = new Bitmap(1920, 216);//Capture full screen
-            //Bitmap captureBitmap = new Bitmap(int width, int height, PixelFormat);
-
-            //Creating a Rectangle object which will
-            //capture our Current Screen
-            Rectangle captureRectangle = new Rectangle(0, 0, captureBitmap.Width, captureBitmap.Height);
-            //Creating a New Graphics Object
-            Graphics captureGraphics = Graphics.FromImage(captureBitmap);
-
-            //Copying Image from The Screen
-            captureGraphics.CopyFromScreen(captureRectangle.Left, captureRectangle.Top, 0, 0, captureRectangle.Size);
-
-            //Saving the Image File (I am here Saving it in My E drive).
-            //captureBitmap.Save(@"E:\Capture.jpg", ImageFormat.Jpeg);
-
-            return captureBitmap;
-        }
-
-        public Bitmap GetBottomScreen()
-        {
-            Bitmap captureBitmap = new Bitmap(1920, 216);//
-
-            Rectangle captureRectangle = new Rectangle(0, 864, captureBitmap.Width, captureBitmap.Height);
-            //Creating a New Graphics Object
-            Graphics captureGraphics = Graphics.FromImage(captureBitmap);
-
-            //Copying Image from The Screen
-            captureGraphics.CopyFromScreen(captureRectangle.Left, captureRectangle.Top, 0, 0, captureRectangle.Size);
-
-            return captureBitmap;
-        }
 
         public Bitmap GetParametredCapture(CaptureSetting captureSett, Bitmap img = null)
         {
+            //Creating a Rectangle object which will capture the wanted screen or image 
             Rectangle captureRectangle = new Rectangle(captureSett.X, captureSett.Y, captureSett.Width, captureSett.Height);
 
             if (img == null)
@@ -67,6 +33,31 @@ namespace ReadPixelImage
                 Bitmap cropBitmap = new Bitmap(img);
                 return cropBitmap.Clone(captureRectangle, cropBitmap.PixelFormat);
             }
+        }
+
+        public System.Drawing.Image ResizeImage(System.Drawing.Bitmap imgToResize, Size size)
+        {
+            // Get the image current width
+            int sourceWidth = imgToResize.Width;
+            // Get the image current height
+            int sourceHeight = imgToResize.Height;
+            float nPercent = 0;
+            float nPercentW = 0;
+            float nPercentH = 0;
+            // Calculate width and height with new desired size
+            nPercentW = ((float)size.Width / (float)sourceWidth);
+            nPercentH = ((float)size.Height / (float)sourceHeight);
+            nPercent = Math.Min(nPercentW, nPercentH);
+            // New Width and Height
+            int destWidth = (int)(sourceWidth * nPercent);
+            int destHeight = (int)(sourceHeight * nPercent);
+            Bitmap b = new Bitmap(destWidth, destHeight);
+            Graphics g = Graphics.FromImage((System.Drawing.Image)b);
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            // Draw image with new width and height
+            g.DrawImage(imgToResize, 0, 0, destWidth, destHeight);
+            g.Dispose();
+            return (System.Drawing.Image)b;
         }
 
         public void SaveImage(Image imgToSave, string fileLoc = null)
