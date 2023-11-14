@@ -13,6 +13,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ExcelLibrary;
+using ExcelLibrary.SpreadSheet;
 
 namespace ReadPixelImage
 {
@@ -21,19 +23,29 @@ namespace ReadPixelImage
 
         #region Variables
         CaptureForm captureForm;
-        Dictionary<string, Bitmap> imageDict;
-        Dictionary<int, CaptureSetting> captureSettings;
-        Dictionary<int, ReadedPixelsSettings> readedPixSettings;
+        
+        ScreenReader screenReader = new ScreenReader();
         Bitmap currentImage;
         CaptureSetting currentCaptureSetting;
         ReadedPixelsSettings currentReadedPixelsSettings;
+
+        Dictionary<string, Bitmap> imageDict;
+        Dictionary<int, CaptureSetting> captureSettings;
+        Dictionary<int, ReadedPixelsSettings> readedPixSettings;
 
         int persCaptSettingsCdw = 1;
         int persPixelsSettingsCdw = 1;
         int newCaptureSettingsId;
         int newPixReadedSettingsId;
 
-        ScreenReader screenReader = new ScreenReader();
+        Workbook captureSettingsWorkbooks;
+        Workbook pixelsSettingsWorkbook;
+
+        string publicDocPath;
+        string settingsDocPath;
+        string imagesDocPath;
+        string captureSettingsDocPath;
+        string pixelsSettingsDocPath;
 
         #endregion
 
@@ -51,6 +63,13 @@ namespace ReadPixelImage
             readedPixSettings = new Dictionary<int, ReadedPixelsSettings>();
             currentCaptureSetting = new CaptureSetting();
 
+            publicDocPath = Environment.ExpandEnvironmentVariables(@"%PUBLIC%\Documents");
+            settingsDocPath = publicDocPath + @"\ReadPixelImage\Settings";
+            imagesDocPath = publicDocPath + @"\ReadPixelImage\Images";
+            captureSettingsDocPath = settingsDocPath + @"\Capture";
+            pixelsSettingsDocPath = settingsDocPath + @"\Pixels";
+
+            CreateOrLoadSettingsDirectory();
             LoadImages();
             LoadCaptureSettings();
             LoadReadedPixelsSetings();
@@ -75,6 +94,43 @@ namespace ReadPixelImage
         #endregion
 
         #region Methods
+        private void CreateOrLoadSettingsDirectory()
+        {
+            string[] files = { "" };
+            if (Directory.Exists(publicDocPath))
+            {
+                files = Directory.GetDirectories(publicDocPath);
+            }
+
+            if (files == null || files.Count() == 0
+                || !files.Contains(publicDocPath + "\\ReadPixelImage"))
+            {
+                Directory.CreateDirectory(publicDocPath + "\\ReadPixelImage");
+                Directory.CreateDirectory(settingsDocPath);
+                Directory.CreateDirectory(captureSettingsDocPath);
+                Directory.CreateDirectory(pixelsSettingsDocPath);
+                Directory.CreateDirectory(imagesDocPath);
+                Directory.CreateDirectory(imagesDocPath + "\\Loaded");
+                Directory.CreateDirectory(imagesDocPath + "\\Saved");
+                Directory.CreateDirectory(imagesDocPath + "\\Capture");
+
+            }
+
+            Console.WriteLine();
+
+        }
+        private void CreateOrLoadExcelFiles()
+        {
+
+        }
+
+        private void ReadSettingsExcelFiles()
+        {
+            Workbook settingsWorkbook = new Workbook();
+            Workbook.Load("");
+            //settingsWorkbook.
+        }
+
         private void LoadImages()
         {
             string path = @"C:\Users\antoi\Pictures\Screenshots\ReadPixelImage\ImageToRead";
@@ -199,6 +255,7 @@ namespace ReadPixelImage
             savedPixelSettingsCb.SelectedIndex = 1;
         }
 
+      
         #endregion
         #region Event Handler
 
@@ -217,18 +274,7 @@ namespace ReadPixelImage
             if (XCoordCapture > 0 && YCoordCapture > 0
                 && WidthCoordCapture > 0 && HeightCoordCapture > 0)
             {
-                if (savedCaptureSettingsCb.SelectedIndex == 0)//Create
-                {
-                    CaptureSetting newCaptSett = new CaptureSetting(newCaptureSettingsId, "New Settings" + persCaptSettingsCdw, XCoordCapture, YCoordCapture, WidthCoordCapture, HeightCoordCapture);
-                    captureSettings.Add(newCaptSett.Id, newCaptSett);
-                    savedCaptureSettingsCb.Items.Add(newCaptSett);
-                    savedCaptureSettingsCb.SelectedItem = "New Settings " + persCaptSettingsCdw;
-                    persCaptSettingsCdw++;
-                    newCaptureSettingsId++;
-                }
-                else
-                    currentCaptureSetting = new CaptureSetting(0, "TEMPORARY_SETTINGS", XCoordCapture, YCoordCapture, WidthCoordCapture, HeightCoordCapture);
-
+                currentCaptureSetting = new CaptureSetting(0, "TEMPORARY_SETTINGS", XCoordCapture, YCoordCapture, WidthCoordCapture, HeightCoordCapture);
                 DisplayCapture();
             }
         }
@@ -239,8 +285,7 @@ namespace ReadPixelImage
             //Console.WriteLine("SCREEN SIZE : " + Screen.PrimaryScreen.Bounds.Width + " / " + Screen.PrimaryScreen.Bounds.Height);
             Thread.Sleep(400);
             currentImage = screenReader.GetParametredCapture(currentCaptureSetting);
-            captureForm.CaptureImg.Size = currentImage.Size;
-            captureForm.CaptureImg.BackgroundImage = currentImage;
+            DisplayCapture();
             this.Show();
 
         }
@@ -279,7 +324,12 @@ namespace ReadPixelImage
 
         private void savedCaptureSettingsBtn_Click(object sender, EventArgs e)
         {
-
+            CaptureSetting newCaptSett = new CaptureSetting(newCaptureSettingsId, "New Settings" + persCaptSettingsCdw, XCoordCapture, YCoordCapture, WidthCoordCapture, HeightCoordCapture);
+            captureSettings.Add(newCaptSett.Id, newCaptSett);
+            savedCaptureSettingsCb.Items.Add(newCaptSett);
+            savedCaptureSettingsCb.SelectedItem = "New Settings " + persCaptSettingsCdw;
+            persCaptSettingsCdw++;
+            newCaptureSettingsId++;
         }
     }
 }

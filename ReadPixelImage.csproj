@@ -92,14 +92,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="HtmlRenderer.WinForms">
-      <Version>1.5.0.6</Version>
-    </PackageReference>
-    <PackageReference Include="SixLabors.ImageSharp">
-      <Version>3.0.2</Version>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
     <COMReference Include="Microsoft.Vbe.Interop.Forms">
       <Guid>{0D452EE1-E08F-101A-852E-02608C4D0BB4}</Guid>
       <VersionMajor>2</VersionMajor>
@@ -118,6 +110,11 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ExcelLibrary">
+      <Version>1.2011.7.31</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
