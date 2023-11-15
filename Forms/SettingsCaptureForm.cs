@@ -23,7 +23,7 @@ namespace ReadPixelImage
 
         #region Variables
         CaptureForm captureForm;
-        
+
         ScreenReader screenReader = new ScreenReader();
         Bitmap currentImage;
         CaptureSetting currentCaptureSetting;
@@ -45,7 +45,9 @@ namespace ReadPixelImage
         string settingsDocPath;
         string imagesDocPath;
         string captureSettingsDocPath;
-        string pixelsSettingsDocPath;
+        string readedPixelsSettingsDocPath;
+        const string CAPTURE_SETTINGS_FILENAME = "CaptureSettings.xlsx";
+        const string RPIXELS_SETTINGS_FILENAME = "ReadedPixelsSettings.xlsx" ;
 
         #endregion
 
@@ -67,9 +69,9 @@ namespace ReadPixelImage
             settingsDocPath = publicDocPath + @"\ReadPixelImage\Settings";
             imagesDocPath = publicDocPath + @"\ReadPixelImage\Images";
             captureSettingsDocPath = settingsDocPath + @"\Capture";
-            pixelsSettingsDocPath = settingsDocPath + @"\Pixels";
+            readedPixelsSettingsDocPath = settingsDocPath + @"\Pixels";
 
-            CreateOrLoadSettingsDirectory();
+            CreateAndLoadSettingsDirectory();
             LoadImages();
             LoadCaptureSettings();
             LoadReadedPixelsSetings();
@@ -94,13 +96,10 @@ namespace ReadPixelImage
         #endregion
 
         #region Methods
-        private void CreateOrLoadSettingsDirectory()
+        private void CreateAndLoadSettingsDirectory()
         {
             string[] files = { "" };
-            if (Directory.Exists(publicDocPath))
-            {
-                files = Directory.GetDirectories(publicDocPath);
-            }
+            files = Directory.GetDirectories(publicDocPath, "ReadPixelImage");
 
             if (files == null || files.Count() == 0
                 || !files.Contains(publicDocPath + "\\ReadPixelImage"))
@@ -108,7 +107,7 @@ namespace ReadPixelImage
                 Directory.CreateDirectory(publicDocPath + "\\ReadPixelImage");
                 Directory.CreateDirectory(settingsDocPath);
                 Directory.CreateDirectory(captureSettingsDocPath);
-                Directory.CreateDirectory(pixelsSettingsDocPath);
+                Directory.CreateDirectory(readedPixelsSettingsDocPath);
                 Directory.CreateDirectory(imagesDocPath);
                 Directory.CreateDirectory(imagesDocPath + "\\Loaded");
                 Directory.CreateDirectory(imagesDocPath + "\\Saved");
@@ -116,7 +115,19 @@ namespace ReadPixelImage
 
             }
 
-            Console.WriteLine();
+            files = Directory.GetFiles(readedPixelsSettingsDocPath, "Settings", SearchOption.AllDirectories);
+
+            Workbook readedPixselSettWBook = new Workbook();
+            Workbook captureSettWBook = new Workbook();
+            DataSet ds = new DataSet();
+            ds.Tables.Add("Default Settings");
+
+            if(files.Count() == 0 || !files.Contains("ReadedPixelsSettings") || !files.Contains("CaptureSettings"))
+            {
+                DataSetHelper.CreateWorkbook(captureSettingsDocPath + "\\CaptureSettings.xls", ds );
+                DataSetHelper.CreateWorkbook(readedPixelsSettingsDocPath + "\\ReadedPixelsSettings.xls", ds);
+                    
+            }
 
         }
         private void CreateOrLoadExcelFiles()
@@ -255,7 +266,7 @@ namespace ReadPixelImage
             savedPixelSettingsCb.SelectedIndex = 1;
         }
 
-      
+
         #endregion
         #region Event Handler
 
