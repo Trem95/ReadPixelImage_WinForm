@@ -9,6 +9,7 @@ namespace ReadPixelImage.CaptureReadSettings
 {
     public class ReadedPixelsSettings
     {
+        public ReadedPixelsSettings() {}
         public ReadedPixelsSettings(int id, string name, List<Rectangle> rects = null) 
         {
             Id = id;

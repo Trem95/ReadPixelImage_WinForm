@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ExcelLibrary;
 using ExcelLibrary.SpreadSheet;
+using System.Reflection;
 
 namespace ReadPixelImage
 {
@@ -33,8 +34,6 @@ namespace ReadPixelImage
         Dictionary<int, CaptureSetting> captureSettings;
         Dictionary<int, ReadedPixelsSettings> readedPixSettings;
 
-        int persCaptSettingsCdw = 1;
-        int persPixelsSettingsCdw = 1;
         int newCaptureSettingsId;
         int newPixReadedSettingsId;
 
@@ -79,9 +78,9 @@ namespace ReadPixelImage
             captureSettingsDocPath = settingsDocPath + @"\Capture";
             readedPixelsSettingsDocPath = settingsDocPath + @"\Pixels";
 
-            CreateAndLoadSettingsDirectory();
+            ManageSettingsAndDirectories();
             LoadImages();
-            LoadCaptureSettings();
+            LoadSettings();
             LoadReadedPixelsSetings();
             captureForm = new CaptureForm();
             captureForm.Show();
@@ -104,7 +103,7 @@ namespace ReadPixelImage
         #endregion
 
         #region Methods
-        private void CreateAndLoadSettingsDirectory()
+        private void ManageSettingsAndDirectories()
         {
             string[] files = { "" };
             files = Directory.GetDirectories(publicDocPath, "ReadPixelImage");
@@ -152,10 +151,10 @@ namespace ReadPixelImage
                 captureSettingsWorkbooks.Save(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
             }
 
-            captureSettingsWorkbooks = Workbook.Load(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
-            readedPixelsSettingsWorkbook = Workbook.Load(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
-
             #region TEST CAPTURE PIXELS READING SETTINGS
+
+            //captureSettingsWorkbooks = Workbook.Load(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
+            //readedPixelsSettingsWorkbook = Workbook.Load(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
 
             //captureSettings.Add(
             //    0,
@@ -203,7 +202,93 @@ namespace ReadPixelImage
             //    CreateNewSettings(kvp.Value);
             //}
 
+            //readedPixSettings.Add(0, new ReadedPixelsSettings()
+            //{
+            //    Id = 0,
+            //    Name = "Test Rectangle 2",
+            //    Rectangles = new List<Rectangle>() { new Rectangle(100, 10, 50, 2), new Rectangle(45, 20, 34, 35) },
+            //}) ;
+
+            //CreateNewSettings(readedPixSettings.FirstOrDefault().Value);
             #endregion
+
+        }
+
+        private void LoadSettings()
+        {
+            //Load Excell Workbooks from xls document in Public
+            captureSettingsWorkbooks = Workbook.Load(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
+            readedPixelsSettingsWorkbook = Workbook.Load(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
+
+            //For each row of first workSheet, extract the data and parse it in Capture / ReadingPixel Setting
+            for (int i = 1; i < captureSettingsWorkbooks.Worksheets[0].Cells.Rows.Count(); i++)
+            {
+                Row rowToRead = captureSettingsWorkbooks.Worksheets[0].Cells.Rows[i];
+                //xls files are construct like the models 
+                CaptureSetting captSettToAdd = new CaptureSetting()
+                {
+                    Id = int.Parse(rowToRead.GetCell(0).ToString()),
+                    Name = rowToRead.GetCell(1).ToString(),
+                    X = int.Parse(rowToRead.GetCell(2).ToString()),
+                    Y = int.Parse(rowToRead.GetCell(3).ToString()),
+                    Width = int.Parse(rowToRead.GetCell(4).ToString()),
+                    Height = int.Parse(rowToRead.GetCell(5).ToString())
+                };
+
+                //Add the settings to the dictionnary and the comboBox
+                captureSettings.Add(captSettToAdd.Id, captSettToAdd);
+                savedCaptureSettingsCb.Items.Add(captSettToAdd);
+
+                //Saved last Id in order to save new settings later
+                if(i == captureSettingsWorkbooks.Worksheets[0].Cells.Rows.Count())
+                    newCaptureSettingsId = captSettToAdd.Id + 1;
+            }
+
+            for (int i = 1; i < readedPixelsSettingsWorkbook.Worksheets[0].Cells.Rows.Count(); i++)
+            {
+                Row rowToRead = readedPixelsSettingsWorkbook.Worksheets[0].Cells.Rows[i];
+                List<Rectangle> rectanglesToAdd = new List<Rectangle>();
+                //Each colonne whos index is <2 is a rectangle
+                for (int j = 2; j <= readedPixelsSettingsWorkbook.Worksheets[0].Cells.Rows[i].LastColIndex ; j++)
+                {
+                    //Rectangle data are stocked in one string with "|" as separator ex : "42|47|234|23"
+                    string[] dataString = readedPixelsSettingsWorkbook.Worksheets[0].Cells.Rows[i].GetCell(j).ToString().Split('|');
+                    int[] dataInt = new int[dataString.Length];
+
+                    //Parse the string into int //TODO add exception for that kind of case ( bad entry in excel files )
+                    for (int k = 0; k < dataString.Length; k++)
+                        dataInt[k] = int.Parse(dataString[k]);
+
+                    rectanglesToAdd.Add(new Rectangle(dataInt[0], dataInt[1], dataInt[2], dataInt[3]));
+                    Console.WriteLine();
+                }
+
+                ReadedPixelsSettings readedPixSettToAdd = new ReadedPixelsSettings()
+                {
+                    Id = int.Parse(rowToRead.GetCell(0).ToString()),
+                    Name = rowToRead.GetCell(1).ToString(),
+                    Rectangles = rectanglesToAdd,
+                };
+
+                readedPixSettings.Add(readedPixSettToAdd.Id, readedPixSettToAdd);
+
+                if (i == readedPixelsSettingsWorkbook.Worksheets[0].Cells.Rows.Count())
+                    newPixReadedSettingsId = readedPixSettToAdd.Id + 1;
+            }
+            
+            currentCaptureSetting = captureSettings[1];
+            savedCaptureSettingsCb.SelectedIndex = 1;//Set on default 
+            savedPixelSettingsCb.SelectedIndex = 0;
+
+
+            foreach (KeyValuePair<int, ReadedPixelsSettings> kvp in readedPixSettings)
+            {
+                savedPixelSettingsCb.Items.Add(kvp.Value);
+            }
+
+
+            currentReadedPixelsSettings = readedPixSettings[1];
+            savedPixelSettingsCb.SelectedIndex = 1;
         }
         private void CreateNewSettings(CaptureSetting captureSett)
         {
@@ -239,7 +324,13 @@ namespace ReadPixelImage
             cells.CreateCell(rowCpt, 0, readedPixelsSett.Id, 0);
             cells.CreateCell(rowCpt, 1, readedPixelsSett.Name, 0);
 
-            //for (int i = readedPixelsSett.Rectangles.Count;)//TODO make celle for every rectangle location
+            for (int i = 0; i < readedPixelsSett.Rectangles.Count(); i++)
+            {
+                Rectangle rectToAdd = readedPixelsSett.Rectangles[i];
+                cells.CreateCell(rowCpt, 2 + i, $"{rectToAdd.X}|{rectToAdd.Y}|{rectToAdd.Width}|{rectToAdd.Height}",0);
+            }
+
+            readedPixelsSettingsWorkbook.Save(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
         }
 
 
@@ -274,56 +365,6 @@ namespace ReadPixelImage
 
             this.WindowState = FormWindowState.Normal;
         }
-
-        private void LoadCaptureSettings()//TODO Create CSV (or other) file to load parameterized settings
-        {
-            
-
-            newCaptureSettingsId = captureSettings.Last().Value.Id++;
-
-            foreach (KeyValuePair<int, CaptureSetting> kvp in captureSettings)
-            {
-                savedCaptureSettingsCb.Items.Add(kvp.Value);
-            }
-
-            currentCaptureSetting = captureSettings[1];
-            savedCaptureSettingsCb.SelectedIndex = 1;//Set on default 
-        }
-
-        private void LoadReadedPixelsSetings()
-        {
-            readedPixSettings.Add(
-                0,
-                new ReadedPixelsSettings(
-                    0,
-                    "Create Settings "
-                    ));
-
-            readedPixSettings.Add(
-                1,
-                new ReadedPixelsSettings(
-                    1,
-                    "Default "
-                    ));
-
-            readedPixSettings.Add(
-                2,
-                new ReadedPixelsSettings(
-                    2,
-                    "Mafia II Life Settings"
-                    ));
-
-            newPixReadedSettingsId = readedPixSettings.Last().Value.Id++;
-
-            foreach (KeyValuePair<int, ReadedPixelsSettings> kvp in readedPixSettings)
-            {
-                savedPixelSettingsCb.Items.Add(kvp.Value);
-            }
-
-            currentReadedPixelsSettings = readedPixSettings[1];
-            savedPixelSettingsCb.SelectedIndex = 1;
-        }
-
 
         #endregion
         #region Event Handler
