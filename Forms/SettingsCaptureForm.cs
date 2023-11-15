@@ -39,15 +39,15 @@ namespace ReadPixelImage
         int newPixReadedSettingsId;
 
         Workbook captureSettingsWorkbooks;
-        Workbook pixelsSettingsWorkbook;
+        Workbook readedPixelsSettingsWorkbook;
 
         string publicDocPath;
         string settingsDocPath;
         string imagesDocPath;
         string captureSettingsDocPath;
         string readedPixelsSettingsDocPath;
-        const string CAPTURE_SETTINGS_FILENAME = "CaptureSettings.xlsx";
-        const string RPIXELS_SETTINGS_FILENAME = "ReadedPixelsSettings.xlsx" ;
+        const string CAPTURE_SETTINGS_FILENAME = "\\CaptureSettings.xls";
+        const string READED_PIXELS_SETTINGS_FILENAME = "\\ReadedPixelsSettings.xls";
 
         #endregion
 
@@ -64,6 +64,14 @@ namespace ReadPixelImage
             captureSettings = new Dictionary<int, CaptureSetting>();
             readedPixSettings = new Dictionary<int, ReadedPixelsSettings>();
             currentCaptureSetting = new CaptureSetting();
+
+            captureSettingsWorkbooks = new Workbook();
+            readedPixelsSettingsWorkbook = new Workbook();
+
+            yCaptureNb.Maximum = Screen.PrimaryScreen.Bounds.Height;
+            xCaptureNb.Maximum = Screen.PrimaryScreen.Bounds.Width;
+            heightCaptureNb.Maximum = Screen.PrimaryScreen.Bounds.Height;
+            widthCaptureNb.Maximum = Screen.PrimaryScreen.Bounds.Width;
 
             publicDocPath = Environment.ExpandEnvironmentVariables(@"%PUBLIC%\Documents");
             settingsDocPath = publicDocPath + @"\ReadPixelImage\Settings";
@@ -115,32 +123,125 @@ namespace ReadPixelImage
 
             }
 
-            files = Directory.GetFiles(readedPixelsSettingsDocPath, "Settings", SearchOption.AllDirectories);
-
-            Workbook readedPixselSettWBook = new Workbook();
-            Workbook captureSettWBook = new Workbook();
             DataSet ds = new DataSet();
             ds.Tables.Add("Default Settings");
 
-            if(files.Count() == 0 || !files.Contains("ReadedPixelsSettings") || !files.Contains("CaptureSettings"))
+            files = Directory.GetFiles(readedPixelsSettingsDocPath);
+            if (!files.Contains(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME))
             {
-                DataSetHelper.CreateWorkbook(captureSettingsDocPath + "\\CaptureSettings.xls", ds );
-                DataSetHelper.CreateWorkbook(readedPixelsSettingsDocPath + "\\ReadedPixelsSettings.xls", ds);
-                    
+                DataSetHelper.CreateWorkbook(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME, ds);
+                readedPixelsSettingsWorkbook = Workbook.Load(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
+                readedPixelsSettingsWorkbook.Worksheets[0].Cells[0, 0] = new Cell("ID");
+                readedPixelsSettingsWorkbook.Worksheets[0].Cells[0, 1] = new Cell("NAME");
+                readedPixelsSettingsWorkbook.Worksheets[0].Cells[0, 2] = new Cell("RECT COORDS");
+
+                readedPixelsSettingsWorkbook.Save(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
+            }
+            files = Directory.GetFiles(captureSettingsDocPath);
+            if (!files.Contains(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME))
+            {
+                DataSetHelper.CreateWorkbook(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME, ds);
+                captureSettingsWorkbooks = Workbook.Load(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
+                captureSettingsWorkbooks.Worksheets[0].Cells[0, 0] = new Cell("ID");
+                captureSettingsWorkbooks.Worksheets[0].Cells[0, 1] = new Cell("Name");
+                captureSettingsWorkbooks.Worksheets[0].Cells[0, 2] = new Cell("X COORD");
+                captureSettingsWorkbooks.Worksheets[0].Cells[0, 3] = new Cell("Y COORD");
+                captureSettingsWorkbooks.Worksheets[0].Cells[0, 4] = new Cell("WIDTH");
+                captureSettingsWorkbooks.Worksheets[0].Cells[0, 5] = new Cell("HEIGHT");
+
+                captureSettingsWorkbooks.Save(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
             }
 
+            captureSettingsWorkbooks = Workbook.Load(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
+            readedPixelsSettingsWorkbook = Workbook.Load(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
+
+            #region TEST CAPTURE PIXELS READING SETTINGS
+
+            //captureSettings.Add(
+            //    0,
+            //    new CaptureSetting(0, "Create Settings",
+            //        0,
+            //        0,
+            //        0,
+            //        0));
+
+            //captureSettings.Add(
+            //    1,
+            //    new CaptureSetting(1, "Default",
+            //        0,
+            //        0,
+            //        Screen.PrimaryScreen.Bounds.Width,
+            //        Screen.PrimaryScreen.Bounds.Height));
+
+            //captureSettings.Add(
+            //    2,
+            //    new CaptureSetting(2, "Top Screen",
+            //        0,
+            //        0,
+            //        Screen.PrimaryScreen.Bounds.Width,
+            //        Screen.PrimaryScreen.Bounds.Height / 4));
+
+            //captureSettings.Add(
+            //    3,
+            //    new CaptureSetting(3, "Bottom Screen",
+            //        0,
+            //        Screen.PrimaryScreen.Bounds.Height - (Screen.PrimaryScreen.Bounds.Height / 4),
+            //        Screen.PrimaryScreen.Bounds.Width,
+            //        Screen.PrimaryScreen.Bounds.Height / 4));
+
+            //captureSettings.Add(
+            //    4,
+            //    new CaptureSetting(4, "Mafia II Health",
+            //        Screen.PrimaryScreen.Bounds.Width - (Screen.PrimaryScreen.Bounds.Width / 4),
+            //        Screen.PrimaryScreen.Bounds.Height - (Screen.PrimaryScreen.Bounds.Height / 3),
+            //        Screen.PrimaryScreen.Bounds.Width / 4,
+            //        Screen.PrimaryScreen.Bounds.Height / 3));
+
+
+            //foreach (KeyValuePair<int, CaptureSetting> kvp in captureSettings)
+            //{
+            //    CreateNewSettings(kvp.Value);
+            //}
+
+            #endregion
         }
-        private void CreateOrLoadExcelFiles()
+        private void CreateNewSettings(CaptureSetting captureSett)
         {
 
+            //Cells[0, 0] = "ID"
+            //Cells[0, 1] = "Name"
+            //Cells[0, 2] = "X COORD"
+            //Cells[0, 3] = "Y COORD"
+            //Cells[0, 4] = "WIDTH"
+            //Cells[0, 5] = "HEIGHT"
+            CellCollection cells = captureSettingsWorkbooks.Worksheets[0].Cells;
+            int rowCpt = cells.Rows.Count();
+
+            cells.CreateCell(rowCpt, 0, captureSett.Id,0);
+            cells.CreateCell(rowCpt, 1, captureSett.Name,0);
+            cells.CreateCell(rowCpt, 2, captureSett.X,0);
+            cells.CreateCell(rowCpt, 3, captureSett.Y, 0);
+            cells.CreateCell(rowCpt, 4, captureSett.Width, 0);
+            cells.CreateCell(rowCpt, 5, captureSett.Height, 0);
+
+            captureSettingsWorkbooks.Save(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
         }
 
-        private void ReadSettingsExcelFiles()
+        private void CreateNewSettings(ReadedPixelsSettings readedPixelsSett)
         {
-            Workbook settingsWorkbook = new Workbook();
-            Workbook.Load("");
-            //settingsWorkbook.
+            //Cells[0, 0] = new Cell("ID");
+            //Cells[0, 1] = new Cell("NAME");
+            //Cells[0, 2] = new Cell("RECT COORDS");
+
+            CellCollection cells = readedPixelsSettingsWorkbook.Worksheets[0].Cells;
+            int rowCpt = cells.Rows.Count();
+
+            cells.CreateCell(rowCpt, 0, readedPixelsSett.Id, 0);
+            cells.CreateCell(rowCpt, 1, readedPixelsSett.Name, 0);
+
+            //for (int i = readedPixelsSett.Rectangles.Count;)//TODO make celle for every rectangle location
         }
+
 
         private void LoadImages()
         {
@@ -176,50 +277,7 @@ namespace ReadPixelImage
 
         private void LoadCaptureSettings()//TODO Create CSV (or other) file to load parameterized settings
         {
-            yCaptureNb.Maximum = Screen.PrimaryScreen.Bounds.Height;
-            xCaptureNb.Maximum = Screen.PrimaryScreen.Bounds.Width;
-            heightCaptureNb.Maximum = Screen.PrimaryScreen.Bounds.Height;
-            widthCaptureNb.Maximum = Screen.PrimaryScreen.Bounds.Width;
-
-            captureSettings.Add(
-                0,
-                new CaptureSetting(0, "Create Settings",
-                    0,
-                    0,
-                    0,
-                    0));
-
-            captureSettings.Add(
-                1,
-                new CaptureSetting(1, "Default",
-                    0,
-                    0,
-                    Screen.PrimaryScreen.Bounds.Width,
-                    Screen.PrimaryScreen.Bounds.Height));
-
-            captureSettings.Add(
-                2,
-                new CaptureSetting(2, "Top Screen",
-                    0,
-                    0,
-                    Screen.PrimaryScreen.Bounds.Width,
-                    Screen.PrimaryScreen.Bounds.Height / 4));
-
-            captureSettings.Add(
-                3,
-                new CaptureSetting(3, "Bottom Screen",
-                    0,
-                    Screen.PrimaryScreen.Bounds.Height - (Screen.PrimaryScreen.Bounds.Height / 4),
-                    Screen.PrimaryScreen.Bounds.Width,
-                    Screen.PrimaryScreen.Bounds.Height / 4));
-
-            captureSettings.Add(
-                4,
-                new CaptureSetting(4, "Mafia II Health",
-                    Screen.PrimaryScreen.Bounds.Width - (Screen.PrimaryScreen.Bounds.Width / 4),
-                    Screen.PrimaryScreen.Bounds.Height - (Screen.PrimaryScreen.Bounds.Height / 3),
-                    Screen.PrimaryScreen.Bounds.Width / 4,
-                    Screen.PrimaryScreen.Bounds.Height / 3));
+            
 
             newCaptureSettingsId = captureSettings.Last().Value.Id++;
 
