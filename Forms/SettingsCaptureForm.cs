@@ -81,7 +81,6 @@ namespace ReadPixelImage
             ManageSettingsAndDirectories();
             LoadImages();
             LoadSettings();
-            LoadReadedPixelsSetings();
             captureForm = new CaptureForm();
             captureForm.Show();
 
@@ -89,7 +88,7 @@ namespace ReadPixelImage
         #endregion
 
         #region Properties
-
+        //Properties create to have easier access to NumUpDown cotnrol
         public int XCoordCapture { get { return (int)xCaptureNb.Value; } }
         public int YCoordCapture { get { return (int)yCaptureNb.Value; } }
         public int HeightCoordCapture { get { return (int)heightCaptureNb.Value; } }
@@ -103,6 +102,9 @@ namespace ReadPixelImage
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Create the needed directories in Public folder
+        /// </summary>
         private void ManageSettingsAndDirectories()
         {
             string[] files = { "" };
@@ -213,7 +215,9 @@ namespace ReadPixelImage
             #endregion
 
         }
-
+        /// <summary>
+        /// Load the settings provided in the .xls files ( Public folder )
+        /// </summary>
         private void LoadSettings()
         {
             //Load Excell Workbooks from xls document in Public
@@ -290,6 +294,10 @@ namespace ReadPixelImage
             currentReadedPixelsSettings = readedPixSettings[1];
             savedPixelSettingsCb.SelectedIndex = 1;
         }
+        /// <summary>
+        /// Create a new Capture Settings and save it in the CaptureSettings.xls files
+        /// </summary>
+        /// <param name="captureSett"></param>
         private void CreateNewSettings(CaptureSetting captureSett)
         {
 
@@ -312,6 +320,10 @@ namespace ReadPixelImage
             captureSettingsWorkbooks.Save(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
         }
 
+        /// <summary>
+        /// Create a new Capture Settings and save it in the CaptureSettings.xls files
+        /// </summary>
+        /// <param name="readedPixelsSett"></param>
         private void CreateNewSettings(ReadedPixelsSettings readedPixelsSett)
         {
             //Cells[0, 0] = new Cell("ID");
@@ -333,7 +345,9 @@ namespace ReadPixelImage
             readedPixelsSettingsWorkbook.Save(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
         }
 
-
+        /// <summary>
+        /// Load the images presents in Public folders
+        /// </summary>
         private void LoadImages()
         {
             string path = @"C:\Users\antoi\Pictures\Screenshots\ReadPixelImage\ImageToRead";
@@ -349,6 +363,9 @@ namespace ReadPixelImage
             }
         }
 
+        /// <summary>
+        /// Display the current image or screenshot with the settings provided
+        /// </summary>
         private void DisplayCapture()
         {
             Bitmap cropImgToShow = screenReader.GetParametredCapture(currentCaptureSetting, currentImage);
@@ -403,26 +420,28 @@ namespace ReadPixelImage
 
         private void drawButton_Click(object sender, EventArgs e)
         {
-            Rectangle rectangle = new Rectangle(XCoordPixelsReaded, YCoordPixelsReaded, WidthCoordPixelsReaded, HeightCoordPixelsReaded);
-            if (savedPixelSettingsCb.SelectedIndex == 0)//Set on Create Settings
-            {
+            //TODO manage the behavior of ReadedPixSettings
 
-                ReadedPixelsSettings newReadedPixSett = new ReadedPixelsSettings(newPixReadedSettingsId, "New Settings " + persPixelsSettingsCdw, new List<Rectangle>() { rectangle });
-                readedPixSettings.Add(newReadedPixSett.Id, newReadedPixSett);
-                savedPixelSettingsCb.Items.Add(newReadedPixSett);
-                currentReadedPixelsSettings = readedPixSettings.Values.Last();
-                savedPixelSettingsCb.SelectedIndex = savedPixelSettingsCb.Items.Count - 1;
+            //Rectangle rectangle = new Rectangle(XCoordPixelsReaded, YCoordPixelsReaded, WidthCoordPixelsReaded, HeightCoordPixelsReaded);
+            //if (savedPixelSettingsCb.SelectedIndex == 0)//Set on Create Settings
+            //{
 
-                newPixReadedSettingsId++;
-                persPixelsSettingsCdw++;
+            //    ReadedPixelsSettings newReadedPixSett = new ReadedPixelsSettings(newPixReadedSettingsId, "New Settings " + persPixelsSettingsCdw, new List<Rectangle>() { rectangle });
+            //    readedPixSettings.Add(newReadedPixSett.Id, newReadedPixSett);
+            //    savedPixelSettingsCb.Items.Add(newReadedPixSett);
+            //    currentReadedPixelsSettings = readedPixSettings.Values.Last();
+            //    savedPixelSettingsCb.SelectedIndex = savedPixelSettingsCb.Items.Count - 1;
 
-                captureForm.SetAndDrawRectangles(newReadedPixSett.Rectangles);
-            }
-            else
-            {
-                currentReadedPixelsSettings.Rectangles.Add(rectangle);
-                captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles);
-            }
+            //    newPixReadedSettingsId++;
+            //    persPixelsSettingsCdw++;
+
+            //    captureForm.SetAndDrawRectangles(newReadedPixSett.Rectangles);
+            //}
+            //else
+            //{
+            //    currentReadedPixelsSettings.Rectangles.Add(rectangle);
+            //    captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles);
+            //}
         }
 
         private void savedPixelSettingsCb_SelectionChangeCommitted(object sender, EventArgs e)
@@ -432,14 +451,25 @@ namespace ReadPixelImage
                 captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles);
         }
 
-        private void savedCaptureSettingsBtn_Click(object sender, EventArgs e)
+        private void applyChosenSettingsBtn_Click(object sender, EventArgs e)
         {
-            CaptureSetting newCaptSett = new CaptureSetting(newCaptureSettingsId, "New Settings" + persCaptSettingsCdw, XCoordCapture, YCoordCapture, WidthCoordCapture, HeightCoordCapture);
-            captureSettings.Add(newCaptSett.Id, newCaptSett);
-            savedCaptureSettingsCb.Items.Add(newCaptSett);
-            savedCaptureSettingsCb.SelectedItem = "New Settings " + persCaptSettingsCdw;
-            persCaptSettingsCdw++;
-            newCaptureSettingsId++;
+            currentCaptureSetting = savedCaptureSettingsCb.SelectedItem as CaptureSetting;
+            DisplayCapture();
+        }
+
+        private void createNewPixSettBtn_Click(object sender, EventArgs e)
+        {
+            //TODO Manage creation of Pix Settings with excell features
+        }
+
+        private void saveCaptureSettBtn_Click(object sender, EventArgs e)
+        {
+            //TODO Create Capture Settings and write it in excel files
+        }
+
+        private void applyPixSettBtn_Click(object sender, EventArgs e)
+        {
+            //TODO Create behavior to show the informations and draws the rectangle from readedPixelsSettings
         }
     }
 }

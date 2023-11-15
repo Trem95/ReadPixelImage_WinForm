@@ -33,6 +33,8 @@
             this.loadedImgLbl = new System.Windows.Forms.Label();
             this.settingsGb = new System.Windows.Forms.GroupBox();
             this.pixelsReadedGb = new System.Windows.Forms.GroupBox();
+            this.applyPixSettBtn = new System.Windows.Forms.Button();
+            this.createNewPixSettBtn = new System.Windows.Forms.Button();
             this.savedPixelSettingsLb = new System.Windows.Forms.Label();
             this.savedPixelSettingsCb = new System.Windows.Forms.ComboBox();
             this.deleteRectangleButton = new System.Windows.Forms.Button();
@@ -48,7 +50,9 @@
             this.heightPixelsNb = new System.Windows.Forms.NumericUpDown();
             this.xPixelsLbl = new System.Windows.Forms.Label();
             this.captureSettingsGb = new System.Windows.Forms.GroupBox();
-            this.applySettingsBtn = new System.Windows.Forms.Button();
+            this.saveCaptureSettBtn = new System.Windows.Forms.Button();
+            this.applyChosenSettingsBtn = new System.Windows.Forms.Button();
+            this.applyCaptureSettingBtn = new System.Windows.Forms.Button();
             this.savedCaptureSettingsLb = new System.Windows.Forms.Label();
             this.savedCaptureSettingsCb = new System.Windows.Forms.ComboBox();
             this.yCaptureLbl = new System.Windows.Forms.Label();
@@ -60,7 +64,6 @@
             this.heightCaptureNb = new System.Windows.Forms.NumericUpDown();
             this.xCaptureLbl = new System.Windows.Forms.Label();
             this.loadedImgCb = new System.Windows.Forms.ComboBox();
-            this.button1 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.settingsGb.SuspendLayout();
             this.pixelsReadedGb.SuspendLayout();
@@ -84,7 +87,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(1, 1);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1167, 243);
+            this.panel1.Size = new System.Drawing.Size(1167, 393);
             this.panel1.TabIndex = 0;
             // 
             // captureBtn
@@ -123,13 +126,15 @@
             this.settingsGb.Location = new System.Drawing.Point(381, 0);
             this.settingsGb.Margin = new System.Windows.Forms.Padding(10);
             this.settingsGb.Name = "settingsGb";
-            this.settingsGb.Size = new System.Drawing.Size(786, 243);
+            this.settingsGb.Size = new System.Drawing.Size(786, 393);
             this.settingsGb.TabIndex = 9;
             this.settingsGb.TabStop = false;
             this.settingsGb.Text = "Settings";
             // 
             // pixelsReadedGb
             // 
+            this.pixelsReadedGb.Controls.Add(this.applyPixSettBtn);
+            this.pixelsReadedGb.Controls.Add(this.createNewPixSettBtn);
             this.pixelsReadedGb.Controls.Add(this.savedPixelSettingsLb);
             this.pixelsReadedGb.Controls.Add(this.savedPixelSettingsCb);
             this.pixelsReadedGb.Controls.Add(this.deleteRectangleButton);
@@ -147,16 +152,36 @@
             this.pixelsReadedGb.Dock = System.Windows.Forms.DockStyle.Right;
             this.pixelsReadedGb.Location = new System.Drawing.Point(401, 19);
             this.pixelsReadedGb.Name = "pixelsReadedGb";
-            this.pixelsReadedGb.Size = new System.Drawing.Size(382, 221);
+            this.pixelsReadedGb.Size = new System.Drawing.Size(382, 371);
             this.pixelsReadedGb.TabIndex = 15;
             this.pixelsReadedGb.TabStop = false;
             this.pixelsReadedGb.Text = "Pixels Readed";
+            // 
+            // applyPixSettBtn
+            // 
+            this.applyPixSettBtn.Location = new System.Drawing.Point(11, 330);
+            this.applyPixSettBtn.Name = "applyPixSettBtn";
+            this.applyPixSettBtn.Size = new System.Drawing.Size(104, 28);
+            this.applyPixSettBtn.TabIndex = 26;
+            this.applyPixSettBtn.Text = "Apply";
+            this.applyPixSettBtn.UseVisualStyleBackColor = true;
+            this.applyPixSettBtn.Click += new System.EventHandler(this.applyPixSettBtn_Click);
+            // 
+            // createNewPixSettBtn
+            // 
+            this.createNewPixSettBtn.Location = new System.Drawing.Point(261, 330);
+            this.createNewPixSettBtn.Name = "createNewPixSettBtn";
+            this.createNewPixSettBtn.Size = new System.Drawing.Size(104, 28);
+            this.createNewPixSettBtn.TabIndex = 25;
+            this.createNewPixSettBtn.Text = "Create";
+            this.createNewPixSettBtn.UseVisualStyleBackColor = true;
+            this.createNewPixSettBtn.Click += new System.EventHandler(this.createNewPixSettBtn_Click);
             // 
             // savedPixelSettingsLb
             // 
             this.savedPixelSettingsLb.AutoSize = true;
             this.savedPixelSettingsLb.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.savedPixelSettingsLb.Location = new System.Drawing.Point(17, 112);
+            this.savedPixelSettingsLb.Location = new System.Drawing.Point(12, 285);
             this.savedPixelSettingsLb.Name = "savedPixelSettingsLb";
             this.savedPixelSettingsLb.Size = new System.Drawing.Size(106, 14);
             this.savedPixelSettingsLb.TabIndex = 24;
@@ -166,7 +191,7 @@
             // 
             this.savedPixelSettingsCb.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.savedPixelSettingsCb.FormattingEnabled = true;
-            this.savedPixelSettingsCb.Location = new System.Drawing.Point(16, 129);
+            this.savedPixelSettingsCb.Location = new System.Drawing.Point(11, 302);
             this.savedPixelSettingsCb.Name = "savedPixelSettingsCb";
             this.savedPixelSettingsCb.Size = new System.Drawing.Size(354, 22);
             this.savedPixelSettingsCb.TabIndex = 23;
@@ -197,9 +222,9 @@
             this.pixelReadedRectsListBox.FormattingEnabled = true;
             this.pixelReadedRectsListBox.HorizontalScrollbar = true;
             this.pixelReadedRectsListBox.ItemHeight = 16;
-            this.pixelReadedRectsListBox.Location = new System.Drawing.Point(16, 158);
+            this.pixelReadedRectsListBox.Location = new System.Drawing.Point(11, 113);
             this.pixelReadedRectsListBox.Name = "pixelReadedRectsListBox";
-            this.pixelReadedRectsListBox.Size = new System.Drawing.Size(354, 52);
+            this.pixelReadedRectsListBox.Size = new System.Drawing.Size(354, 164);
             this.pixelReadedRectsListBox.TabIndex = 14;
             // 
             // yPixelsLbl
@@ -286,8 +311,9 @@
             // 
             // captureSettingsGb
             // 
-            this.captureSettingsGb.Controls.Add(this.button1);
-            this.captureSettingsGb.Controls.Add(this.applySettingsBtn);
+            this.captureSettingsGb.Controls.Add(this.saveCaptureSettBtn);
+            this.captureSettingsGb.Controls.Add(this.applyChosenSettingsBtn);
+            this.captureSettingsGb.Controls.Add(this.applyCaptureSettingBtn);
             this.captureSettingsGb.Controls.Add(this.savedCaptureSettingsLb);
             this.captureSettingsGb.Controls.Add(this.savedCaptureSettingsCb);
             this.captureSettingsGb.Controls.Add(this.yCaptureLbl);
@@ -301,20 +327,40 @@
             this.captureSettingsGb.Dock = System.Windows.Forms.DockStyle.Left;
             this.captureSettingsGb.Location = new System.Drawing.Point(3, 19);
             this.captureSettingsGb.Name = "captureSettingsGb";
-            this.captureSettingsGb.Size = new System.Drawing.Size(392, 221);
+            this.captureSettingsGb.Size = new System.Drawing.Size(392, 371);
             this.captureSettingsGb.TabIndex = 14;
             this.captureSettingsGb.TabStop = false;
             this.captureSettingsGb.Text = "Capture";
             // 
-            // applySettingsBtn
+            // saveCaptureSettBtn
             // 
-            this.applySettingsBtn.Location = new System.Drawing.Point(109, 79);
-            this.applySettingsBtn.Name = "applySettingsBtn";
-            this.applySettingsBtn.Size = new System.Drawing.Size(122, 28);
-            this.applySettingsBtn.TabIndex = 14;
-            this.applySettingsBtn.Text = "Apply";
-            this.applySettingsBtn.UseVisualStyleBackColor = true;
-            this.applySettingsBtn.Click += new System.EventHandler(this.applySettingsBtn_Click);
+            this.saveCaptureSettBtn.Location = new System.Drawing.Point(179, 79);
+            this.saveCaptureSettBtn.Name = "saveCaptureSettBtn";
+            this.saveCaptureSettBtn.Size = new System.Drawing.Size(122, 28);
+            this.saveCaptureSettBtn.TabIndex = 24;
+            this.saveCaptureSettBtn.Text = "Save";
+            this.saveCaptureSettBtn.UseVisualStyleBackColor = true;
+            this.saveCaptureSettBtn.Click += new System.EventHandler(this.saveCaptureSettBtn_Click);
+            // 
+            // applyChosenSettingsBtn
+            // 
+            this.applyChosenSettingsBtn.Location = new System.Drawing.Point(12, 183);
+            this.applyChosenSettingsBtn.Name = "applyChosenSettingsBtn";
+            this.applyChosenSettingsBtn.Size = new System.Drawing.Size(122, 28);
+            this.applyChosenSettingsBtn.TabIndex = 23;
+            this.applyChosenSettingsBtn.Text = "Apply";
+            this.applyChosenSettingsBtn.UseVisualStyleBackColor = true;
+            this.applyChosenSettingsBtn.Click += new System.EventHandler(this.applyChosenSettingsBtn_Click);
+            // 
+            // applyCaptureSettingBtn
+            // 
+            this.applyCaptureSettingBtn.Location = new System.Drawing.Point(16, 79);
+            this.applyCaptureSettingBtn.Name = "applyCaptureSettingBtn";
+            this.applyCaptureSettingBtn.Size = new System.Drawing.Size(122, 28);
+            this.applyCaptureSettingBtn.TabIndex = 14;
+            this.applyCaptureSettingBtn.Text = "Apply";
+            this.applyCaptureSettingBtn.UseVisualStyleBackColor = true;
+            this.applyCaptureSettingBtn.Click += new System.EventHandler(this.applySettingsBtn_Click);
             // 
             // savedCaptureSettingsLb
             // 
@@ -437,23 +483,13 @@
             this.loadedImgCb.TabIndex = 8;
             this.loadedImgCb.SelectionChangeCommitted += new System.EventHandler(this.imageChooseCb_SelectionChangeCommitted);
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(12, 185);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(122, 28);
-            this.button1.TabIndex = 23;
-            this.button1.Text = "Apply";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.savedCaptureSettingsBtn_Click);
-            // 
             // SettingsCaptureForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1169, 245);
+            this.ClientSize = new System.Drawing.Size(1169, 395);
             this.Controls.Add(this.panel1);
-            this.MaximumSize = new System.Drawing.Size(1185, 284);
+            this.MaximumSize = new System.Drawing.Size(1185, 434);
             this.MinimumSize = new System.Drawing.Size(1185, 284);
             this.Name = "SettingsCaptureForm";
             this.Padding = new System.Windows.Forms.Padding(1);
@@ -505,13 +541,16 @@
         private System.Windows.Forms.Label xCaptureLbl;
         private System.Windows.Forms.ComboBox savedCaptureSettingsCb;
         private System.Windows.Forms.Label savedCaptureSettingsLb;
-        private System.Windows.Forms.Button applySettingsBtn;
+        private System.Windows.Forms.Button applyCaptureSettingBtn;
         private System.Windows.Forms.ListBox pixelReadedRectsListBox;
         private System.Windows.Forms.Button modifyRectangleBtn;
         private System.Windows.Forms.Button deleteRectangleButton;
         private System.Windows.Forms.Label savedPixelSettingsLb;
         private System.Windows.Forms.ComboBox savedPixelSettingsCb;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button applyChosenSettingsBtn;
+        private System.Windows.Forms.Button createNewPixSettBtn;
+        private System.Windows.Forms.Button applyPixSettBtn;
+        private System.Windows.Forms.Button saveCaptureSettBtn;
     }
 }
 
