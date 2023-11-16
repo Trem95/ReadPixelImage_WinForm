@@ -58,7 +58,7 @@
             this.yCaptureLbl = new System.Windows.Forms.Label();
             this.xCaptureNb = new System.Windows.Forms.NumericUpDown();
             this.widthCaptureNb = new System.Windows.Forms.NumericUpDown();
-            this.heightCpatureLbl = new System.Windows.Forms.Label();
+            this.heightCaptureLbl = new System.Windows.Forms.Label();
             this.yCaptureNb = new System.Windows.Forms.NumericUpDown();
             this.widthCaptureLbl = new System.Windows.Forms.Label();
             this.heightCaptureNb = new System.Windows.Forms.NumericUpDown();
@@ -195,7 +195,6 @@
             this.savedPixelSettingsCb.Name = "savedPixelSettingsCb";
             this.savedPixelSettingsCb.Size = new System.Drawing.Size(354, 22);
             this.savedPixelSettingsCb.TabIndex = 23;
-            this.savedPixelSettingsCb.SelectionChangeCommitted += new System.EventHandler(this.savedPixelSettingsCb_SelectionChangeCommitted);
             // 
             // deleteRectangleButton
             // 
@@ -319,7 +318,7 @@
             this.captureSettingsGb.Controls.Add(this.yCaptureLbl);
             this.captureSettingsGb.Controls.Add(this.xCaptureNb);
             this.captureSettingsGb.Controls.Add(this.widthCaptureNb);
-            this.captureSettingsGb.Controls.Add(this.heightCpatureLbl);
+            this.captureSettingsGb.Controls.Add(this.heightCaptureLbl);
             this.captureSettingsGb.Controls.Add(this.yCaptureNb);
             this.captureSettingsGb.Controls.Add(this.widthCaptureLbl);
             this.captureSettingsGb.Controls.Add(this.heightCaptureNb);
@@ -380,6 +379,7 @@
             this.savedCaptureSettingsCb.Name = "savedCaptureSettingsCb";
             this.savedCaptureSettingsCb.Size = new System.Drawing.Size(362, 22);
             this.savedCaptureSettingsCb.TabIndex = 21;
+            this.savedCaptureSettingsCb.SelectionChangeCommitted += new System.EventHandler(this.savedCaptureSettingsCb_SelectionChangeCommitted);
             // 
             // yCaptureLbl
             // 
@@ -417,15 +417,15 @@
             this.widthCaptureNb.Size = new System.Drawing.Size(65, 22);
             this.widthCaptureNb.TabIndex = 15;
             // 
-            // heightCpatureLbl
+            // heightCaptureLbl
             // 
-            this.heightCpatureLbl.AutoSize = true;
-            this.heightCpatureLbl.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.heightCpatureLbl.Location = new System.Drawing.Point(176, 25);
-            this.heightCpatureLbl.Name = "heightCpatureLbl";
-            this.heightCpatureLbl.Size = new System.Drawing.Size(55, 14);
-            this.heightCpatureLbl.TabIndex = 13;
-            this.heightCpatureLbl.Text = "Height :";
+            this.heightCaptureLbl.AutoSize = true;
+            this.heightCaptureLbl.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.heightCaptureLbl.Location = new System.Drawing.Point(176, 25);
+            this.heightCaptureLbl.Name = "heightCaptureLbl";
+            this.heightCaptureLbl.Size = new System.Drawing.Size(55, 14);
+            this.heightCaptureLbl.TabIndex = 13;
+            this.heightCaptureLbl.Text = "Height :";
             // 
             // yCaptureNb
             // 
@@ -534,7 +534,7 @@
         private System.Windows.Forms.Label yCaptureLbl;
         private System.Windows.Forms.NumericUpDown xCaptureNb;
         private System.Windows.Forms.NumericUpDown widthCaptureNb;
-        private System.Windows.Forms.Label heightCpatureLbl;
+        private System.Windows.Forms.Label heightCaptureLbl;
         private System.Windows.Forms.NumericUpDown yCaptureNb;
         private System.Windows.Forms.Label widthCaptureLbl;
         private System.Windows.Forms.NumericUpDown heightCaptureNb;

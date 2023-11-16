@@ -16,6 +16,7 @@ using System.Windows.Forms;
 using ExcelLibrary;
 using ExcelLibrary.SpreadSheet;
 using System.Reflection;
+using ReadPixelImage.Forms;
 
 namespace ReadPixelImage
 {
@@ -24,15 +25,16 @@ namespace ReadPixelImage
 
         #region Variables
         CaptureForm captureForm;
+        CreateSettingForm createSettFom;
 
         ScreenReader screenReader = new ScreenReader();
         Bitmap currentImage;
         CaptureSetting currentCaptureSetting;
-        ReadedPixelsSettings currentReadedPixelsSettings;
+        ReadedPixelsSetting currentReadedPixelsSettings;
 
         Dictionary<string, Bitmap> imageDict;
-        Dictionary<int, CaptureSetting> captureSettings;
-        Dictionary<int, ReadedPixelsSettings> readedPixSettings;
+        Dictionary<int, CaptureSetting> captureSettingsDict;
+        Dictionary<int, ReadedPixelsSetting> readedPixSettingsDict;
 
         int newCaptureSettingsId;
         int newPixReadedSettingsId;
@@ -60,12 +62,15 @@ namespace ReadPixelImage
         private void InitializeSettings()
         {
             imageDict = new Dictionary<string, Bitmap>();
-            captureSettings = new Dictionary<int, CaptureSetting>();
-            readedPixSettings = new Dictionary<int, ReadedPixelsSettings>();
+            captureSettingsDict = new Dictionary<int, CaptureSetting>();
+            readedPixSettingsDict = new Dictionary<int, ReadedPixelsSetting>();
             currentCaptureSetting = new CaptureSetting();
 
             captureSettingsWorkbooks = new Workbook();
             readedPixelsSettingsWorkbook = new Workbook();
+
+            createSettFom = new CreateSettingForm();
+            captureForm = new CaptureForm();
 
             yCaptureNb.Maximum = Screen.PrimaryScreen.Bounds.Height;
             xCaptureNb.Maximum = Screen.PrimaryScreen.Bounds.Width;
@@ -80,8 +85,7 @@ namespace ReadPixelImage
 
             ManageSettingsAndDirectories();
             LoadImages();
-            LoadSettings();
-            captureForm = new CaptureForm();
+            InitSettings();
             captureForm.Show();
 
         }
@@ -89,15 +93,15 @@ namespace ReadPixelImage
 
         #region Properties
         //Properties create to have easier access to NumUpDown cotnrol
-        public int XCoordCapture { get { return (int)xCaptureNb.Value; } }
-        public int YCoordCapture { get { return (int)yCaptureNb.Value; } }
-        public int HeightCoordCapture { get { return (int)heightCaptureNb.Value; } }
-        public int WidthCoordCapture { get { return (int)widthCaptureNb.Value; } }
+        public int XCoordCapture { get { return (int)xCaptureNb.Value; } set { xCaptureNb.Value = value; } }
+        public int YCoordCapture { get { return (int)yCaptureNb.Value; } set { yCaptureNb.Value = value; } }
+        public int WidthCoordCapture { get { return (int)widthCaptureNb.Value; } set { widthCaptureNb.Value = value; } }
+        public int HeightCoordCapture { get { return (int)heightCaptureNb.Value; } set { heightCaptureNb.Value = value; } }
 
-        public int XCoordPixelsReaded { get { return (int)xPixelsNb.Value; } }
-        public int YCoordPixelsReaded { get { return (int)yPixelsNb.Value; } }
-        public int HeightCoordPixelsReaded { get { return (int)heightPixelsNb.Value; } }
-        public int WidthCoordPixelsReaded { get { return (int)widthPixelsNb.Value; } }
+        public int XCoordPixelsReaded { get { return (int)xPixelsNb.Value; } set { xPixelsNb.Value = value; } }
+        public int YCoordPixelsReaded { get { return (int)yPixelsNb.Value; } set { yPixelsNb.Value = value; } }
+        public int WidthCoordPixelsReaded { get { return (int)widthPixelsNb.Value; } set { widthPixelsNb.Value = value; } }
+        public int HeightCoordPixelsReaded { get { return (int)heightPixelsNb.Value; } set { heightPixelsNb.Value = value; } }
 
         #endregion
 
@@ -216,10 +220,16 @@ namespace ReadPixelImage
 
         }
         /// <summary>
-        /// Load the settings provided in the .xls files ( Public folder )
+        /// Initialize the settings provided in the .xls files ( Public folder )
         /// </summary>
-        private void LoadSettings()
+        private void InitSettings()
         {
+            captureSettingsDict = new Dictionary<int, CaptureSetting>();
+            readedPixSettingsDict = new Dictionary<int, ReadedPixelsSetting>();
+
+            savedPixelSettingsCb.Items.Clear();
+            savedCaptureSettingsCb.Items.Clear();
+
             //Load Excell Workbooks from xls document in Public
             captureSettingsWorkbooks = Workbook.Load(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
             readedPixelsSettingsWorkbook = Workbook.Load(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
@@ -240,11 +250,11 @@ namespace ReadPixelImage
                 };
 
                 //Add the settings to the dictionnary and the comboBox
-                captureSettings.Add(captSettToAdd.Id, captSettToAdd);
+                captureSettingsDict.Add(captSettToAdd.Id, captSettToAdd);
                 savedCaptureSettingsCb.Items.Add(captSettToAdd);
 
                 //Saved last Id in order to save new settings later
-                if(i == captureSettingsWorkbooks.Worksheets[0].Cells.Rows.Count())
+                if (i == captureSettingsWorkbooks.Worksheets[0].Cells.Rows.Count())
                     newCaptureSettingsId = captSettToAdd.Id + 1;
             }
 
@@ -253,7 +263,7 @@ namespace ReadPixelImage
                 Row rowToRead = readedPixelsSettingsWorkbook.Worksheets[0].Cells.Rows[i];
                 List<Rectangle> rectanglesToAdd = new List<Rectangle>();
                 //Each colonne whos index is <2 is a rectangle
-                for (int j = 2; j <= readedPixelsSettingsWorkbook.Worksheets[0].Cells.Rows[i].LastColIndex ; j++)
+                for (int j = 2; j <= readedPixelsSettingsWorkbook.Worksheets[0].Cells.Rows[i].LastColIndex; j++)
                 {
                     //Rectangle data are stocked in one string with "|" as separator ex : "42|47|234|23"
                     string[] dataString = readedPixelsSettingsWorkbook.Worksheets[0].Cells.Rows[i].GetCell(j).ToString().Split('|');
@@ -267,33 +277,35 @@ namespace ReadPixelImage
                     Console.WriteLine();
                 }
 
-                ReadedPixelsSettings readedPixSettToAdd = new ReadedPixelsSettings()
+                ReadedPixelsSetting readedPixSettToAdd = new ReadedPixelsSetting()
                 {
                     Id = int.Parse(rowToRead.GetCell(0).ToString()),
                     Name = rowToRead.GetCell(1).ToString(),
                     Rectangles = rectanglesToAdd,
                 };
 
-                readedPixSettings.Add(readedPixSettToAdd.Id, readedPixSettToAdd);
-
+                readedPixSettingsDict.Add(readedPixSettToAdd.Id, readedPixSettToAdd);
+                savedPixelSettingsCb.Items.Add(readedPixSettToAdd);
                 if (i == readedPixelsSettingsWorkbook.Worksheets[0].Cells.Rows.Count())
                     newPixReadedSettingsId = readedPixSettToAdd.Id + 1;
             }
-            
-            currentCaptureSetting = captureSettings[1];
-            savedCaptureSettingsCb.SelectedIndex = 1;//Set on default 
-            savedPixelSettingsCb.SelectedIndex = 0;
+
+            currentCaptureSetting = captureSettingsDict[0];
+            SetNumericalField(currentCaptureSetting);
+            savedCaptureSettingsCb.SelectedIndex = 0;//Set on default 
 
 
-            foreach (KeyValuePair<int, ReadedPixelsSettings> kvp in readedPixSettings)
-            {
-                savedPixelSettingsCb.Items.Add(kvp.Value);
-            }
+            currentReadedPixelsSettings = readedPixSettingsDict[0];
+            captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles);
 
-
-            currentReadedPixelsSettings = readedPixSettings[1];
-            savedPixelSettingsCb.SelectedIndex = 1;
+            savedPixelSettingsCb.SelectedIndex = 0;//Set on test
         }
+        
+        private void LoadReadedPixelsRectangle(ReadedPixelsSetting rdPixelSetting)
+        {
+            //TODO method to reunite SetAndDrawRectangles adn load of pixelsReading items
+        }
+        
         /// <summary>
         /// Create a new Capture Settings and save it in the CaptureSettings.xls files
         /// </summary>
@@ -310,9 +322,9 @@ namespace ReadPixelImage
             CellCollection cells = captureSettingsWorkbooks.Worksheets[0].Cells;
             int rowCpt = cells.Rows.Count();
 
-            cells.CreateCell(rowCpt, 0, captureSett.Id,0);
-            cells.CreateCell(rowCpt, 1, captureSett.Name,0);
-            cells.CreateCell(rowCpt, 2, captureSett.X,0);
+            cells.CreateCell(rowCpt, 0, captureSett.Id, 0);
+            cells.CreateCell(rowCpt, 1, captureSett.Name, 0);
+            cells.CreateCell(rowCpt, 2, captureSett.X, 0);
             cells.CreateCell(rowCpt, 3, captureSett.Y, 0);
             cells.CreateCell(rowCpt, 4, captureSett.Width, 0);
             cells.CreateCell(rowCpt, 5, captureSett.Height, 0);
@@ -320,11 +332,32 @@ namespace ReadPixelImage
             captureSettingsWorkbooks.Save(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
         }
 
+         /// <summary>
+        /// Load the images presents in Public folders
+        /// </summary>
+        private void LoadImages()
+        {
+            imageDict = new Dictionary<string, Bitmap>();
+            loadedImgCb.Items.Clear();
+
+            foreach (var item in Directory.EnumerateFiles(imagesDocPath + "\\Loaded"))
+            {
+                if (item.ToString().Contains(".png") || item.ToString().Contains(".jpeg"))
+                {
+                    Bitmap imgToAdd = new Bitmap(item.ToString());
+                    string imgName = item.Substring((imagesDocPath.Length + "\\Loaded").Length + 1);
+                    imageDict.Add(imgName, imgToAdd);
+                    loadedImgCb.Items.Add(imgName);
+                }
+            }
+        }
+
+        
         /// <summary>
         /// Create a new Capture Settings and save it in the CaptureSettings.xls files
         /// </summary>
         /// <param name="readedPixelsSett"></param>
-        private void CreateNewSettings(ReadedPixelsSettings readedPixelsSett)
+        private void CreateNewSettings(ReadedPixelsSetting readedPixelsSett)
         {
             //Cells[0, 0] = new Cell("ID");
             //Cells[0, 1] = new Cell("NAME");
@@ -339,48 +372,52 @@ namespace ReadPixelImage
             for (int i = 0; i < readedPixelsSett.Rectangles.Count(); i++)
             {
                 Rectangle rectToAdd = readedPixelsSett.Rectangles[i];
-                cells.CreateCell(rowCpt, 2 + i, $"{rectToAdd.X}|{rectToAdd.Y}|{rectToAdd.Width}|{rectToAdd.Height}",0);
+                cells.CreateCell(rowCpt, 2 + i, $"{rectToAdd.X}|{rectToAdd.Y}|{rectToAdd.Width}|{rectToAdd.Height}", 0);
             }
 
             readedPixelsSettingsWorkbook.Save(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
         }
 
-        /// <summary>
-        /// Load the images presents in Public folders
-        /// </summary>
-        private void LoadImages()
-        {
-            string path = @"C:\Users\antoi\Pictures\Screenshots\ReadPixelImage\ImageToRead";
-            foreach (var item in Directory.EnumerateFiles(path))
-            {
-                if (item.ToString().Contains(".png"))
-                {
-                    Bitmap imgToAdd = new Bitmap(item.ToString());
-                    string imgName = item.Substring(path.Length + 1);
-                    imageDict.Add(imgName, imgToAdd);
-                    loadedImgCb.Items.Add(imgName);
-                }
-            }
-        }
-
+       
         /// <summary>
         /// Display the current image or screenshot with the settings provided
         /// </summary>
         private void DisplayCapture()
         {
             Bitmap cropImgToShow = screenReader.GetParametredCapture(currentCaptureSetting, currentImage);
-            captureForm.CaptureImg.Size = cropImgToShow.Size;
-            captureForm.CaptureImg.BackgroundImage = cropImgToShow;
 
             yPixelsNb.Maximum = captureForm.CaptureImg.Size.Height;
             xPixelsNb.Maximum = captureForm.CaptureImg.Size.Width;
             heightPixelsNb.Maximum = captureForm.CaptureImg.Size.Height;
             widthPixelsNb.Maximum = captureForm.CaptureImg.Size.Width;
 
-            if (savedCaptureSettingsCb.SelectedIndex == 1) captureForm.WindowState = FormWindowState.Maximized;// Preset saved where (Width && Height == Screen.Primary.Bounds)
-            else captureForm.WindowState = FormWindowState.Normal;
+            if (savedCaptureSettingsCb.SelectedIndex == 0) captureForm.WindowState = FormWindowState.Maximized;// Preset saved where (Width && Height == Screen.Primary.Bounds)
+            else
+            {
+                captureForm.WindowState = FormWindowState.Normal;
+                captureForm.CaptureImg.Size = cropImgToShow.Size;
+            }
+
+            captureForm.CaptureImg.BackgroundImage = cropImgToShow;
+            captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles);
 
             this.WindowState = FormWindowState.Normal;
+        }
+
+        private void SetNumericalField(CaptureSetting captureSett)
+        {
+            XCoordCapture = captureSett.X;
+            YCoordCapture = captureSett.Y;
+            WidthCoordCapture = captureSett.Width;
+            HeightCoordCapture = captureSett.Height;
+        }
+
+        private void SetNumericalField(Rectangle rect)
+        {
+            XCoordPixelsReaded = rect.X;
+            YCoordPixelsReaded = rect.Y;
+            WidthCoordPixelsReaded = rect.Width;
+            HeightCoordPixelsReaded = rect.Height;
         }
 
         #endregion
@@ -390,10 +427,7 @@ namespace ReadPixelImage
         private void imageChooseCb_SelectionChangeCommitted(object sender, EventArgs e)
         {
             if (imageDict.TryGetValue(loadedImgCb.SelectedItem.ToString(), out currentImage))
-            {
                 DisplayCapture();
-            }
-
         }
 
         private void applySettingsBtn_Click(object sender, EventArgs e)
@@ -444,16 +478,9 @@ namespace ReadPixelImage
             //}
         }
 
-        private void savedPixelSettingsCb_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            currentReadedPixelsSettings = readedPixSettings.Values.ToList()[(savedPixelSettingsCb.SelectedItem as ReadedPixelsSettings).Id];
-            if (MessageBox.Show("Confirm", "Confirm Action", MessageBoxButtons.OKCancel) == DialogResult.OK)
-                captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles);
-        }
-
         private void applyChosenSettingsBtn_Click(object sender, EventArgs e)
         {
-            currentCaptureSetting = savedCaptureSettingsCb.SelectedItem as CaptureSetting;
+            SetNumericalField(currentCaptureSetting);
             DisplayCapture();
         }
 
@@ -465,11 +492,18 @@ namespace ReadPixelImage
         private void saveCaptureSettBtn_Click(object sender, EventArgs e)
         {
             //TODO Create Capture Settings and write it in excel files
+
+
         }
 
         private void applyPixSettBtn_Click(object sender, EventArgs e)
         {
             //TODO Create behavior to show the informations and draws the rectangle from readedPixelsSettings
+        }
+
+        private void savedCaptureSettingsCb_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            currentCaptureSetting = savedCaptureSettingsCb.SelectedItem as CaptureSetting;    
         }
     }
 }

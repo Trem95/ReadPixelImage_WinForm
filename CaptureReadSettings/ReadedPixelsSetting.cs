@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace ReadPixelImage.CaptureReadSettings
 {
-    public class ReadedPixelsSettings
+    public class ReadedPixelsSetting
     {
-        public ReadedPixelsSettings() {}
-        public ReadedPixelsSettings(int id, string name, List<Rectangle> rects = null) 
+        public ReadedPixelsSetting() {}
+        public ReadedPixelsSetting(int id, string name, List<Rectangle> rects = null) 
         {
             Id = id;
             Name = name;
@@ -25,7 +25,7 @@ namespace ReadPixelImage.CaptureReadSettings
 
         public override string ToString()
         {
-            return $"{Id} - {Name}";
+            return $"{Name}";
         }
     }
 }

@@ -16,6 +16,7 @@ namespace ReadPixelImage
         public CaptureForm()
         {
             rectanglesToDraw = new List<Rectangle>();
+            this.AutoScrollMinSize = new Size(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
             InitializeComponent();
         }
 
@@ -27,7 +28,7 @@ namespace ReadPixelImage
             capturePicBox.Invalidate(); // force Redraw the form
         }
 
-        private void pictureBox1_Paint(object sender, PaintEventArgs e)
+        private void capturePictureBox_Paint(object sender, PaintEventArgs e)
         {
             foreach (Rectangle rectangle in rectanglesToDraw)
             {
