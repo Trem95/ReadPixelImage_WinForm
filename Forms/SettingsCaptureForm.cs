@@ -227,7 +227,7 @@ namespace ReadPixelImage
             captureSettingsDict = new Dictionary<int, CaptureSetting>();
             readedPixSettingsDict = new Dictionary<int, ReadedPixelsSetting>();
 
-            savedPixelSettingsCb.Items.Clear();
+            savedReadedPixelSettingsCb.Items.Clear();
             savedCaptureSettingsCb.Items.Clear();
 
             //Load Excell Workbooks from xls document in Public
@@ -285,7 +285,7 @@ namespace ReadPixelImage
                 };
 
                 readedPixSettingsDict.Add(readedPixSettToAdd.Id, readedPixSettToAdd);
-                savedPixelSettingsCb.Items.Add(readedPixSettToAdd);
+                savedReadedPixelSettingsCb.Items.Add(readedPixSettToAdd);
                 if (i == readedPixelsSettingsWorkbook.Worksheets[0].Cells.Rows.Count())
                     newPixReadedSettingsId = readedPixSettToAdd.Id + 1;
             }
@@ -296,16 +296,25 @@ namespace ReadPixelImage
 
 
             currentReadedPixelsSettings = readedPixSettingsDict[0];
-            captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles);
+            LoadReadedPixelsRectangle();
+            savedReadedPixelSettingsCb.SelectedIndex = 0;//Set on test
+        }
 
-            savedPixelSettingsCb.SelectedIndex = 0;//Set on test
-        }
-        
-        private void LoadReadedPixelsRectangle(ReadedPixelsSetting rdPixelSetting)
+        private void LoadReadedPixelsRectangle()
         {
-            //TODO method to reunite SetAndDrawRectangles adn load of pixelsReading items
+            if (currentReadedPixelsSettings.Rectangles.Count() > 0)
+            {
+                foreach (Rectangle rect in currentReadedPixelsSettings.Rectangles)
+                {
+                    readedPixelsRectsListBox.Items.Add(rect);
+                }
+                readedPixelsRectsListBox.SelectedIndex = 0;
+                captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles, readedPixelsRectsListBox.SelectedIndex);
+
+                SetNumericalField(currentReadedPixelsSettings.Rectangles[0]);
+            }
         }
-        
+
         /// <summary>
         /// Create a new Capture Settings and save it in the CaptureSettings.xls files
         /// </summary>
@@ -332,7 +341,7 @@ namespace ReadPixelImage
             captureSettingsWorkbooks.Save(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
         }
 
-         /// <summary>
+        /// <summary>
         /// Load the images presents in Public folders
         /// </summary>
         private void LoadImages()
@@ -352,7 +361,7 @@ namespace ReadPixelImage
             }
         }
 
-        
+
         /// <summary>
         /// Create a new Capture Settings and save it in the CaptureSettings.xls files
         /// </summary>
@@ -378,7 +387,7 @@ namespace ReadPixelImage
             readedPixelsSettingsWorkbook.Save(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
         }
 
-       
+
         /// <summary>
         /// Display the current image or screenshot with the settings provided
         /// </summary>
@@ -455,6 +464,9 @@ namespace ReadPixelImage
         private void drawButton_Click(object sender, EventArgs e)
         {
             //TODO manage the behavior of ReadedPixSettings
+            //draw rect widht coor in numField
+            //manage behavir of add button visiblity
+            // andd and manage currentDrawedRect whos gonna be save if in current rdPixelsSettigns if click on add button
 
             //Rectangle rectangle = new Rectangle(XCoordPixelsReaded, YCoordPixelsReaded, WidthCoordPixelsReaded, HeightCoordPixelsReaded);
             //if (savedPixelSettingsCb.SelectedIndex == 0)//Set on Create Settings
@@ -474,7 +486,7 @@ namespace ReadPixelImage
             //else
             //{
             //    currentReadedPixelsSettings.Rectangles.Add(rectangle);
-            //    captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles);
+            //    captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles
             //}
         }
 
@@ -486,24 +498,58 @@ namespace ReadPixelImage
 
         private void createNewPixSettBtn_Click(object sender, EventArgs e)
         {
+            //TODO get name in tb after click create
+            createSettFom.ShowDialog();
+            ReadedPixelsSetting newRDPixSett = new ReadedPixelsSetting()
+            {
+                Id = newPixReadedSettingsId,
+            };
+
+            newPixReadedSettingsId++;
             //TODO Manage creation of Pix Settings with excell features
         }
 
         private void saveCaptureSettBtn_Click(object sender, EventArgs e)
         {
-            //TODO Create Capture Settings and write it in excel files
-
+            //TODO
 
         }
 
         private void applyPixSettBtn_Click(object sender, EventArgs e)
         {
-            //TODO Create behavior to show the informations and draws the rectangle from readedPixelsSettings
+            //TODO TEST
+            if (readedPixSettingsDict.TryGetValue((savedReadedPixelSettingsCb.SelectedItem as ReadedPixelsSetting).Id, out currentReadedPixelsSettings))
+                LoadReadedPixelsRectangle();
+
         }
 
         private void savedCaptureSettingsCb_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            currentCaptureSetting = savedCaptureSettingsCb.SelectedItem as CaptureSetting;    
+            currentCaptureSetting = savedCaptureSettingsCb.SelectedItem as CaptureSetting;
+        }
+
+        private void pixelReadedRectsListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //TODO TEST
+            if (readedPixelsRectsListBox.SelectedIndex > 0)
+                SetNumericalField(currentReadedPixelsSettings.Rectangles[readedPixelsRectsListBox.SelectedIndex]);
+            modifyRectBtn.Visible = readedPixelsRectsListBox.SelectedIndex > 0;
+            deleteRectButton.Visible = readedPixelsRectsListBox.SelectedIndex > 0;
+        }
+
+        private void addRectBtn_Click(object sender, EventArgs e)
+        {
+            //TODO add drawed rectangle in list first manage drawedRectangle in capture form
+        }
+
+        private void modifyRectBtn_Click(object sender, EventArgs e)
+        {
+            //TODO data from rectangle in list box
+        }
+
+        private void deleteRectButton_Click(object sender, EventArgs e)
+        {
+            //TODO delete rectangle from
         }
     }
 }

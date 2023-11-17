@@ -43,12 +43,14 @@
             this.nameTb.Name = "nameTb";
             this.nameTb.Size = new System.Drawing.Size(182, 23);
             this.nameTb.TabIndex = 0;
+            this.nameTb.TextChanged += new System.EventHandler(this.nameTb_TextChanged);
             // 
             // createBtn
             // 
             this.createBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.createBtn.Enabled = false;
             this.createBtn.Font = new System.Drawing.Font("Verdana", 9.75F);
             this.createBtn.Location = new System.Drawing.Point(266, 18);
             this.createBtn.Name = "createBtn";
@@ -56,6 +58,7 @@
             this.createBtn.TabIndex = 1;
             this.createBtn.Text = "Create";
             this.createBtn.UseVisualStyleBackColor = true;
+            this.createBtn.Click += new System.EventHandler(this.createBtn_Click);
             // 
             // nameLbl
             // 
@@ -81,6 +84,7 @@
             this.MaximumSize = new System.Drawing.Size(369, 92);
             this.MinimumSize = new System.Drawing.Size(369, 92);
             this.Name = "CreateSettingForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Create New Setting";
             this.ResumeLayout(false);
             this.PerformLayout();

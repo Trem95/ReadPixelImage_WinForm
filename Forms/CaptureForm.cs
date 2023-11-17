@@ -13,27 +13,29 @@ namespace ReadPixelImage
     public partial class CaptureForm : Form
     {
         List<Rectangle> rectanglesToDraw;
+        int selectedRectIndex;
         public CaptureForm()
         {
             rectanglesToDraw = new List<Rectangle>();
+            selectedRectIndex = -1;
             this.AutoScrollMinSize = new Size(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
             InitializeComponent();
         }
 
         public PictureBox CaptureImg { get { return capturePicBox; }}
+        public int SelectedRectangle { get; set; }
 
-        public void SetAndDrawRectangles(List<Rectangle> rectangles)
+        public void SetAndDrawRectangles(List<Rectangle> rectangles, int selectRect = -1)
         {
+            selectedRectIndex = selectRect;
             rectanglesToDraw = rectangles;
             capturePicBox.Invalidate(); // force Redraw the form
         }
 
         private void capturePictureBox_Paint(object sender, PaintEventArgs e)
         {
-            foreach (Rectangle rectangle in rectanglesToDraw)
-            {
-                e.Graphics.DrawRectangle(Pens.Lime, rectangle);
-            }
+            for (int i = 0; i < rectanglesToDraw.Count(); i++)
+                e.Graphics.DrawRectangle(selectedRectIndex == i ? Pens.Orange : Pens.LimeGreen, rectanglesToDraw[i]);
         }
 
         private void CaptureForm_FormClosing(object sender, FormClosingEventArgs e)
