@@ -17,6 +17,7 @@ using ExcelLibrary;
 using ExcelLibrary.SpreadSheet;
 using System.Reflection;
 using ReadPixelImage.Forms;
+using System.Xml;
 
 namespace ReadPixelImage
 {
@@ -57,9 +58,9 @@ namespace ReadPixelImage
         public SettingsCaptureForm()
         {
             InitializeComponent();
-            InitializeSettings();
+            InitializeForm();
         }
-        private void InitializeSettings()
+        private void InitializeForm()
         {
             imageDict = new Dictionary<string, Bitmap>();
             captureSettingsDict = new Dictionary<int, CaptureSetting>();
@@ -87,6 +88,7 @@ namespace ReadPixelImage
             LoadImages();
             InitSettings();
             captureForm.Show();
+            DisplayCapture();
 
         }
         #endregion
@@ -126,7 +128,23 @@ namespace ReadPixelImage
                 Directory.CreateDirectory(imagesDocPath + "\\Saved");
                 Directory.CreateDirectory(imagesDocPath + "\\Capture");
 
+                loadedImgCb.Items.Clear();
+                ImageConverter imgConvert = new ImageConverter();
+
+                string path = TryGetSolutionDirectoryInfo(Directory.GetCurrentDirectory()).FullName + "\\TestImages";
+                foreach (var item in Directory.GetFiles(path))
+                {
+                    if (item.ToString().Contains(".png") || item.ToString().Contains(".jpeg"))
+                    {
+                        Bitmap imgToAdd = new Bitmap(item.ToString());
+                        string imgName = item.Substring(path.Length + 1);
+                        File.WriteAllBytes(imagesDocPath + "\\Loaded\\" + imgName, (byte[])imgConvert.ConvertTo(imgToAdd, typeof(byte[])));
+                    }
+                }
+
             }
+
+
 
             DataSet ds = new DataSet();
             ds.Tables.Add("Default Settings");
@@ -140,8 +158,18 @@ namespace ReadPixelImage
                 readedPixelsSettingsWorkbook.Worksheets[0].Cells[0, 1] = new Cell("NAME");
                 readedPixelsSettingsWorkbook.Worksheets[0].Cells[0, 2] = new Cell("RECT COORDS");
 
+                readedPixSettingsDict.Add(0, new ReadedPixelsSetting()
+                {
+                    Id = 0,
+                    Name = "Default",
+                    Rectangles = new List<Rectangle>() { new Rectangle((captureForm.CaptureImg.Height / 2) - 20, (captureForm.CaptureImg.Width / 2) - 20, 40, 40) }
+                });
+
+                CreateNewSettings(readedPixSettingsDict.FirstOrDefault().Value);
+
                 readedPixelsSettingsWorkbook.Save(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
             }
+
             files = Directory.GetFiles(captureSettingsDocPath);
             if (!files.Contains(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME))
             {
@@ -154,70 +182,60 @@ namespace ReadPixelImage
                 captureSettingsWorkbooks.Worksheets[0].Cells[0, 4] = new Cell("WIDTH");
                 captureSettingsWorkbooks.Worksheets[0].Cells[0, 5] = new Cell("HEIGHT");
 
+                captureSettingsDict.Add(
+                    0,
+                    new CaptureSetting(0, "Default",
+                        0,
+                        0,
+                        Screen.PrimaryScreen.Bounds.Width,
+                        Screen.PrimaryScreen.Bounds.Height));
+
+                captureSettingsDict.Add(
+                    1,
+                    new CaptureSetting(1, "Top Screen",
+                        0,
+                        0,
+                        Screen.PrimaryScreen.Bounds.Width,
+                        Screen.PrimaryScreen.Bounds.Height / 4));
+
+                captureSettingsDict.Add(
+                    2,
+                    new CaptureSetting(2, "Bottom Screen",
+                        0,
+                        Screen.PrimaryScreen.Bounds.Height - (Screen.PrimaryScreen.Bounds.Height / 4),
+                        Screen.PrimaryScreen.Bounds.Width,
+                        Screen.PrimaryScreen.Bounds.Height / 4));
+
+                captureSettingsDict.Add(
+                    3,
+                    new CaptureSetting(3, "Mafia II Health",
+                        Screen.PrimaryScreen.Bounds.Width - (Screen.PrimaryScreen.Bounds.Width / 4),
+                        Screen.PrimaryScreen.Bounds.Height - (Screen.PrimaryScreen.Bounds.Height / 3),
+                        Screen.PrimaryScreen.Bounds.Width / 4,
+                        Screen.PrimaryScreen.Bounds.Height / 3));
+
+                foreach (KeyValuePair<int, CaptureSetting> kvp in captureSettingsDict)
+                    CreateNewSettings(kvp.Value);
+
                 captureSettingsWorkbooks.Save(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
             }
 
-            #region TEST CAPTURE PIXELS READING SETTINGS
 
-            //captureSettingsWorkbooks = Workbook.Load(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
-            //readedPixelsSettingsWorkbook = Workbook.Load(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
-
-            //captureSettings.Add(
-            //    0,
-            //    new CaptureSetting(0, "Create Settings",
-            //        0,
-            //        0,
-            //        0,
-            //        0));
-
-            //captureSettings.Add(
-            //    1,
-            //    new CaptureSetting(1, "Default",
-            //        0,
-            //        0,
-            //        Screen.PrimaryScreen.Bounds.Width,
-            //        Screen.PrimaryScreen.Bounds.Height));
-
-            //captureSettings.Add(
-            //    2,
-            //    new CaptureSetting(2, "Top Screen",
-            //        0,
-            //        0,
-            //        Screen.PrimaryScreen.Bounds.Width,
-            //        Screen.PrimaryScreen.Bounds.Height / 4));
-
-            //captureSettings.Add(
-            //    3,
-            //    new CaptureSetting(3, "Bottom Screen",
-            //        0,
-            //        Screen.PrimaryScreen.Bounds.Height - (Screen.PrimaryScreen.Bounds.Height / 4),
-            //        Screen.PrimaryScreen.Bounds.Width,
-            //        Screen.PrimaryScreen.Bounds.Height / 4));
-
-            //captureSettings.Add(
-            //    4,
-            //    new CaptureSetting(4, "Mafia II Health",
-            //        Screen.PrimaryScreen.Bounds.Width - (Screen.PrimaryScreen.Bounds.Width / 4),
-            //        Screen.PrimaryScreen.Bounds.Height - (Screen.PrimaryScreen.Bounds.Height / 3),
-            //        Screen.PrimaryScreen.Bounds.Width / 4,
-            //        Screen.PrimaryScreen.Bounds.Height / 3));
-
-
-            //foreach (KeyValuePair<int, CaptureSetting> kvp in captureSettings)
-            //{
-            //    CreateNewSettings(kvp.Value);
-            //}
-
-            //readedPixSettings.Add(0, new ReadedPixelsSettings()
-            //{
-            //    Id = 0,
-            //    Name = "Test Rectangle 2",
-            //    Rectangles = new List<Rectangle>() { new Rectangle(100, 10, 50, 2), new Rectangle(45, 20, 34, 35) },
-            //}) ;
-
-            //CreateNewSettings(readedPixSettings.FirstOrDefault().Value);
-            #endregion
-
+        }
+        /// <summary>
+        /// Get directory info of given path
+        /// </summary>
+        /// <param name="currentPath"></param>
+        /// <returns></returns>
+        public static DirectoryInfo TryGetSolutionDirectoryInfo(string currentPath = null)
+        {
+            var directory = new DirectoryInfo(
+                currentPath ?? Directory.GetCurrentDirectory());
+            while (directory != null && !directory.GetFiles("*.sln").Any())
+            {
+                directory = directory.Parent;
+            }
+            return directory;
         }
         /// <summary>
         /// Initialize the settings provided in the .xls files ( Public folder )
@@ -229,11 +247,16 @@ namespace ReadPixelImage
 
             currentCaptureSetting = captureSettingsDict[0];
             SetNumericalField(currentCaptureSetting);
+
+            yCaptureNb.Maximum = Screen.PrimaryScreen.Bounds.Height;
+            xCaptureNb.Maximum = Screen.PrimaryScreen.Bounds.Width;
+            heightCaptureNb.Maximum = Screen.PrimaryScreen.Bounds.Width;
+            widthCaptureNb.Maximum = Screen.PrimaryScreen.Bounds.Width;
             savedCaptureSettingsCb.SelectedIndex = 0;//Set on default 
-
-            savedReadedPixelSettingsCb.SelectedIndex = 0;//Set on test
         }
-
+        /// <summary>
+        /// Load the data from the setting workbook in the severals controls
+        /// </summary>
         private void LoadCaptureSettings()
         {
             captureSettingsDict = new Dictionary<int, CaptureSetting>();
@@ -266,6 +289,9 @@ namespace ReadPixelImage
                     newCaptureSettingsId = captSettToAdd.Id + 1;
             }
         }
+        /// <summary>
+        /// Load the data from the setting workbook in the severals controls
+        /// </summary>
         private void LoadReadedPixelsSettings()
         {
             readedPixSettingsDict = new Dictionary<int, ReadedPixelsSetting>();
@@ -307,26 +333,36 @@ namespace ReadPixelImage
                     newPixReadedSettingsId = readedPixSettToAdd.Id + 1;
             }
 
-            if (savedReadedPixelSettingsCb.Items.Count - 1 >= prevSelIndex)
+            if (prevSelIndex > -1 && savedReadedPixelSettingsCb.Items.Count - 1 >= prevSelIndex)
                 savedReadedPixelSettingsCb.SelectedIndex = prevSelIndex;
             else if (savedReadedPixelSettingsCb.Items.Count > 0)
                 savedReadedPixelSettingsCb.SelectedIndex = 0;
 
-            if (currentReadedPixelsSettings == null) currentReadedPixelsSettings = readedPixSettingsDict[0];
+            if (currentReadedPixelsSettings == null) currentReadedPixelsSettings = readedPixSettingsDict.Count() > 0 ? readedPixSettingsDict[0] : new ReadedPixelsSetting(-1, "New Settings", new List<Rectangle>());
 
             LoadAndDisplayReadedPixelsRectangle();
         }
         private void LoadAndDisplayReadedPixelsRectangle()
         {
             readedPixelsRectsListBox.Items.Clear();
-            foreach (Rectangle rect in currentReadedPixelsSettings.Rectangles)
-            {
-                readedPixelsRectsListBox.Items.Add(rect);
-            }
-            readedPixelsRectsListBox.SelectedIndex = 0;
-            captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles, readedPixelsRectsListBox.SelectedIndex);
 
-            SetNumericalField(currentReadedPixelsSettings.Rectangles[0]);
+            if (currentReadedPixelsSettings.Rectangles.Count > 0)
+            {
+                foreach (Rectangle rect in currentReadedPixelsSettings.Rectangles)
+                {
+                    readedPixelsRectsListBox.Items.Add(rect);
+                }
+                if (readedPixelsRectsListBox.Items.Count > 0)
+                    readedPixelsRectsListBox.SelectedIndex = 0;
+
+                captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles, readedPixelsRectsListBox.SelectedIndex);
+                SetNumericalField(currentReadedPixelsSettings.Rectangles[0]);
+            }
+            else
+            {
+                captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles);
+                SetNumericalField();
+            }
         }
 
         /// <summary>
@@ -419,15 +455,20 @@ namespace ReadPixelImage
             heightPixelsNb.Maximum = captureForm.CaptureImg.Size.Height;
             widthPixelsNb.Maximum = captureForm.CaptureImg.Size.Width;
 
-            if (savedCaptureSettingsCb.SelectedIndex == 0) captureForm.WindowState = FormWindowState.Maximized;// Preset saved where (Width && Height == Screen.Primary.Bounds)
+            if (savedCaptureSettingsCb.SelectedIndex == 0)
+            {
+                captureForm.MaximumSize = new Size(0,0) ;
+                captureForm.WindowState = FormWindowState.Maximized;// Preset saved where (Width && Height == Screen.Primary.Bounds)
+            }
             else
             {
                 captureForm.WindowState = FormWindowState.Normal;
+                captureForm.MaximumSize = cropImgToShow.Size + new Size(16, 39);
                 captureForm.CaptureImg.Size = cropImgToShow.Size;
             }
 
-            captureForm.CaptureImg.BackgroundImage = cropImgToShow;
-            captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles);
+            captureForm.CaptureImg.Image = cropImgToShow;
+            captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles, currentReadedPixelsSettings.Rectangles.Count() > 0 ? 0 : -1);
 
             this.WindowState = FormWindowState.Normal;
         }
@@ -440,7 +481,7 @@ namespace ReadPixelImage
             HeightCoordCapture = captureSett.Height;
         }
 
-        private void SetNumericalField(Rectangle rect)
+        private void SetNumericalField(Rectangle rect = new Rectangle())
         {
             XCoordPixelsReaded = rect.X;
             YCoordPixelsReaded = rect.Y;
@@ -449,6 +490,7 @@ namespace ReadPixelImage
         }
 
         #endregion
+
         #region Event Handler
 
 
@@ -478,7 +520,6 @@ namespace ReadPixelImage
             this.Show();
 
         }
-        #endregion
 
         private void drawButton_Click(object sender, EventArgs e)
         {
@@ -579,6 +620,13 @@ namespace ReadPixelImage
         private void deleteRectButton_Click(object sender, EventArgs e)
         {
             //TODO delete rectangle from
+        }
+
+        #endregion
+
+        private void deleteSavedReadedPixBtn_Click(object sender, EventArgs e)
+        {
+            //TODO delete the selected readePix settings, aking with a message box before
         }
     }
 }

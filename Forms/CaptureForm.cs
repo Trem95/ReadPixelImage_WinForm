@@ -18,7 +18,6 @@ namespace ReadPixelImage
         {
             rectanglesToDraw = new List<Rectangle>();
             selectedRectIndex = -1;
-            this.AutoScrollMinSize = new Size(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
             InitializeComponent();
         }
 

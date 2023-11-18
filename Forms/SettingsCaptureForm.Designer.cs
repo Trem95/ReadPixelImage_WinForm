@@ -65,6 +65,7 @@
             this.heightCaptureNb = new System.Windows.Forms.NumericUpDown();
             this.xCaptureLbl = new System.Windows.Forms.Label();
             this.loadedImgCb = new System.Windows.Forms.ComboBox();
+            this.deleteSavedReadedPixBtn = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.settingsGb.SuspendLayout();
             this.pixelsReadedGb.SuspendLayout();
@@ -134,6 +135,7 @@
             // 
             // pixelsReadedGb
             // 
+            this.pixelsReadedGb.Controls.Add(this.deleteSavedReadedPixBtn);
             this.pixelsReadedGb.Controls.Add(this.modifyRectBtn);
             this.pixelsReadedGb.Controls.Add(this.applyPixSettBtn);
             this.pixelsReadedGb.Controls.Add(this.createNewPixSettBtn);
@@ -182,7 +184,7 @@
             // 
             // createNewPixSettBtn
             // 
-            this.createNewPixSettBtn.Location = new System.Drawing.Point(213, 330);
+            this.createNewPixSettBtn.Location = new System.Drawing.Point(122, 330);
             this.createNewPixSettBtn.Name = "createNewPixSettBtn";
             this.createNewPixSettBtn.Size = new System.Drawing.Size(152, 28);
             this.createNewPixSettBtn.TabIndex = 25;
@@ -256,6 +258,11 @@
             // 
             this.xPixelsNb.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.xPixelsNb.Location = new System.Drawing.Point(81, 22);
+            this.xPixelsNb.Maximum = new decimal(new int[] {
+            9999,
+            0,
+            0,
+            0});
             this.xPixelsNb.Name = "xPixelsNb";
             this.xPixelsNb.Size = new System.Drawing.Size(65, 22);
             this.xPixelsNb.TabIndex = 6;
@@ -274,6 +281,11 @@
             // 
             this.widthPixelsNb.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.widthPixelsNb.Location = new System.Drawing.Point(240, 51);
+            this.widthPixelsNb.Maximum = new decimal(new int[] {
+            9999,
+            0,
+            0,
+            0});
             this.widthPixelsNb.Name = "widthPixelsNb";
             this.widthPixelsNb.Size = new System.Drawing.Size(65, 22);
             this.widthPixelsNb.TabIndex = 7;
@@ -292,6 +304,11 @@
             // 
             this.yPixelsNb.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.yPixelsNb.Location = new System.Drawing.Point(81, 51);
+            this.yPixelsNb.Maximum = new decimal(new int[] {
+            9999,
+            0,
+            0,
+            0});
             this.yPixelsNb.Name = "yPixelsNb";
             this.yPixelsNb.Size = new System.Drawing.Size(65, 22);
             this.yPixelsNb.TabIndex = 8;
@@ -310,6 +327,11 @@
             // 
             this.heightPixelsNb.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.heightPixelsNb.Location = new System.Drawing.Point(240, 22);
+            this.heightPixelsNb.Maximum = new decimal(new int[] {
+            9999,
+            0,
+            0,
+            0});
             this.heightPixelsNb.Name = "heightPixelsNb";
             this.heightPixelsNb.Size = new System.Drawing.Size(65, 22);
             this.heightPixelsNb.TabIndex = 9;
@@ -499,6 +521,16 @@
             this.loadedImgCb.TabIndex = 8;
             this.loadedImgCb.SelectionChangeCommitted += new System.EventHandler(this.imageChooseCb_SelectionChangeCommitted);
             // 
+            // deleteSavedReadedPixBtn
+            // 
+            this.deleteSavedReadedPixBtn.Location = new System.Drawing.Point(279, 330);
+            this.deleteSavedReadedPixBtn.Name = "deleteSavedReadedPixBtn";
+            this.deleteSavedReadedPixBtn.Size = new System.Drawing.Size(100, 28);
+            this.deleteSavedReadedPixBtn.TabIndex = 28;
+            this.deleteSavedReadedPixBtn.Text = "Delete";
+            this.deleteSavedReadedPixBtn.UseVisualStyleBackColor = true;
+            this.deleteSavedReadedPixBtn.Click += new System.EventHandler(this.deleteSavedReadedPixBtn_Click);
+            // 
             // SettingsCaptureForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -568,6 +600,7 @@
         private System.Windows.Forms.Button applyPixSettBtn;
         private System.Windows.Forms.Button saveCaptureSettBtn;
         private System.Windows.Forms.Button modifyRectBtn;
+        private System.Windows.Forms.Button deleteSavedReadedPixBtn;
     }
 }
 
