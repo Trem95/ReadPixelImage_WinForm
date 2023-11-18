@@ -125,5 +125,11 @@
       <Version>1.2011.7.31</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="TestImages\1 - MAFIA II LIFE FULL.png" />
+    <Content Include="TestImages\2 - MAFIA II LIFE AMOST FULL.png" />
+    <Content Include="TestImages\3 - MAFIA II LIFE MIDDLE.png" />
+    <Content Include="TestImages\4 - MAFIA II  LIFE VERY LOW.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
