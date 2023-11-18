@@ -31,6 +31,7 @@ namespace ReadPixelImage
         ScreenReader screenReader = new ScreenReader();
         Bitmap currentImage;
         CaptureSetting currentCaptureSetting;
+        CaptureSetting tempCaptureSetting;
         ReadedPixelsSetting currentReadedPixelsSettings;
 
         Dictionary<string, Bitmap> imageDict;
@@ -66,6 +67,7 @@ namespace ReadPixelImage
             captureSettingsDict = new Dictionary<int, CaptureSetting>();
             readedPixSettingsDict = new Dictionary<int, ReadedPixelsSetting>();
             currentCaptureSetting = new CaptureSetting();
+            tempCaptureSetting = new CaptureSetting(-1, "Temporary Setting", 0, 0, Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
 
             captureSettingsWorkbooks = new Workbook();
             readedPixelsSettingsWorkbook = new Workbook();
@@ -77,6 +79,11 @@ namespace ReadPixelImage
             xCaptureNb.Maximum = Screen.PrimaryScreen.Bounds.Width;
             heightCaptureNb.Maximum = Screen.PrimaryScreen.Bounds.Height;
             widthCaptureNb.Maximum = Screen.PrimaryScreen.Bounds.Width;
+
+            yPixelsNb.Maximum = Screen.PrimaryScreen.Bounds.Height;
+            xPixelsNb.Maximum = Screen.PrimaryScreen.Bounds.Width;
+            heightPixelsNb.Maximum = Screen.PrimaryScreen.Bounds.Height;
+            widthPixelsNb.Maximum = Screen.PrimaryScreen.Bounds.Width;
 
             publicDocPath = Environment.ExpandEnvironmentVariables(@"%PUBLIC%\Documents");
             settingsDocPath = publicDocPath + @"\ReadPixelImage\Settings";
@@ -365,6 +372,25 @@ namespace ReadPixelImage
             }
         }
 
+        private void ManageTemporarySetting(bool setToCurrentSett)
+        {
+            if (setToCurrentSett)
+            {
+                tempCaptureSetting.X = XCoordCapture;
+                tempCaptureSetting.Y = YCoordCapture;
+                tempCaptureSetting.Width = WidthCoordCapture;
+                tempCaptureSetting.Height = HeightCoordCapture;
+
+                currentCaptureSetting = tempCaptureSetting;
+
+                if (!savedCaptureSettingsCb.Items.Contains(tempCaptureSetting))
+                    savedCaptureSettingsCb.Items.Add(tempCaptureSetting);
+            }
+            else if (savedCaptureSettingsCb.Items.Contains(tempCaptureSetting))
+                savedCaptureSettingsCb.Items.Remove(tempCaptureSetting);
+
+        }
+
         /// <summary>
         /// Create a new Capture Settings and save it in the CaptureSettings.xls files
         /// </summary>
@@ -442,6 +468,35 @@ namespace ReadPixelImage
             LoadReadedPixelsSettings();
         }
 
+        private void DeleteSetting(ReadedPixelsSetting readedPixelsSett)
+        {
+            //Cells[0, 0] = new Cell("ID");
+            //Cells[0, 1] = new Cell("NAME");
+            //Cells[0, 2] = new Cell("RECT COORDS");
+
+            CellCollection cells = readedPixelsSettingsWorkbook.Worksheets[0].Cells;
+            int idToRemove;
+            for (int i = 1; i < cells.Rows.Count; i++)
+            {
+                if (int.TryParse(cells.Rows[i].GetCell(0).ToString(), out idToRemove)
+                    && idToRemove == readedPixelsSett.Id)
+                {
+                    cells.Rows.Remove(i);
+                    break;
+                }
+            }
+
+            if (Directory.GetFiles(readedPixelsSettingsDocPath).Contains(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME))
+                File.Delete(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
+
+            readedPixelsSettingsWorkbook.Save(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
+            LoadReadedPixelsSettings();
+        }
+
+        private void DeleteSetting(CaptureSetting captureSett)
+        {
+            //TODO
+        }
 
         /// <summary>
         /// Display the current image or screenshot with the settings provided
@@ -450,14 +505,9 @@ namespace ReadPixelImage
         {
             Bitmap cropImgToShow = screenReader.GetParametredCapture(currentCaptureSetting, currentImage);
 
-            yPixelsNb.Maximum = captureForm.CaptureImg.Size.Height;
-            xPixelsNb.Maximum = captureForm.CaptureImg.Size.Width;
-            heightPixelsNb.Maximum = captureForm.CaptureImg.Size.Height;
-            widthPixelsNb.Maximum = captureForm.CaptureImg.Size.Width;
-
             if (savedCaptureSettingsCb.SelectedIndex == 0)
             {
-                captureForm.MaximumSize = new Size(0,0) ;
+                captureForm.MaximumSize = new Size(0, 0);
                 captureForm.WindowState = FormWindowState.Maximized;// Preset saved where (Width && Height == Screen.Primary.Bounds)
             }
             else
@@ -582,13 +632,11 @@ namespace ReadPixelImage
 
         private void applyPixSettBtn_Click(object sender, EventArgs e)
         {
-            //TODO TEST
             if (readedPixSettingsDict.TryGetValue((savedReadedPixelSettingsCb.SelectedItem as ReadedPixelsSetting).Id, out currentReadedPixelsSettings))
             {
                 LoadAndDisplayReadedPixelsRectangle();
                 captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles, savedReadedPixelSettingsCb.SelectedIndex);
             }
-
         }
 
         private void savedCaptureSettingsCb_SelectionChangeCommitted(object sender, EventArgs e)
@@ -626,7 +674,11 @@ namespace ReadPixelImage
 
         private void deleteSavedReadedPixBtn_Click(object sender, EventArgs e)
         {
-            //TODO delete the selected readePix settings, aking with a message box before
+            ReadedPixelsSetting settingToRemove;
+            if (readedPixSettingsDict.TryGetValue((savedReadedPixelSettingsCb.SelectedItem as ReadedPixelsSetting).Id, out settingToRemove))
+            {
+                DeleteSetting(settingToRemove);
+            }
         }
     }
 }
