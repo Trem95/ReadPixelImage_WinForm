@@ -31,6 +31,7 @@
             this.nameTb = new System.Windows.Forms.TextBox();
             this.createBtn = new System.Windows.Forms.Button();
             this.nameLbl = new System.Windows.Forms.Label();
+            this.cancelBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // nameTb
@@ -73,16 +74,31 @@
             this.nameLbl.TabIndex = 2;
             this.nameLbl.Text = "Name :";
             // 
+            // cancelBtn
+            // 
+            this.cancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cancelBtn.Font = new System.Drawing.Font("Verdana", 9.75F);
+            this.cancelBtn.Location = new System.Drawing.Point(347, 18);
+            this.cancelBtn.Name = "cancelBtn";
+            this.cancelBtn.Size = new System.Drawing.Size(75, 23);
+            this.cancelBtn.TabIndex = 3;
+            this.cancelBtn.Text = "Cancel";
+            this.cancelBtn.UseVisualStyleBackColor = true;
+            this.cancelBtn.Click += new System.EventHandler(this.cancelBtn_Click);
+            // 
             // CreateSettingForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(353, 53);
+            this.ClientSize = new System.Drawing.Size(433, 53);
+            this.Controls.Add(this.cancelBtn);
             this.Controls.Add(this.nameLbl);
             this.Controls.Add(this.createBtn);
             this.Controls.Add(this.nameTb);
-            this.MaximumSize = new System.Drawing.Size(369, 92);
-            this.MinimumSize = new System.Drawing.Size(369, 92);
+            this.MaximumSize = new System.Drawing.Size(449, 92);
+            this.MinimumSize = new System.Drawing.Size(449, 92);
             this.Name = "CreateSettingForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Create New Setting";
@@ -96,5 +112,6 @@
         private System.Windows.Forms.TextBox nameTb;
         private System.Windows.Forms.Button createBtn;
         private System.Windows.Forms.Label nameLbl;
+        private System.Windows.Forms.Button cancelBtn;
     }
 }

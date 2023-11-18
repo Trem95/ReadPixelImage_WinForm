@@ -23,13 +23,18 @@ namespace ReadPixelImage
         }
 
         public PictureBox CaptureImg { get { return capturePicBox; }}
-        public int SelectedRectangle { get; set; }
 
         public void SetAndDrawRectangles(List<Rectangle> rectangles, int selectRect = -1)
         {
             selectedRectIndex = selectRect;
             rectanglesToDraw = rectangles;
             capturePicBox.Invalidate(); // force Redraw the form
+        }
+
+        public void SetSelectedRectangle(int selectRect)
+        {
+            selectedRectIndex = selectRect;
+            capturePicBox.Invalidate();
         }
 
         private void capturePictureBox_Paint(object sender, PaintEventArgs e)

@@ -224,16 +224,23 @@ namespace ReadPixelImage
         /// </summary>
         private void InitSettings()
         {
+            LoadCaptureSettings();
+            LoadReadedPixelsSettings();
+
+            currentCaptureSetting = captureSettingsDict[0];
+            SetNumericalField(currentCaptureSetting);
+            savedCaptureSettingsCb.SelectedIndex = 0;//Set on default 
+
+            savedReadedPixelSettingsCb.SelectedIndex = 0;//Set on test
+        }
+
+        private void LoadCaptureSettings()
+        {
             captureSettingsDict = new Dictionary<int, CaptureSetting>();
-            readedPixSettingsDict = new Dictionary<int, ReadedPixelsSetting>();
-
-            savedReadedPixelSettingsCb.Items.Clear();
+            int prevSelIndex = savedCaptureSettingsCb.SelectedIndex;
             savedCaptureSettingsCb.Items.Clear();
-
             //Load Excell Workbooks from xls document in Public
             captureSettingsWorkbooks = Workbook.Load(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
-            readedPixelsSettingsWorkbook = Workbook.Load(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
-
             //For each row of first workSheet, extract the data and parse it in Capture / ReadingPixel Setting
             for (int i = 1; i < captureSettingsWorkbooks.Worksheets[0].Cells.Rows.Count(); i++)
             {
@@ -252,12 +259,21 @@ namespace ReadPixelImage
                 //Add the settings to the dictionnary and the comboBox
                 captureSettingsDict.Add(captSettToAdd.Id, captSettToAdd);
                 savedCaptureSettingsCb.Items.Add(captSettToAdd);
+                savedCaptureSettingsCb.SelectedIndex = prevSelIndex;
 
                 //Saved last Id in order to save new settings later
                 if (i == captureSettingsWorkbooks.Worksheets[0].Cells.Rows.Count())
                     newCaptureSettingsId = captSettToAdd.Id + 1;
             }
+        }
+        private void LoadReadedPixelsSettings()
+        {
+            readedPixSettingsDict = new Dictionary<int, ReadedPixelsSetting>();
 
+            int prevSelIndex = savedReadedPixelSettingsCb.SelectedIndex;
+            savedReadedPixelSettingsCb.Items.Clear();
+
+            readedPixelsSettingsWorkbook = Workbook.Load(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
             for (int i = 1; i < readedPixelsSettingsWorkbook.Worksheets[0].Cells.Rows.Count(); i++)
             {
                 Row rowToRead = readedPixelsSettingsWorkbook.Worksheets[0].Cells.Rows[i];
@@ -286,33 +302,31 @@ namespace ReadPixelImage
 
                 readedPixSettingsDict.Add(readedPixSettToAdd.Id, readedPixSettToAdd);
                 savedReadedPixelSettingsCb.Items.Add(readedPixSettToAdd);
-                if (i == readedPixelsSettingsWorkbook.Worksheets[0].Cells.Rows.Count())
+
+                if (i == readedPixelsSettingsWorkbook.Worksheets[0].Cells.Rows.Count() - 1)
                     newPixReadedSettingsId = readedPixSettToAdd.Id + 1;
             }
 
-            currentCaptureSetting = captureSettingsDict[0];
-            SetNumericalField(currentCaptureSetting);
-            savedCaptureSettingsCb.SelectedIndex = 0;//Set on default 
+            if (savedReadedPixelSettingsCb.Items.Count - 1 >= prevSelIndex)
+                savedReadedPixelSettingsCb.SelectedIndex = prevSelIndex;
+            else if (savedReadedPixelSettingsCb.Items.Count > 0)
+                savedReadedPixelSettingsCb.SelectedIndex = 0;
 
+            if (currentReadedPixelsSettings == null) currentReadedPixelsSettings = readedPixSettingsDict[0];
 
-            currentReadedPixelsSettings = readedPixSettingsDict[0];
-            LoadReadedPixelsRectangle();
-            savedReadedPixelSettingsCb.SelectedIndex = 0;//Set on test
+            LoadAndDisplayReadedPixelsRectangle();
         }
-
-        private void LoadReadedPixelsRectangle()
+        private void LoadAndDisplayReadedPixelsRectangle()
         {
-            if (currentReadedPixelsSettings.Rectangles.Count() > 0)
+            readedPixelsRectsListBox.Items.Clear();
+            foreach (Rectangle rect in currentReadedPixelsSettings.Rectangles)
             {
-                foreach (Rectangle rect in currentReadedPixelsSettings.Rectangles)
-                {
-                    readedPixelsRectsListBox.Items.Add(rect);
-                }
-                readedPixelsRectsListBox.SelectedIndex = 0;
-                captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles, readedPixelsRectsListBox.SelectedIndex);
-
-                SetNumericalField(currentReadedPixelsSettings.Rectangles[0]);
+                readedPixelsRectsListBox.Items.Add(rect);
             }
+            readedPixelsRectsListBox.SelectedIndex = 0;
+            captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles, readedPixelsRectsListBox.SelectedIndex);
+
+            SetNumericalField(currentReadedPixelsSettings.Rectangles[0]);
         }
 
         /// <summary>
@@ -339,6 +353,7 @@ namespace ReadPixelImage
             cells.CreateCell(rowCpt, 5, captureSett.Height, 0);
 
             captureSettingsWorkbooks.Save(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
+            LoadCaptureSettings();
         }
 
         /// <summary>
@@ -383,8 +398,12 @@ namespace ReadPixelImage
                 Rectangle rectToAdd = readedPixelsSett.Rectangles[i];
                 cells.CreateCell(rowCpt, 2 + i, $"{rectToAdd.X}|{rectToAdd.Y}|{rectToAdd.Width}|{rectToAdd.Height}", 0);
             }
+            //TODO manage exception where i cant save a existing Excell files
+            if (Directory.GetFiles(readedPixelsSettingsDocPath).Contains(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME))
+                File.Delete(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
 
             readedPixelsSettingsWorkbook.Save(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
+            LoadReadedPixelsSettings();
         }
 
 
@@ -498,15 +517,20 @@ namespace ReadPixelImage
 
         private void createNewPixSettBtn_Click(object sender, EventArgs e)
         {
-            //TODO get name in tb after click create
             createSettFom.ShowDialog();
-            ReadedPixelsSetting newRDPixSett = new ReadedPixelsSetting()
+            if (createSettFom.Result == DialogResult.OK)
             {
-                Id = newPixReadedSettingsId,
-            };
 
+                ReadedPixelsSetting newRDPixSett = new ReadedPixelsSetting()
+                {
+                    Id = newPixReadedSettingsId,
+                    Name = createSettFom.NameTbText,
+                    Rectangles = new List<Rectangle>()
+                };
+                CreateNewSettings(newRDPixSett);
+
+            }
             newPixReadedSettingsId++;
-            //TODO Manage creation of Pix Settings with excell features
         }
 
         private void saveCaptureSettBtn_Click(object sender, EventArgs e)
@@ -519,7 +543,10 @@ namespace ReadPixelImage
         {
             //TODO TEST
             if (readedPixSettingsDict.TryGetValue((savedReadedPixelSettingsCb.SelectedItem as ReadedPixelsSetting).Id, out currentReadedPixelsSettings))
-                LoadReadedPixelsRectangle();
+            {
+                LoadAndDisplayReadedPixelsRectangle();
+                captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles, savedReadedPixelSettingsCb.SelectedIndex);
+            }
 
         }
 
@@ -530,11 +557,13 @@ namespace ReadPixelImage
 
         private void pixelReadedRectsListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //TODO TEST
-            if (readedPixelsRectsListBox.SelectedIndex > 0)
+            if (readedPixelsRectsListBox.SelectedIndex >= 0)
+            {
                 SetNumericalField(currentReadedPixelsSettings.Rectangles[readedPixelsRectsListBox.SelectedIndex]);
-            modifyRectBtn.Visible = readedPixelsRectsListBox.SelectedIndex > 0;
-            deleteRectButton.Visible = readedPixelsRectsListBox.SelectedIndex > 0;
+                captureForm.SetSelectedRectangle(readedPixelsRectsListBox.SelectedIndex);
+            }
+            modifyRectBtn.Visible = readedPixelsRectsListBox.SelectedIndex >= 0;
+            deleteRectButton.Visible = readedPixelsRectsListBox.SelectedIndex >= 0;
         }
 
         private void addRectBtn_Click(object sender, EventArgs e)
