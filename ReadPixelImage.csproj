@@ -54,11 +54,17 @@
     <Compile Include="Forms\CaptureForm.Designer.cs">
       <DependentUpon>CaptureForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\CreateSettingForm.cs">
+    <Compile Include="Forms\CreateCaptureSettingForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\CreateSettingForm.Designer.cs">
-      <DependentUpon>CreateSettingForm.cs</DependentUpon>
+    <Compile Include="Forms\CreateCaptureSettingForm.Designer.cs">
+      <DependentUpon>CreateCaptureSettingForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\CreateReadedPixelsSettingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\CreateReadedPixelsSettingForm.Designer.cs">
+      <DependentUpon>CreateReadedPixelsSettingForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\SettingsCaptureForm.cs">
       <SubType>Form</SubType>
@@ -72,8 +78,11 @@
     <EmbeddedResource Include="Forms\CaptureForm.resx">
       <DependentUpon>CaptureForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\CreateSettingForm.resx">
-      <DependentUpon>CreateSettingForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\CreateCaptureSettingForm.resx">
+      <DependentUpon>CreateCaptureSettingForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\CreateReadedPixelsSettingForm.resx">
+      <DependentUpon>CreateReadedPixelsSettingForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SettingsCaptureForm.resx">
       <DependentUpon>SettingsCaptureForm.cs</DependentUpon>

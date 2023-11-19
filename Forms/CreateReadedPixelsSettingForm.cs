@@ -10,10 +10,10 @@ using System.Windows.Forms;
 
 namespace ReadPixelImage.Forms
 {
-    public partial class CreateSettingForm : Form
+    public partial class CreateReadedPixelsSettingForm : Form
     {
         DialogResult result;
-        public CreateSettingForm()
+        public CreateReadedPixelsSettingForm()
         {
             InitializeComponent();
             result = DialogResult.Cancel;
