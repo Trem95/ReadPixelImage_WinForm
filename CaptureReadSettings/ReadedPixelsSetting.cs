@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,19 +10,46 @@ namespace ReadPixelImage.CaptureReadSettings
 {
     public class ReadedPixelsSetting
     {
-        public ReadedPixelsSetting() {}
-        public ReadedPixelsSetting(int id, string name, List<Rectangle> rects = null) 
+        private int id;
+        private string name;
+        private List<Rectangle> rectangles;//TODO make propfull in every class and manage the exception in SettingsCaptureForm
+
+        public ReadedPixelsSetting() { }
+        public ReadedPixelsSetting(int id, string name, List<Rectangle> rects = null)
         {
-            Id = id;
-            Name = name;
+            this.id = id;
+            this.name = name;
             if (rects == null)
-                Rectangles = new List<Rectangle>();
+                rectangles = new List<Rectangle>();
             else
-                Rectangles = rects;
+                rectangles = rects;
         }
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public List<Rectangle> Rectangles { get; set; }
+        public int Id
+        {
+            get { return id; }
+            set { id = value; }
+        }
+        public string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
+
+        public List<Rectangle> Rectangles
+        {
+            get { return rectangles; }
+            set { rectangles = value; }
+        }
+        
+        public void EditRectangle(Rectangle rectToEdit, int idToEdit)
+        {
+            rectangles[idToEdit] = rectToEdit;
+        }
+
+        public void RemoveRectangle(int idToRemove)
+        {
+            rectangles.RemoveAt(idToRemove);
+        }
 
         public override string ToString()
         {

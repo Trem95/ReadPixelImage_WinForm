@@ -41,6 +41,8 @@ namespace ReadPixelImage
         int newCaptureSettingsId;
         int newPixReadedSettingsId;
 
+        bool isRectsSettingModified;
+
         Workbook captureSettingsWorkbooks;
         Workbook readedPixelsSettingsWorkbook;
 
@@ -84,6 +86,8 @@ namespace ReadPixelImage
             xPixelsNb.Maximum = Screen.PrimaryScreen.Bounds.Width;
             heightPixelsNb.Maximum = Screen.PrimaryScreen.Bounds.Height;
             widthPixelsNb.Maximum = Screen.PrimaryScreen.Bounds.Width;
+
+            isRectsSettingModified = false;
 
             publicDocPath = Environment.ExpandEnvironmentVariables(@"%PUBLIC%\Documents");
             settingsDocPath = publicDocPath + @"\ReadPixelImage\Settings";
@@ -361,10 +365,11 @@ namespace ReadPixelImage
 
             if (currentReadedPixelsSettings.Rectangles.Count > 0)
             {
-                foreach (Rectangle rect in currentReadedPixelsSettings.Rectangles)
+                for (int i = 0; i < currentReadedPixelsSettings.Rectangles.Count(); i++)
                 {
-                    readedPixelsRectsListBox.Items.Add(rect);
+                    readedPixelsRectsListBox.Items.Add(currentReadedPixelsSettings.Rectangles[i]);
                 }
+
                 if (readedPixelsRectsListBox.Items.Count > 0)
                     readedPixelsRectsListBox.SelectedIndex = 0;
 
@@ -412,7 +417,7 @@ namespace ReadPixelImage
                 if (item.ToString().Contains(".png") || item.ToString().Contains(".jpeg"))
                 {
                     Bitmap imgToAdd = new Bitmap(item.ToString());
-                    string imgName = item.Substring((imagesDocPath.Length + "\\Loaded").Length + 1);
+                    string imgName = item.Substring((imagesDocPath + "\\Loaded").Length + 1);
                     imageDict.Add(imgName, imgToAdd);
                     loadedImgCb.Items.Add(imgName);
                 }
@@ -516,7 +521,40 @@ namespace ReadPixelImage
 
         private void EditSetting(ReadedPixelsSetting readedPixelsSett)
         {
-            //TODO
+            ReadedPixelsSetting verif;
+            if (readedPixSettingsDict.TryGetValue(readedPixelsSett.Id, out verif))
+            {
+                CellCollection cells = readedPixelsSettingsWorkbook.Worksheets[0].Cells;
+                Row rowToEdit = new Row();
+                int rowIndex = -1;
+                for (int i = 1; i < cells.Rows.Count(); i++)
+                {
+                    int verifInt;
+                    if (int.TryParse(cells.Rows[i].GetCell(0).Value.ToString(), out verifInt) && verifInt == readedPixelsSett.Id)
+                    {
+                        rowToEdit = cells.Rows[i];
+                        rowIndex = i;
+                        break;
+                    }
+                }
+                //Cells[0, 0] = "ID"
+                //Cells[0, 1] = "Name"
+                //Cells[0, 2] = "RECTANGLES"
+                rowToEdit.GetCell(1).Value = readedPixelsSett.Name;
+
+                for (int i = 0; i < readedPixelsSett.Rectangles.Count(); i++)
+                {
+                    Rectangle rectToAdd = readedPixelsSett.Rectangles[i];
+                    rowToEdit.GetCell(2 + i).Value = $"{rectToAdd.X}|{rectToAdd.Y}|{rectToAdd.Width}|{rectToAdd.Height}";
+                }
+
+                if (Directory.GetFiles(readedPixelsSettingsDocPath).Contains(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME))
+                    File.Delete(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
+
+                Thread.Sleep(750);
+                readedPixelsSettingsWorkbook.Save(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
+                LoadReadedPixelsSettings();
+            }
         }
 
         private void DeleteSetting(ReadedPixelsSetting readedPixelsSett)
@@ -533,6 +571,16 @@ namespace ReadPixelImage
                     && idToRemove == readedPixelsSett.Id)
                 {
                     cells.Rows.Remove(i);
+                    if (i < cells.Rows.Count)
+                    {
+                        for (int j = i + 1; j < cells.Rows.Count; j++)
+                        {
+                            cells.Rows[j - 1] = cells.Rows[j];
+                            cells.Rows[j - 1].GetCell(0).Value = j - 1;//ID
+                        }
+                        cells.Rows.Remove(cells.Rows.Last().Key);
+                    }
+
                     break;
                 }
             }
@@ -540,6 +588,7 @@ namespace ReadPixelImage
             if (Directory.GetFiles(readedPixelsSettingsDocPath).Contains(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME))
                 File.Delete(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
 
+            Thread.Sleep(750);
             readedPixelsSettingsWorkbook.Save(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
             LoadReadedPixelsSettings();
         }
@@ -554,6 +603,16 @@ namespace ReadPixelImage
                     && idToRemove == captureSett.Id)
                 {
                     cells.Rows.Remove(i);
+                    if (i < cells.Rows.Count)
+                    {
+                        for (int j = i + 1; j < cells.Rows.Count; j++)
+                        {
+                            cells.Rows[j - 1] = cells.Rows[j];
+                            cells.Rows[j - 1].GetCell(0).Value = j - 1;//ID
+                        }
+
+                        cells.Rows.Remove(cells.Rows.Last().Key);
+                    }
                     break;
                 }
             }
@@ -561,6 +620,7 @@ namespace ReadPixelImage
             if (Directory.GetFiles(captureSettingsDocPath).Contains(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME))
                 File.Delete(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
 
+            Thread.Sleep(750);
             captureSettingsWorkbooks.Save(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
             LoadCaptureSettings();
         }
@@ -586,6 +646,7 @@ namespace ReadPixelImage
 
             captureForm.CaptureImg.Image = cropImgToShow;
             captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles, currentReadedPixelsSettings.Rectangles.Count() > 0 ? 0 : -1);
+            captureForm.Show();
 
             this.WindowState = FormWindowState.Normal;
         }
@@ -640,31 +701,13 @@ namespace ReadPixelImage
 
         private void drawButton_Click(object sender, EventArgs e)
         {
-            //TODO manage the behavior of ReadedPixSettings
-            //draw rect widht coor in numField
-            //manage behavir of add button visiblity
-            // andd and manage currentDrawedRect whos gonna be save if in current rdPixelsSettigns if click on add button
-
-            //Rectangle rectangle = new Rectangle(XCoordPixelsReaded, YCoordPixelsReaded, WidthCoordPixelsReaded, HeightCoordPixelsReaded);
-            //if (savedPixelSettingsCb.SelectedIndex == 0)//Set on Create Settings
-            //{
-
-            //    ReadedPixelsSettings newReadedPixSett = new ReadedPixelsSettings(newPixReadedSettingsId, "New Settings " + persPixelsSettingsCdw, new List<Rectangle>() { rectangle });
-            //    readedPixSettings.Add(newReadedPixSett.Id, newReadedPixSett);
-            //    savedPixelSettingsCb.Items.Add(newReadedPixSett);
-            //    currentReadedPixelsSettings = readedPixSettings.Values.Last();
-            //    savedPixelSettingsCb.SelectedIndex = savedPixelSettingsCb.Items.Count - 1;
-
-            //    newPixReadedSettingsId++;
-            //    persPixelsSettingsCdw++;
-
-            //    captureForm.SetAndDrawRectangles(newReadedPixSett.Rectangles);
-            //}
-            //else
-            //{
-            //    currentReadedPixelsSettings.Rectangles.Add(rectangle);
-            //    captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles
-            //}
+            isRectsSettingModified = true;
+            Rectangle rectangle = new Rectangle(XCoordPixelsReaded, YCoordPixelsReaded, WidthCoordPixelsReaded, HeightCoordPixelsReaded);
+            currentReadedPixelsSettings.Rectangles.Add(rectangle);
+            captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles, currentReadedPixelsSettings.Rectangles.Count() - 1);
+            readedPixelsRectsListBox.Items.Add(rectangle);
+            readedPixelsRectsListBox.SelectedItem = rectangle;
+            //readedPixelsRectsListBox.
         }
 
         private void applyChosenSettingsBtn_Click(object sender, EventArgs e)
@@ -716,8 +759,6 @@ namespace ReadPixelImage
         private void savedCaptureSettingsCb_SelectionChangeCommitted(object sender, EventArgs e)
         {
             currentCaptureSetting = savedCaptureSettingsCb.SelectedItem as CaptureSetting;
-
-
         }
 
         private void pixelReadedRectsListBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -731,19 +772,47 @@ namespace ReadPixelImage
             deleteRectButton.Visible = readedPixelsRectsListBox.SelectedIndex >= 0;
         }
 
-        private void addRectBtn_Click(object sender, EventArgs e)
+        private void saveRectBtn_Click(object sender, EventArgs e)
         {
-            //TODO add drawed rectangle in list first manage drawedRectangle in capture form
+            isRectsSettingModified = false;
+            EditSetting(currentReadedPixelsSettings);//TODO finished and test
         }
 
         private void modifyRectBtn_Click(object sender, EventArgs e)
         {
-            //TODO data from rectangle in list box
+            if (readedPixelsRectsListBox.SelectedIndex >= 0)
+            {
+                isRectsSettingModified = true;
+                int index = readedPixelsRectsListBox.SelectedIndex;
+                Rectangle rectToEdit = new Rectangle(XCoordPixelsReaded, YCoordPixelsReaded, WidthCoordPixelsReaded, HeightCoordPixelsReaded);
+
+                currentReadedPixelsSettings.EditRectangle(rectToEdit, index);
+                readedPixelsRectsListBox.Items.Clear();
+                for (int i = 0; i < currentReadedPixelsSettings.Rectangles.Count(); i++)
+                {
+                    readedPixelsRectsListBox.Items.Add(currentReadedPixelsSettings.Rectangles[i]);
+                }
+                readedPixelsRectsListBox.SelectedItem = rectToEdit;
+
+                captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles, index);
+            }
         }
 
         private void deleteRectButton_Click(object sender, EventArgs e)
         {
-            //TODO delete rectangle from
+            if (readedPixelsRectsListBox.SelectedIndex > 0)
+            {
+                isRectsSettingModified = true;
+                currentReadedPixelsSettings.RemoveRectangle(readedPixelsRectsListBox.SelectedIndex);
+                readedPixelsRectsListBox.Items.Clear();
+                foreach (Rectangle rectangle in currentReadedPixelsSettings.Rectangles)
+                {
+                    readedPixelsRectsListBox.Items.Add(rectangle);
+                }
+                readedPixelsRectsListBox.SelectedIndex = readedPixelsRectsListBox.Items.Count > 0 ? 0 : -1;
+
+                captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles, readedPixelsRectsListBox.SelectedIndex);
+            }
         }
 
         #endregion
@@ -777,6 +846,11 @@ namespace ReadPixelImage
             CaptureSetting captSettToRemove;
             if (captureSettingsDict.TryGetValue((savedCaptureSettingsCb.SelectedItem as CaptureSetting).Id, out captSettToRemove))
                 DeleteSetting(captSettToRemove);
+        }
+
+        private void readedPixelBtn_Click(object sender, EventArgs e)
+        {
+            saveRectBtn.Enabled = isRectsSettingModified;
         }
     }
 }

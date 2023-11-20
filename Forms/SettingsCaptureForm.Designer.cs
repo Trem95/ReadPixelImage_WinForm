@@ -40,7 +40,7 @@
             this.savedPixelSettingsLb = new System.Windows.Forms.Label();
             this.savedReadedPixelSettingsCb = new System.Windows.Forms.ComboBox();
             this.deleteRectButton = new System.Windows.Forms.Button();
-            this.addRectBtn = new System.Windows.Forms.Button();
+            this.saveRectBtn = new System.Windows.Forms.Button();
             this.readedPixelsRectsListBox = new System.Windows.Forms.ListBox();
             this.yPixelsLbl = new System.Windows.Forms.Label();
             this.xPixelsNb = new System.Windows.Forms.NumericUpDown();
@@ -144,7 +144,7 @@
             this.pixelsReadedGb.Controls.Add(this.savedPixelSettingsLb);
             this.pixelsReadedGb.Controls.Add(this.savedReadedPixelSettingsCb);
             this.pixelsReadedGb.Controls.Add(this.deleteRectButton);
-            this.pixelsReadedGb.Controls.Add(this.addRectBtn);
+            this.pixelsReadedGb.Controls.Add(this.saveRectBtn);
             this.pixelsReadedGb.Controls.Add(this.readedPixelsRectsListBox);
             this.pixelsReadedGb.Controls.Add(this.yPixelsLbl);
             this.pixelsReadedGb.Controls.Add(this.xPixelsNb);
@@ -175,7 +175,7 @@
             // 
             // modifyRectBtn
             // 
-            this.modifyRectBtn.Location = new System.Drawing.Point(194, 79);
+            this.modifyRectBtn.Location = new System.Drawing.Point(102, 79);
             this.modifyRectBtn.Name = "modifyRectBtn";
             this.modifyRectBtn.Size = new System.Drawing.Size(80, 28);
             this.modifyRectBtn.TabIndex = 27;
@@ -183,6 +183,7 @@
             this.modifyRectBtn.UseVisualStyleBackColor = true;
             this.modifyRectBtn.Visible = false;
             this.modifyRectBtn.Click += new System.EventHandler(this.modifyRectBtn_Click);
+            this.modifyRectBtn.Click += new System.EventHandler(this.readedPixelBtn_Click);
             // 
             // applyPixSettBtn
             // 
@@ -225,7 +226,7 @@
             // 
             // deleteRectButton
             // 
-            this.deleteRectButton.Location = new System.Drawing.Point(285, 79);
+            this.deleteRectButton.Location = new System.Drawing.Point(193, 79);
             this.deleteRectButton.Name = "deleteRectButton";
             this.deleteRectButton.Size = new System.Drawing.Size(80, 28);
             this.deleteRectButton.TabIndex = 16;
@@ -233,17 +234,18 @@
             this.deleteRectButton.UseVisualStyleBackColor = true;
             this.deleteRectButton.Visible = false;
             this.deleteRectButton.Click += new System.EventHandler(this.deleteRectButton_Click);
+            this.deleteRectButton.Click += new System.EventHandler(this.readedPixelBtn_Click);
             // 
-            // addRectBtn
+            // saveRectBtn
             // 
-            this.addRectBtn.Location = new System.Drawing.Point(102, 79);
-            this.addRectBtn.Name = "addRectBtn";
-            this.addRectBtn.Size = new System.Drawing.Size(80, 28);
-            this.addRectBtn.TabIndex = 15;
-            this.addRectBtn.Text = "Add";
-            this.addRectBtn.UseVisualStyleBackColor = true;
-            this.addRectBtn.Visible = false;
-            this.addRectBtn.Click += new System.EventHandler(this.addRectBtn_Click);
+            this.saveRectBtn.Location = new System.Drawing.Point(284, 79);
+            this.saveRectBtn.Name = "saveRectBtn";
+            this.saveRectBtn.Size = new System.Drawing.Size(80, 28);
+            this.saveRectBtn.TabIndex = 15;
+            this.saveRectBtn.Text = "Save";
+            this.saveRectBtn.UseVisualStyleBackColor = true;
+            this.saveRectBtn.Visible = false;
+            this.saveRectBtn.Click += new System.EventHandler(this.saveRectBtn_Click);
             // 
             // readedPixelsRectsListBox
             // 
@@ -288,6 +290,7 @@
             this.drawButton.Text = "Draw";
             this.drawButton.UseVisualStyleBackColor = true;
             this.drawButton.Click += new System.EventHandler(this.drawButton_Click);
+            this.drawButton.Click += new System.EventHandler(this.readedPixelBtn_Click);
             // 
             // widthPixelsNb
             // 
@@ -615,7 +618,7 @@
         private System.Windows.Forms.Label savedCaptureSettingsLb;
         private System.Windows.Forms.Button applyTempCappSettBtn;
         private System.Windows.Forms.ListBox readedPixelsRectsListBox;
-        private System.Windows.Forms.Button addRectBtn;
+        private System.Windows.Forms.Button saveRectBtn;
         private System.Windows.Forms.Button deleteRectButton;
         private System.Windows.Forms.Label savedPixelSettingsLb;
         private System.Windows.Forms.ComboBox savedReadedPixelSettingsCb;
