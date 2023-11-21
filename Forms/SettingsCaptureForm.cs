@@ -542,10 +542,15 @@ namespace ReadPixelImage
                 //Cells[0, 2] = "RECTANGLES"
                 rowToEdit.GetCell(1).Value = readedPixelsSett.Name;
 
+                for (int i = 2; i < rowToEdit.LastColIndex; i++)
+                {
+                    rowToEdit.SetCell(i, new Cell(""));
+                }
+
                 for (int i = 0; i < readedPixelsSett.Rectangles.Count(); i++)
                 {
                     Rectangle rectToAdd = readedPixelsSett.Rectangles[i];
-                    rowToEdit.GetCell(2 + i).Value = $"{rectToAdd.X}|{rectToAdd.Y}|{rectToAdd.Width}|{rectToAdd.Height}";
+                    rowToEdit.SetCell(2 + i, new Cell($"{rectToAdd.X}|{rectToAdd.Y}|{rectToAdd.Width}|{rectToAdd.Height}"));
                 }
 
                 if (Directory.GetFiles(readedPixelsSettingsDocPath).Contains(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME))
@@ -573,11 +578,20 @@ namespace ReadPixelImage
                     cells.Rows.Remove(i);
                     if (i < cells.Rows.Count)
                     {
-                        for (int j = i + 1; j < cells.Rows.Count; j++)
+                        if (i + 1 < cells.Rows.Count)
                         {
-                            cells.Rows[j - 1] = cells.Rows[j];
-                            cells.Rows[j - 1].GetCell(0).Value = j - 1;//ID
+                            for (int j = i + 1; j < cells.Rows.Count; j++)
+                            {
+                                cells.Rows[j - 1] = cells.Rows[j];
+                                cells.Rows[j - 1].GetCell(0).Value = j - 1;//ID
+                            }
                         }
+                        else
+                        {
+                            cells.Rows[i] = cells.Rows[i + 1];
+                            cells.Rows[i].GetCell(0).Value = i;
+                        }
+
                         cells.Rows.Remove(cells.Rows.Last().Key);
                     }
 
@@ -605,11 +619,20 @@ namespace ReadPixelImage
                     cells.Rows.Remove(i);
                     if (i < cells.Rows.Count)
                     {
-                        for (int j = i + 1; j < cells.Rows.Count; j++)
+
+                        if (i + 1 < cells.Rows.Count)
                         {
-                            cells.Rows[j - 1] = cells.Rows[j];
-                            cells.Rows[j - 1].GetCell(0).Value = j - 1;//ID
+                            for (int j = i + 1; j < cells.Rows.Count; j++)
+                            {
+                                cells.Rows[j - 1] = cells.Rows[j];
+                                cells.Rows[j - 1].GetCell(0).Value = j - 1;//ID
+                            }
                         }
+                        else
+                        {
+                            cells.Rows[i] = cells.Rows[i + 1];
+                            cells.Rows[i].GetCell(0).Value = i;
+                        }    
 
                         cells.Rows.Remove(cells.Rows.Last().Key);
                     }
@@ -850,7 +873,7 @@ namespace ReadPixelImage
 
         private void readedPixelBtn_Click(object sender, EventArgs e)
         {
-            saveRectBtn.Enabled = isRectsSettingModified;
+            saveRectBtn.Visible = isRectsSettingModified;
         }
     }
 }
