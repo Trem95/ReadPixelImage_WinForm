@@ -72,7 +72,7 @@
             0});
             this.xCaptureNb.Name = "xCaptureNb";
             this.xCaptureNb.Size = new System.Drawing.Size(65, 22);
-            this.xCaptureNb.TabIndex = 22;
+            this.xCaptureNb.TabIndex = 1;
             // 
             // widthCaptureNb
             // 
@@ -88,7 +88,7 @@
             0});
             this.widthCaptureNb.Name = "widthCaptureNb";
             this.widthCaptureNb.Size = new System.Drawing.Size(65, 22);
-            this.widthCaptureNb.TabIndex = 23;
+            this.widthCaptureNb.TabIndex = 4;
             // 
             // heightCaptureLbl
             // 
@@ -117,7 +117,7 @@
             0});
             this.yCaptureNb.Name = "yCaptureNb";
             this.yCaptureNb.Size = new System.Drawing.Size(65, 22);
-            this.yCaptureNb.TabIndex = 24;
+            this.yCaptureNb.TabIndex = 2;
             // 
             // widthCaptureLbl
             // 
@@ -146,7 +146,7 @@
             0});
             this.heightCaptureNb.Name = "heightCaptureNb";
             this.heightCaptureNb.Size = new System.Drawing.Size(65, 22);
-            this.heightCaptureNb.TabIndex = 25;
+            this.heightCaptureNb.TabIndex = 3;
             // 
             // xCaptureLbl
             // 
@@ -185,7 +185,7 @@
             this.nameTb.Margin = new System.Windows.Forms.Padding(4);
             this.nameTb.Name = "nameTb";
             this.nameTb.Size = new System.Drawing.Size(241, 23);
-            this.nameTb.TabIndex = 29;
+            this.nameTb.TabIndex = 0;
             this.nameTb.TextChanged += new System.EventHandler(this.nameTb_TextChanged);
             // 
             // createOrEditBtn
@@ -197,7 +197,7 @@
             this.createOrEditBtn.Location = new System.Drawing.Point(137, 119);
             this.createOrEditBtn.Name = "createOrEditBtn";
             this.createOrEditBtn.Size = new System.Drawing.Size(75, 23);
-            this.createOrEditBtn.TabIndex = 31;
+            this.createOrEditBtn.TabIndex = 5;
             this.createOrEditBtn.Text = "Create";
             this.createOrEditBtn.UseVisualStyleBackColor = true;
             this.createOrEditBtn.Click += new System.EventHandler(this.createOrEditBtn_Click);

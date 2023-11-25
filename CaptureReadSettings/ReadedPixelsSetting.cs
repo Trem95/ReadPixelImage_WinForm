@@ -12,7 +12,7 @@ namespace ReadPixelImage.CaptureReadSettings
     {
         private int id;
         private string name;
-        private List<Rectangle> rectangles;//TODO make propfull in every class and manage the exception in SettingsCaptureForm
+        private List<Rectangle> rectangles;
 
         public ReadedPixelsSetting() { }
         public ReadedPixelsSetting(int id, string name, List<Rectangle> rects = null)

@@ -279,7 +279,7 @@ namespace ReadPixelImage
             //For each row of first workSheet, extract the data and parse it in Capture / ReadingPixel Setting
             for (int i = 1; i < captureSettingsWorkbooks.Worksheets[0].Cells.Rows.Count(); i++)
             {
-                Row rowToRead = captureSettingsWorkbooks.Worksheets[0].Cells.Rows[i];//TODO manage exception when create two settings and delete the oldest one
+                Row rowToRead = captureSettingsWorkbooks.Worksheets[0].Cells.Rows[i];
                 //xls files are construct like the models 
                 CaptureSetting captSettToAdd = new CaptureSetting()
                 {
@@ -542,7 +542,7 @@ namespace ReadPixelImage
                 //Cells[0, 2] = "RECTANGLES"
                 rowToEdit.GetCell(1).Value = readedPixelsSett.Name;
 
-                for (int i = 2; i < rowToEdit.LastColIndex; i++)
+                for (int i = 2; i < rowToEdit.LastColIndex; i++)//Delete all old rectangle entry in the excell file
                 {
                     rowToEdit.SetCell(i, new Cell(""));
                 }
@@ -730,7 +730,7 @@ namespace ReadPixelImage
             captureForm.SetAndDrawRectangles(currentReadedPixelsSettings.Rectangles, currentReadedPixelsSettings.Rectangles.Count() - 1);
             readedPixelsRectsListBox.Items.Add(rectangle);
             readedPixelsRectsListBox.SelectedItem = rectangle;
-            //readedPixelsRectsListBox.
+            //readedPixelsRectsListBox.//TODO test and finish
         }
 
         private void applyChosenSettingsBtn_Click(object sender, EventArgs e)

@@ -41,7 +41,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.nameTb.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.nameTb.Location = new System.Drawing.Point(96, 22);
-            this.nameTb.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.nameTb.Margin = new System.Windows.Forms.Padding(4);
             this.nameTb.Name = "nameTb";
             this.nameTb.Size = new System.Drawing.Size(241, 23);
             this.nameTb.TabIndex = 0;
@@ -55,7 +55,7 @@
             this.createBtn.Enabled = false;
             this.createBtn.Font = new System.Drawing.Font("Verdana", 9.75F);
             this.createBtn.Location = new System.Drawing.Point(355, 22);
-            this.createBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.createBtn.Margin = new System.Windows.Forms.Padding(4);
             this.createBtn.Name = "createBtn";
             this.createBtn.Size = new System.Drawing.Size(100, 28);
             this.createBtn.TabIndex = 1;
@@ -84,10 +84,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cancelBtn.Font = new System.Drawing.Font("Verdana", 9.75F);
             this.cancelBtn.Location = new System.Drawing.Point(463, 22);
-            this.cancelBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cancelBtn.Margin = new System.Windows.Forms.Padding(4);
             this.cancelBtn.Name = "cancelBtn";
             this.cancelBtn.Size = new System.Drawing.Size(100, 28);
-            this.cancelBtn.TabIndex = 3;
+            this.cancelBtn.TabIndex = 2;
             this.cancelBtn.Text = "Cancel";
             this.cancelBtn.UseVisualStyleBackColor = true;
             this.cancelBtn.Click += new System.EventHandler(this.cancelBtn_Click);
@@ -102,7 +102,7 @@
             this.Controls.Add(this.createBtn);
             this.Controls.Add(this.nameTb);
             this.Font = new System.Drawing.Font("Verdana", 9.75F);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximumSize = new System.Drawing.Size(593, 104);
             this.MinimumSize = new System.Drawing.Size(593, 104);
             this.Name = "CreateReadedPixelsSettingForm";
