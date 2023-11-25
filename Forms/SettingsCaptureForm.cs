@@ -51,8 +51,8 @@ namespace ReadPixelImage
         string imagesDocPath;
         string captureSettingsDocPath;
         string readedPixelsSettingsDocPath;
-        const string CAPTURE_SETTINGS_FILENAME = "\\CaptureSettings.csv";
-        const string READED_PIXELS_SETTINGS_FILENAME = "\\ReadedPixelsSettings.csv";
+        const string CAPTURE_SETTINGS_FILENAME = "\\CaptureSettings.xlsx";
+        const string READED_PIXELS_SETTINGS_FILENAME = "\\ReadedPixelsSettings.xlsx";
 
         #endregion
 
@@ -94,6 +94,10 @@ namespace ReadPixelImage
             imagesDocPath = publicDocPath + @"\ReadPixelImage\Images";
             captureSettingsDocPath = settingsDocPath + @"\Capture";
             readedPixelsSettingsDocPath = settingsDocPath + @"\Pixels";
+
+            drawButton.Click += readedPixelBtn_Click;
+            modifyRectBtn.Click += readedPixelBtn_Click;
+            deleteRectButton.Click += readedPixelBtn_Click;
 
             ManageSettingsAndDirectories();
             LoadImages();
@@ -557,7 +561,7 @@ namespace ReadPixelImage
                     File.Delete(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
 
                 Thread.Sleep(750);
-                readedPixelsSettingsWorkbook.Save(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
+                readedPixelsSettingsWorkbook.Save(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
                 LoadReadedPixelsSettings();
             }
         }
@@ -798,7 +802,10 @@ namespace ReadPixelImage
         private void saveRectBtn_Click(object sender, EventArgs e)
         {
             isRectsSettingModified = false;
-            EditSetting(currentReadedPixelsSettings);//TODO finished and test
+            saveRectBtn.Visible = isRectsSettingModified;
+            this.Enabled = false;
+            EditSetting(currentReadedPixelsSettings);
+            this.Enabled = true;
         }
 
         private void modifyRectBtn_Click(object sender, EventArgs e)

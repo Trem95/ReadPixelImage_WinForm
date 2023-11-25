@@ -38,6 +38,8 @@ namespace ReadPixelImage
 
         private void capturePictureBox_Paint(object sender, PaintEventArgs e)
         {
+            Pen orPen = new Pen(Color.Orange, 0.5F);
+            Pen grPen = new Pen(Color.Orange, 0.5F);
             for (int i = 0; i < rectanglesToDraw.Count(); i++)
                 e.Graphics.DrawRectangle(selectedRectIndex == i ? Pens.Orange : Pens.LimeGreen, rectanglesToDraw[i]);
         }

@@ -182,7 +182,7 @@
             this.modifyRectBtn.Text = "Modify";
             this.modifyRectBtn.UseVisualStyleBackColor = true;
             this.modifyRectBtn.Visible = false;
-            this.modifyRectBtn.Click += new System.EventHandler(this.readedPixelBtn_Click);
+            this.modifyRectBtn.Click += new System.EventHandler(this.modifyRectBtn_Click);
             // 
             // applyPixSettBtn
             // 
@@ -216,6 +216,7 @@
             // 
             // savedReadedPixelSettingsCb
             // 
+            this.savedReadedPixelSettingsCb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.savedReadedPixelSettingsCb.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.savedReadedPixelSettingsCb.FormattingEnabled = true;
             this.savedReadedPixelSettingsCb.Location = new System.Drawing.Point(11, 302);
@@ -232,7 +233,7 @@
             this.deleteRectButton.Text = "Delete";
             this.deleteRectButton.UseVisualStyleBackColor = true;
             this.deleteRectButton.Visible = false;
-            this.deleteRectButton.Click += new System.EventHandler(this.readedPixelBtn_Click);
+            this.deleteRectButton.Click += new System.EventHandler(this.deleteRectButton_Click);
             // 
             // saveRectBtn
             // 
@@ -287,7 +288,7 @@
             this.drawButton.TabIndex = 16;
             this.drawButton.Text = "Draw";
             this.drawButton.UseVisualStyleBackColor = true;
-            this.drawButton.Click += new System.EventHandler(this.readedPixelBtn_Click);
+            this.drawButton.Click += new System.EventHandler(this.drawButton_Click);
             // 
             // widthPixelsNb
             // 
@@ -445,6 +446,7 @@
             // 
             // savedCaptureSettingsCb
             // 
+            this.savedCaptureSettingsCb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.savedCaptureSettingsCb.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.savedCaptureSettingsCb.FormattingEnabled = true;
             this.savedCaptureSettingsCb.ItemHeight = 14;
@@ -548,6 +550,7 @@
             // 
             // loadedImgCb
             // 
+            this.loadedImgCb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.loadedImgCb.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.loadedImgCb.FormattingEnabled = true;
             this.loadedImgCb.Location = new System.Drawing.Point(10, 206);
