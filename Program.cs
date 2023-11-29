@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReadPixelImage.Forms;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,7 +17,8 @@ namespace ReadPixelImage
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new SettingsCaptureForm());
+            //Application.Run(new SettingsCaptureForm());
+            Application.Run(new HealthChecker());
         }
     }
 }

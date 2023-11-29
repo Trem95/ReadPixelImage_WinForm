@@ -39,30 +39,45 @@
             // 
             // imagesCb
             // 
+            this.imagesCb.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.imagesCb.FormattingEnabled = true;
             this.imagesCb.Location = new System.Drawing.Point(197, 31);
             this.imagesCb.Name = "imagesCb";
             this.imagesCb.Size = new System.Drawing.Size(330, 22);
             this.imagesCb.TabIndex = 0;
+            this.imagesCb.SelectionChangeCommitted += new System.EventHandler(this.imagesCb_SelectionChangeCommitted);
             // 
             // captureSettCb
             // 
+            this.captureSettCb.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.captureSettCb.FormattingEnabled = true;
             this.captureSettCb.Location = new System.Drawing.Point(197, 73);
             this.captureSettCb.Name = "captureSettCb";
             this.captureSettCb.Size = new System.Drawing.Size(330, 22);
             this.captureSettCb.TabIndex = 1;
+            this.captureSettCb.SelectionChangeCommitted += new System.EventHandler(this.captureSettCb_SelectionChangeCommitted);
             // 
             // readedPixSettCb
             // 
+            this.readedPixSettCb.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.readedPixSettCb.FormattingEnabled = true;
             this.readedPixSettCb.Location = new System.Drawing.Point(197, 115);
             this.readedPixSettCb.Name = "readedPixSettCb";
             this.readedPixSettCb.Size = new System.Drawing.Size(330, 22);
             this.readedPixSettCb.TabIndex = 2;
+            this.readedPixSettCb.SelectionChangeCommitted += new System.EventHandler(this.readedPixSettCb_SelectionChangeCommitted);
             // 
             // applyBtn
             // 
+            this.applyBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.applyBtn.Location = new System.Drawing.Point(197, 156);
             this.applyBtn.Name = "applyBtn";
             this.applyBtn.Size = new System.Drawing.Size(75, 23);
@@ -73,6 +88,9 @@
             // 
             // imageLbl
             // 
+            this.imageLbl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.imageLbl.AutoSize = true;
             this.imageLbl.Location = new System.Drawing.Point(34, 34);
             this.imageLbl.Name = "imageLbl";
@@ -82,6 +100,9 @@
             // 
             // readedPixLbl
             // 
+            this.readedPixLbl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.readedPixLbl.AutoSize = true;
             this.readedPixLbl.Location = new System.Drawing.Point(34, 118);
             this.readedPixLbl.Name = "readedPixLbl";
@@ -91,6 +112,9 @@
             // 
             // captureSettLbl
             // 
+            this.captureSettLbl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.captureSettLbl.AutoSize = true;
             this.captureSettLbl.Location = new System.Drawing.Point(34, 76);
             this.captureSettLbl.Name = "captureSettLbl";
@@ -112,6 +136,8 @@
             this.Controls.Add(this.imagesCb);
             this.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.MaximumSize = new System.Drawing.Size(588, 246);
+            this.MinimumSize = new System.Drawing.Size(588, 246);
             this.Name = "HealthChecker";
             this.Text = "HealthChecker";
             this.ResumeLayout(false);
