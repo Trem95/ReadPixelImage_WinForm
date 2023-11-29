@@ -56,12 +56,24 @@
   <ItemGroup>
     <Compile Include="CaptureReadSettings\CaptureSetting.cs" />
     <Compile Include="CaptureReadSettings\ReadedPixelsSetting.cs" />
-    <Compile Include="SettingsManager.cs" />
-    <Compile Include="Forms\CaptureForm.cs">
+    <Compile Include="Forms\HealthChecker.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\CaptureForm.Designer.cs">
-      <DependentUpon>CaptureForm.cs</DependentUpon>
+    <Compile Include="Forms\HealthChecker.Designer.cs">
+      <DependentUpon>HealthChecker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\HealthCheckerDisplay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\HealthCheckerDisplay.Designer.cs">
+      <DependentUpon>HealthCheckerDisplay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsManager.cs" />
+    <Compile Include="Forms\CaptureDisplay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\CaptureDisplay.Designer.cs">
+      <DependentUpon>CaptureDisplay.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\CreateCaptureSettingForm.cs">
       <SubType>Form</SubType>
@@ -84,14 +96,20 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScreenReader.cs" />
-    <EmbeddedResource Include="Forms\CaptureForm.resx">
-      <DependentUpon>CaptureForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\CaptureDisplay.resx">
+      <DependentUpon>CaptureDisplay.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\CreateCaptureSettingForm.resx">
       <DependentUpon>CreateCaptureSettingForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\CreateReadedPixelsSettingForm.resx">
       <DependentUpon>CreateReadedPixelsSettingForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\HealthChecker.resx">
+      <DependentUpon>HealthChecker.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\HealthCheckerDisplay.resx">
+      <DependentUpon>HealthCheckerDisplay.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SettingsCaptureForm.resx">
       <DependentUpon>SettingsCaptureForm.cs</DependentUpon>

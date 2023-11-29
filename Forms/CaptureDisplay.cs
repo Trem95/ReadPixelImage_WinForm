@@ -10,11 +10,11 @@ using System.Windows.Forms;
 
 namespace ReadPixelImage
 {
-    public partial class CaptureForm : Form
+    public partial class CaptureDisplay : Form
     {
         List<Rectangle> rectanglesToDraw;
         int selectedRectIndex;
-        public CaptureForm()
+        public CaptureDisplay()
         {
             rectanglesToDraw = new List<Rectangle>();
             selectedRectIndex = -1;

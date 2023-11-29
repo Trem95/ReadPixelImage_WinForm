@@ -25,7 +25,7 @@ namespace ReadPixelImage
     {
 
         #region Variables
-        CaptureForm captureForm;
+        CaptureDisplay captureForm;
         CreateReadedPixelsSettingForm createSettFom;
 
         ScreenReader screenReader = new ScreenReader();
@@ -59,7 +59,7 @@ namespace ReadPixelImage
             tempCaptureSetting = new CaptureSetting(-1, "Temporary Setting", 0, 0, Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
 
             createSettFom = new CreateReadedPixelsSettingForm();
-            captureForm = new CaptureForm();
+            captureForm = new CaptureDisplay();
             settingsManager = new SettingsManager();
 
             yCaptureNb.Maximum = Screen.PrimaryScreen.Bounds.Height;

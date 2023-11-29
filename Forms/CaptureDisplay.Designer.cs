@@ -1,6 +1,6 @@
 ﻿namespace ReadPixelImage
 {
-    partial class CaptureForm
+    partial class CaptureDisplay
     {
         /// <summary>
         /// Required designer variable.
