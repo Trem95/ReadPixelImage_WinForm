@@ -33,27 +33,13 @@ namespace ReadPixelImage
         CaptureSetting currentCaptureSetting;
         CaptureSetting tempCaptureSetting;
         ReadedPixelsSetting currentReadedPixelsSettings;
+        SettingsManager settingsManager;
 
         Dictionary<string, Bitmap> imageDict;
         Dictionary<int, CaptureSetting> captureSettingsDict;
         Dictionary<int, ReadedPixelsSetting> readedPixSettingsDict;
 
-        int newCaptureSettingsId;
-        int newPixReadedSettingsId;
-
         bool isRectsSettingModified;
-
-        Workbook captureSettingsWorkbooks;
-        Workbook readedPixelsSettingsWorkbook;
-
-        string publicDocPath;
-        string settingsDocPath;
-        string imagesDocPath;
-        string captureSettingsDocPath;
-        string readedPixelsSettingsDocPath;
-        const string CAPTURE_SETTINGS_FILENAME = "\\CaptureSettings.xlsx";
-        const string READED_PIXELS_SETTINGS_FILENAME = "\\ReadedPixelsSettings.xlsx";
-
         #endregion
 
         #region Constructor
@@ -68,14 +54,13 @@ namespace ReadPixelImage
             imageDict = new Dictionary<string, Bitmap>();
             captureSettingsDict = new Dictionary<int, CaptureSetting>();
             readedPixSettingsDict = new Dictionary<int, ReadedPixelsSetting>();
+            currentReadedPixelsSettings = new ReadedPixelsSetting();
             currentCaptureSetting = new CaptureSetting();
             tempCaptureSetting = new CaptureSetting(-1, "Temporary Setting", 0, 0, Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
 
-            captureSettingsWorkbooks = new Workbook();
-            readedPixelsSettingsWorkbook = new Workbook();
-
             createSettFom = new CreateReadedPixelsSettingForm();
             captureForm = new CaptureForm();
+            settingsManager = new SettingsManager();
 
             yCaptureNb.Maximum = Screen.PrimaryScreen.Bounds.Height;
             xCaptureNb.Maximum = Screen.PrimaryScreen.Bounds.Width;
@@ -89,18 +74,12 @@ namespace ReadPixelImage
 
             isRectsSettingModified = false;
 
-            publicDocPath = Environment.ExpandEnvironmentVariables(@"%PUBLIC%\Documents");
-            settingsDocPath = publicDocPath + @"\ReadPixelImage\Settings";
-            imagesDocPath = publicDocPath + @"\ReadPixelImage\Images";
-            captureSettingsDocPath = settingsDocPath + @"\Capture";
-            readedPixelsSettingsDocPath = settingsDocPath + @"\Pixels";
-
             drawButton.Click += readedPixelBtn_Click;
             modifyRectBtn.Click += readedPixelBtn_Click;
             deleteRectButton.Click += readedPixelBtn_Click;
 
             ManageSettingsAndDirectories();
-            LoadImages();
+            ManageLoadedImages();
             InitSettings();
             captureForm.Show();
             DisplayCapture();
@@ -129,19 +108,19 @@ namespace ReadPixelImage
         private void ManageSettingsAndDirectories()
         {
             string[] files = { "" };
-            files = Directory.GetDirectories(publicDocPath, "ReadPixelImage");
+            files = Directory.GetDirectories(settingsManager.PublicDocPath, "ReadPixelImage");
 
             if (files == null || files.Count() == 0
-                || !files.Contains(publicDocPath + "\\ReadPixelImage"))
+                || !files.Contains(settingsManager.PublicDocPath + "\\ReadPixelImage"))
             {
-                Directory.CreateDirectory(publicDocPath + "\\ReadPixelImage");
-                Directory.CreateDirectory(settingsDocPath);
-                Directory.CreateDirectory(captureSettingsDocPath);
-                Directory.CreateDirectory(readedPixelsSettingsDocPath);
-                Directory.CreateDirectory(imagesDocPath);
-                Directory.CreateDirectory(imagesDocPath + "\\Loaded");
-                Directory.CreateDirectory(imagesDocPath + "\\Saved");
-                Directory.CreateDirectory(imagesDocPath + "\\Capture");
+                Directory.CreateDirectory(settingsManager.PublicDocPath + "\\ReadPixelImage");
+                Directory.CreateDirectory(settingsManager.SettingsDocPath);
+                Directory.CreateDirectory(settingsManager.CaptureSettingsDocPath);
+                Directory.CreateDirectory(settingsManager.ReadedPixelsSettingsDocPath);
+                Directory.CreateDirectory(settingsManager.ImagesDocPath);
+                Directory.CreateDirectory(settingsManager.ImagesDocPath + "\\Loaded");
+                Directory.CreateDirectory(settingsManager.ImagesDocPath + "\\Saved");
+                Directory.CreateDirectory(settingsManager.ImagesDocPath + "\\Capture");
 
                 loadedImgCb.Items.Clear();
                 ImageConverter imgConvert = new ImageConverter();
@@ -153,86 +132,20 @@ namespace ReadPixelImage
                     {
                         Bitmap imgToAdd = new Bitmap(item.ToString());
                         string imgName = item.Substring(path.Length + 1);
-                        File.WriteAllBytes(imagesDocPath + "\\Loaded\\" + imgName, (byte[])imgConvert.ConvertTo(imgToAdd, typeof(byte[])));
+                        File.WriteAllBytes(settingsManager.ImagesDocPath + "\\Loaded\\" + imgName, (byte[])imgConvert.ConvertTo(imgToAdd, typeof(byte[])));
                     }
                 }
 
             }
 
+            files = Directory.GetFiles(settingsManager.ReadedPixelsSettingsDocPath);
+            if (!files.Contains(settingsManager.ReadedPixelsSettingsDocPath + SettingsManager.READED_PIXELS_SETTINGS_FILENAME))
+                settingsManager.CreateExcellReadedPixelsSettingsFiles(out readedPixSettingsDict);
 
-
-            DataSet ds = new DataSet();
-            ds.Tables.Add("Default Settings");
-
-            files = Directory.GetFiles(readedPixelsSettingsDocPath);
-            if (!files.Contains(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME))
+            files = Directory.GetFiles(settingsManager.CaptureSettingsDocPath);
+            if (!files.Contains(settingsManager.CaptureSettingsDocPath + SettingsManager.CAPTURE_SETTINGS_FILENAME))
             {
-                DataSetHelper.CreateWorkbook(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME, ds);
-                readedPixelsSettingsWorkbook = Workbook.Load(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
-                readedPixelsSettingsWorkbook.Worksheets[0].Cells[0, 0] = new Cell("ID");
-                readedPixelsSettingsWorkbook.Worksheets[0].Cells[0, 1] = new Cell("NAME");
-                readedPixelsSettingsWorkbook.Worksheets[0].Cells[0, 2] = new Cell("RECT COORDS");
-
-                readedPixSettingsDict.Add(0, new ReadedPixelsSetting()
-                {
-                    Id = 0,
-                    Name = "Default",
-                    Rectangles = new List<Rectangle>() { new Rectangle((captureForm.CaptureImg.Height / 2) - 20, (captureForm.CaptureImg.Width / 2) - 20, 40, 40) }
-                });
-
-                CreateNewSetting(readedPixSettingsDict.FirstOrDefault().Value);
-
-                readedPixelsSettingsWorkbook.Save(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
-            }
-
-            files = Directory.GetFiles(captureSettingsDocPath);
-            if (!files.Contains(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME))
-            {
-                DataSetHelper.CreateWorkbook(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME, ds);
-                captureSettingsWorkbooks = Workbook.Load(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
-                captureSettingsWorkbooks.Worksheets[0].Cells[0, 0] = new Cell("ID");
-                captureSettingsWorkbooks.Worksheets[0].Cells[0, 1] = new Cell("Name");
-                captureSettingsWorkbooks.Worksheets[0].Cells[0, 2] = new Cell("X COORD");
-                captureSettingsWorkbooks.Worksheets[0].Cells[0, 3] = new Cell("Y COORD");
-                captureSettingsWorkbooks.Worksheets[0].Cells[0, 4] = new Cell("WIDTH");
-                captureSettingsWorkbooks.Worksheets[0].Cells[0, 5] = new Cell("HEIGHT");
-
-                captureSettingsDict.Add(
-                    0,
-                    new CaptureSetting(0, "Default",
-                        0,
-                        0,
-                        Screen.PrimaryScreen.Bounds.Width,
-                        Screen.PrimaryScreen.Bounds.Height));
-
-                captureSettingsDict.Add(
-                    1,
-                    new CaptureSetting(1, "Top Screen",
-                        0,
-                        0,
-                        Screen.PrimaryScreen.Bounds.Width,
-                        Screen.PrimaryScreen.Bounds.Height / 4));
-
-                captureSettingsDict.Add(
-                    2,
-                    new CaptureSetting(2, "Bottom Screen",
-                        0,
-                        Screen.PrimaryScreen.Bounds.Height - (Screen.PrimaryScreen.Bounds.Height / 4),
-                        Screen.PrimaryScreen.Bounds.Width,
-                        Screen.PrimaryScreen.Bounds.Height / 4));
-
-                captureSettingsDict.Add(
-                    3,
-                    new CaptureSetting(3, "Mafia II Health",
-                        Screen.PrimaryScreen.Bounds.Width - (Screen.PrimaryScreen.Bounds.Width / 4),
-                        Screen.PrimaryScreen.Bounds.Height - (Screen.PrimaryScreen.Bounds.Height / 3),
-                        Screen.PrimaryScreen.Bounds.Width / 4,
-                        Screen.PrimaryScreen.Bounds.Height / 3));
-
-                foreach (KeyValuePair<int, CaptureSetting> kvp in captureSettingsDict)
-                    CreateNewSetting(kvp.Value);
-
-                captureSettingsWorkbooks.Save(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
+                settingsManager.CreateExcellCaptureSettingsFiles(out captureSettingsDict);
             }
 
 
@@ -257,8 +170,8 @@ namespace ReadPixelImage
         /// </summary>
         private void InitSettings()
         {
-            LoadCaptureSettings();
-            LoadReadedPixelsSettings();
+            ManageReadedPixelSettings(true);
+            ManageCaptureSettings(true);
 
             currentCaptureSetting = captureSettingsDict[0];
             SetNumericalField(currentCaptureSetting);
@@ -268,101 +181,9 @@ namespace ReadPixelImage
             heightCaptureNb.Maximum = Screen.PrimaryScreen.Bounds.Width;
             widthCaptureNb.Maximum = Screen.PrimaryScreen.Bounds.Width;
             savedCaptureSettingsCb.SelectedIndex = 0;//Set on default 
+            savedReadedPixelSettingsCb.SelectedIndex = 0;//Set on default 
         }
-        /// <summary>
-        /// Load the data from the setting workbook in the severals controls
-        /// </summary>
-        private void LoadCaptureSettings()
-        {
-            captureSettingsDict = new Dictionary<int, CaptureSetting>();
-            int prevSelIndex = savedCaptureSettingsCb.SelectedIndex;
-            newCaptureSettingsId = 1;
-            savedCaptureSettingsCb.Items.Clear();
-            //Load Excell Workbooks from xls document in Public
-            captureSettingsWorkbooks = Workbook.Load(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
-            //For each row of first workSheet, extract the data and parse it in Capture / ReadingPixel Setting
-            for (int i = 1; i < captureSettingsWorkbooks.Worksheets[0].Cells.Rows.Count(); i++)
-            {
-                Row rowToRead = captureSettingsWorkbooks.Worksheets[0].Cells.Rows[i];
-                //xls files are construct like the models 
-                CaptureSetting captSettToAdd = new CaptureSetting()
-                {
-                    Id = int.Parse(rowToRead.GetCell(0).ToString()),
-                    Name = rowToRead.GetCell(1).ToString(),
-                    X = int.Parse(rowToRead.GetCell(2).ToString()),
-                    Y = int.Parse(rowToRead.GetCell(3).ToString()),
-                    Width = int.Parse(rowToRead.GetCell(4).ToString()),
-                    Height = int.Parse(rowToRead.GetCell(5).ToString())
-                };
 
-                //Add the settings to the dictionnary and the comboBox
-                captureSettingsDict.Add(captSettToAdd.Id, captSettToAdd);
-                savedCaptureSettingsCb.Items.Add(captSettToAdd);
-
-                //Saved last Id in order to save new settings later
-                if (i == captureSettingsWorkbooks.Worksheets[0].Cells.Rows.Count() - 1)
-                    newCaptureSettingsId = captSettToAdd.Id + 1;
-            }
-            if (savedCaptureSettingsCb.Items.Count > prevSelIndex)
-                savedCaptureSettingsCb.SelectedIndex = prevSelIndex;
-            else
-                savedCaptureSettingsCb.SelectedIndex = savedCaptureSettingsCb.Items.Count > 0 ? 0 : -1;
-        }
-        /// <summary>
-        /// Load the data from the setting workbook in the severals controls
-        /// </summary>
-        private void LoadReadedPixelsSettings()
-        {
-            readedPixSettingsDict = new Dictionary<int, ReadedPixelsSetting>();
-
-            int prevSelIndex = savedReadedPixelSettingsCb.SelectedIndex;
-            savedReadedPixelSettingsCb.Items.Clear();
-
-            newPixReadedSettingsId = 1;
-
-            readedPixelsSettingsWorkbook = Workbook.Load(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
-            for (int i = 1; i < readedPixelsSettingsWorkbook.Worksheets[0].Cells.Rows.Count(); i++)
-            {
-                Row rowToRead = readedPixelsSettingsWorkbook.Worksheets[0].Cells.Rows[i];
-                List<Rectangle> rectanglesToAdd = new List<Rectangle>();
-                //Each colonne whos index is <2 is a rectangle
-                for (int j = 2; j <= readedPixelsSettingsWorkbook.Worksheets[0].Cells.Rows[i].LastColIndex; j++)
-                {
-                    //Rectangle data are stocked in one string with "|" as separator ex : "42|47|234|23"
-                    string[] dataString = readedPixelsSettingsWorkbook.Worksheets[0].Cells.Rows[i].GetCell(j).ToString().Split('|');
-                    int[] dataInt = new int[dataString.Length];
-
-                    //Parse the string into int //TODO add exception for that kind of case ( bad entry in excel files )
-                    for (int k = 0; k < dataString.Length; k++)
-                        dataInt[k] = int.Parse(dataString[k]);
-
-                    rectanglesToAdd.Add(new Rectangle(dataInt[0], dataInt[1], dataInt[2], dataInt[3]));
-                    Console.WriteLine();
-                }
-
-                ReadedPixelsSetting readedPixSettToAdd = new ReadedPixelsSetting()
-                {
-                    Id = int.Parse(rowToRead.GetCell(0).ToString()),
-                    Name = rowToRead.GetCell(1).ToString(),
-                    Rectangles = rectanglesToAdd,
-                };
-
-                readedPixSettingsDict.Add(readedPixSettToAdd.Id, readedPixSettToAdd);
-                savedReadedPixelSettingsCb.Items.Add(readedPixSettToAdd);
-
-                if (i == readedPixelsSettingsWorkbook.Worksheets[0].Cells.Rows.Count() - 1)
-                    newPixReadedSettingsId = readedPixSettToAdd.Id + 1;
-            }
-
-            if (prevSelIndex > -1 && savedReadedPixelSettingsCb.Items.Count - 1 >= prevSelIndex)
-                savedReadedPixelSettingsCb.SelectedIndex = prevSelIndex;
-            else if (savedReadedPixelSettingsCb.Items.Count > 0)
-                savedReadedPixelSettingsCb.SelectedIndex = 0;
-
-            if (currentReadedPixelsSettings == null) currentReadedPixelsSettings = readedPixSettingsDict.Count() > 0 ? readedPixSettingsDict[0] : new ReadedPixelsSetting(-1, "New Settings", new List<Rectangle>());
-
-            LoadAndDisplayReadedPixelsRectangle();
-        }
         private void LoadAndDisplayReadedPixelsRectangle()
         {
             readedPixelsRectsListBox.Items.Clear();
@@ -387,6 +208,36 @@ namespace ReadPixelImage
             }
         }
 
+        private void ManageCaptureSettings(bool isInit = false)
+        {
+            int selIndex = isInit ? 0 : savedCaptureSettingsCb.SelectedIndex;
+            settingsManager.LoadCaptureSettings(out captureSettingsDict);
+            savedCaptureSettingsCb.Items.Clear();
+            foreach (CaptureSetting captSett in captureSettingsDict.Values)
+                savedCaptureSettingsCb.Items.Add(captSett);
+            savedCaptureSettingsCb.SelectedIndex = selIndex;
+            if (selIndex > -1)
+                currentCaptureSetting = captureSettingsDict[selIndex];
+            else
+                ManageTemporarySetting(true);
+
+        }
+
+        private void ManageReadedPixelSettings(bool isInit = false)
+        {
+            int selIndex = isInit ? 0 : savedReadedPixelSettingsCb.SelectedIndex;
+            settingsManager.LoadReadedPixelsSettings(out readedPixSettingsDict);
+            savedReadedPixelSettingsCb.Items.Clear();
+            foreach (ReadedPixelsSetting rdPixelSett in readedPixSettingsDict.Values)
+                savedReadedPixelSettingsCb.Items.Add(rdPixelSett);
+            savedReadedPixelSettingsCb.SelectedIndex = selIndex;
+
+            if (selIndex > -1)
+                currentReadedPixelsSettings = readedPixSettingsDict[selIndex];
+            else
+                currentReadedPixelsSettings = new ReadedPixelsSetting();
+
+        }
         private void ManageTemporarySetting(bool setToCurrentSett)
         {
             if (setToCurrentSett)
@@ -408,249 +259,16 @@ namespace ReadPixelImage
         }
 
 
-        /// <summary>
-        /// Load the images presents in Public folders
-        /// </summary>
-        private void LoadImages()
+        private void ManageLoadedImages()
         {
-            imageDict = new Dictionary<string, Bitmap>();
+            settingsManager.LoadImages(out imageDict);
             loadedImgCb.Items.Clear();
-
-            foreach (var item in Directory.EnumerateFiles(imagesDocPath + "\\Loaded"))
-            {
-                if (item.ToString().Contains(".png") || item.ToString().Contains(".jpeg"))
-                {
-                    Bitmap imgToAdd = new Bitmap(item.ToString());
-                    string imgName = item.Substring((imagesDocPath + "\\Loaded").Length + 1);
-                    imageDict.Add(imgName, imgToAdd);
-                    loadedImgCb.Items.Add(imgName);
-                }
-            }
+            foreach (string name in imageDict.Keys)
+                loadedImgCb.Items.Add(name);
+            loadedImgCb.SelectedIndex = -1;
         }
 
-        /// <summary>
-        /// Create a new Capture Settings and save it in the CaptureSettings.xls files
-        /// </summary>
-        /// <param name="captureSett"></param>
-        private void CreateNewSetting(CaptureSetting captureSett)
-        {
 
-            //Cells[0, 0] = "ID"
-            //Cells[0, 1] = "Name"
-            //Cells[0, 2] = "X COORD"
-            //Cells[0, 3] = "Y COORD"
-            //Cells[0, 4] = "WIDTH"
-            //Cells[0, 5] = "HEIGHT"
-            CellCollection cells = captureSettingsWorkbooks.Worksheets[0].Cells;
-            int rowCpt = cells.Rows.Count();
-
-            cells.CreateCell(rowCpt, 0, captureSett.Id, 0);
-            cells.CreateCell(rowCpt, 1, captureSett.Name, 0);
-            cells.CreateCell(rowCpt, 2, captureSett.X, 0);
-            cells.CreateCell(rowCpt, 3, captureSett.Y, 0);
-            cells.CreateCell(rowCpt, 4, captureSett.Width, 0);
-            cells.CreateCell(rowCpt, 5, captureSett.Height, 0);
-
-            if (Directory.GetFiles(captureSettingsDocPath).Contains(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME))
-                File.Delete(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
-
-            captureSettingsWorkbooks.Save(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
-            LoadCaptureSettings();
-        }
-
-        /// <summary>
-        /// Create a new Capture Settings and save it in the CaptureSettings.xls files
-        /// </summary>
-        /// <param name="readedPixelsSett"></param>
-        private void CreateNewSetting(ReadedPixelsSetting readedPixelsSett)
-        {
-            //Cells[0, 0] = new Cell("ID");
-            //Cells[0, 1] = new Cell("NAME");
-            //Cells[0, 2] = new Cell("RECT COORDS");
-
-            CellCollection cells = readedPixelsSettingsWorkbook.Worksheets[0].Cells;
-            int rowCpt = cells.Rows.Count();
-
-            cells.CreateCell(rowCpt, 0, readedPixelsSett.Id, 0);
-            cells.CreateCell(rowCpt, 1, readedPixelsSett.Name, 0);
-
-            for (int i = 0; i < readedPixelsSett.Rectangles.Count(); i++)
-            {
-                Rectangle rectToAdd = readedPixelsSett.Rectangles[i];
-                cells.CreateCell(rowCpt, 2 + i, $"{rectToAdd.X}|{rectToAdd.Y}|{rectToAdd.Width}|{rectToAdd.Height}", 0);
-            }
-
-            if (Directory.GetFiles(readedPixelsSettingsDocPath).Contains(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME))
-                File.Delete(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
-
-            readedPixelsSettingsWorkbook.Save(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
-            LoadReadedPixelsSettings();
-        }
-
-        private void EditSetting(CaptureSetting captToEdit)
-        {
-            CaptureSetting verif;
-            if (captureSettingsDict.TryGetValue(captToEdit.Id, out verif))
-            {
-                CellCollection cells = captureSettingsWorkbooks.Worksheets[0].Cells;
-                Row rowToEdit = new Row();
-                for (int i = 1; i < cells.Rows.Count(); i++)
-                {
-                    int verifInt;
-                    if (int.TryParse(cells.Rows[i].GetCell(0).Value.ToString(), out verifInt) && verifInt == captToEdit.Id)
-                    {
-                        rowToEdit = cells.Rows[i];
-                        break;
-                    }
-                }
-                //Cells[0, 0] = "ID"
-                //Cells[0, 1] = "Name"
-                //Cells[0, 2] = "X COORD"
-                //Cells[0, 3] = "Y COORD"
-                //Cells[0, 4] = "WIDTH"
-                //Cells[0, 5] = "HEIGHT"
-                rowToEdit.GetCell(1).Value = captToEdit.Name;
-                rowToEdit.GetCell(2).Value = captToEdit.X;
-                rowToEdit.GetCell(3).Value = captToEdit.Y;
-                rowToEdit.GetCell(4).Value = captToEdit.Width;
-                rowToEdit.GetCell(5).Value = captToEdit.Height;
-
-                if (Directory.GetFiles(readedPixelsSettingsDocPath).Contains(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME))
-                    File.Delete(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
-
-                captureSettingsWorkbooks.Save(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
-                LoadCaptureSettings();
-            }
-        }
-
-        private void EditSetting(ReadedPixelsSetting readedPixelsSett)
-        {
-            ReadedPixelsSetting verif;
-            if (readedPixSettingsDict.TryGetValue(readedPixelsSett.Id, out verif))
-            {
-                CellCollection cells = readedPixelsSettingsWorkbook.Worksheets[0].Cells;
-                Row rowToEdit = new Row();
-                int rowIndex = -1;
-                for (int i = 1; i < cells.Rows.Count(); i++)
-                {
-                    int verifInt;
-                    if (int.TryParse(cells.Rows[i].GetCell(0).Value.ToString(), out verifInt) && verifInt == readedPixelsSett.Id)
-                    {
-                        rowToEdit = cells.Rows[i];
-                        rowIndex = i;
-                        break;
-                    }
-                }
-                //Cells[0, 0] = "ID"
-                //Cells[0, 1] = "Name"
-                //Cells[0, 2] = "RECTANGLES"
-                rowToEdit.GetCell(1).Value = readedPixelsSett.Name;
-
-                for (int i = 2; i < rowToEdit.LastColIndex; i++)//Delete all old rectangle entry in the excell file
-                {
-                    rowToEdit.SetCell(i, new Cell(""));
-                }
-
-                for (int i = 0; i < readedPixelsSett.Rectangles.Count(); i++)
-                {
-                    Rectangle rectToAdd = readedPixelsSett.Rectangles[i];
-                    rowToEdit.SetCell(2 + i, new Cell($"{rectToAdd.X}|{rectToAdd.Y}|{rectToAdd.Width}|{rectToAdd.Height}"));
-                }
-
-                if (Directory.GetFiles(readedPixelsSettingsDocPath).Contains(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME))
-                    File.Delete(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
-
-                Thread.Sleep(750);
-                readedPixelsSettingsWorkbook.Save(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
-                LoadReadedPixelsSettings();
-            }
-        }
-
-        private void DeleteSetting(ReadedPixelsSetting readedPixelsSett)
-        {
-            //Cells[0, 0] = new Cell("ID");
-            //Cells[0, 1] = new Cell("NAME");
-            //Cells[0, 2] = new Cell("RECT COORDS");
-
-            CellCollection cells = readedPixelsSettingsWorkbook.Worksheets[0].Cells;
-            int idToRemove;
-            for (int i = 1; i < cells.Rows.Count; i++)
-            {
-                if (int.TryParse(cells.Rows[i].GetCell(0).ToString(), out idToRemove)
-                    && idToRemove == readedPixelsSett.Id)
-                {
-                    cells.Rows.Remove(i);
-                    if (i < cells.Rows.Count)
-                    {
-                        if (i + 1 < cells.Rows.Count)
-                        {
-                            for (int j = i + 1; j < cells.Rows.Count; j++)
-                            {
-                                cells.Rows[j - 1] = cells.Rows[j];
-                                cells.Rows[j - 1].GetCell(0).Value = j - 1;//ID
-                            }
-                        }
-                        else
-                        {
-                            cells.Rows[i] = cells.Rows[i + 1];
-                            cells.Rows[i].GetCell(0).Value = i;
-                        }
-
-                        cells.Rows.Remove(cells.Rows.Last().Key);
-                    }
-
-                    break;
-                }
-            }
-
-            if (Directory.GetFiles(readedPixelsSettingsDocPath).Contains(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME))
-                File.Delete(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
-
-            Thread.Sleep(750);
-            readedPixelsSettingsWorkbook.Save(readedPixelsSettingsDocPath + READED_PIXELS_SETTINGS_FILENAME);
-            LoadReadedPixelsSettings();
-        }
-
-        private void DeleteSetting(CaptureSetting captureSett)
-        {
-            CellCollection cells = captureSettingsWorkbooks.Worksheets[0].Cells;
-            int idToRemove;
-            for (int i = 1; i < cells.Rows.Count; i++)
-            {
-                if (int.TryParse(cells.Rows[i].GetCell(0).ToString(), out idToRemove)
-                    && idToRemove == captureSett.Id)
-                {
-                    cells.Rows.Remove(i);
-                    if (i < cells.Rows.Count)
-                    {
-
-                        if (i + 1 < cells.Rows.Count)
-                        {
-                            for (int j = i + 1; j < cells.Rows.Count; j++)
-                            {
-                                cells.Rows[j - 1] = cells.Rows[j];
-                                cells.Rows[j - 1].GetCell(0).Value = j - 1;//ID
-                            }
-                        }
-                        else
-                        {
-                            cells.Rows[i] = cells.Rows[i + 1];
-                            cells.Rows[i].GetCell(0).Value = i;
-                        }    
-
-                        cells.Rows.Remove(cells.Rows.Last().Key);
-                    }
-                    break;
-                }
-            }
-
-            if (Directory.GetFiles(captureSettingsDocPath).Contains(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME))
-                File.Delete(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
-
-            Thread.Sleep(750);
-            captureSettingsWorkbooks.Save(captureSettingsDocPath + CAPTURE_SETTINGS_FILENAME);
-            LoadCaptureSettings();
-        }
 
         /// <summary>
         /// Display the current image or screenshot with the settings provided
@@ -751,12 +369,29 @@ namespace ReadPixelImage
 
                 ReadedPixelsSetting newRDPixSett = new ReadedPixelsSetting()
                 {
-                    Id = newPixReadedSettingsId,
+                    Id = settingsManager.NewReadedPixelsSettingsId,
                     Name = createSettFom.NameTbText,
                     Rectangles = new List<Rectangle>()
                 };
-                CreateNewSetting(newRDPixSett);
-                newPixReadedSettingsId++;
+
+                int prevSelIndex = savedReadedPixelSettingsCb.SelectedIndex;
+
+                settingsManager.CreateNewSetting(newRDPixSett);
+                ManageReadedPixelSettings();
+
+                foreach (KeyValuePair<int, ReadedPixelsSetting> kvp in readedPixSettingsDict)
+                    savedReadedPixelSettingsCb.Items.Add(kvp.Value);
+
+                if (prevSelIndex > -1 && savedReadedPixelSettingsCb.Items.Count - 1 >= prevSelIndex)
+                    savedReadedPixelSettingsCb.SelectedIndex = prevSelIndex;
+                else if (savedReadedPixelSettingsCb.Items.Count > 0)
+                    savedReadedPixelSettingsCb.SelectedIndex = 0;
+
+                settingsManager.NewReadedPixelsSettingsId++;
+
+                if (currentReadedPixelsSettings == null) currentReadedPixelsSettings = readedPixSettingsDict[0];
+
+                LoadAndDisplayReadedPixelsRectangle();
 
             }
         }
@@ -768,8 +403,25 @@ namespace ReadPixelImage
             if (editForm.Result == DialogResult.OK)
             {
                 CaptureSetting newCaptSett = editForm.CaptureSetting;
-                newCaptSett.Id = newCaptureSettingsId;
-                CreateNewSetting(newCaptSett);
+                newCaptSett.Id = settingsManager.NewCaptureSettingsId;
+                int prevSelIndex = savedReadedPixelSettingsCb.SelectedIndex;
+
+                settingsManager.CreateNewSetting(newCaptSett);
+                settingsManager.LoadCaptureSettings(out captureSettingsDict);
+                savedCaptureSettingsCb.Items.Clear();
+
+                foreach (KeyValuePair<int, CaptureSetting> kvp in captureSettingsDict)
+                    savedCaptureSettingsCb.Items.Add(kvp.Value);
+
+                if (prevSelIndex > -1 && savedCaptureSettingsCb.Items.Count - 1 >= prevSelIndex)
+                    savedCaptureSettingsCb.SelectedIndex = prevSelIndex;
+                else if (savedCaptureSettingsCb.Items.Count > 0)
+                    savedCaptureSettingsCb.SelectedIndex = 0;
+
+                settingsManager.NewCaptureSettingsId++;
+
+                if (captureSettingsDict == null) currentCaptureSetting = captureSettingsDict[0];
+
             }
 
         }
@@ -801,11 +453,16 @@ namespace ReadPixelImage
 
         private void saveRectBtn_Click(object sender, EventArgs e)
         {
-            isRectsSettingModified = false;
-            saveRectBtn.Visible = isRectsSettingModified;
-            this.Enabled = false;
-            EditSetting(currentReadedPixelsSettings);
-            this.Enabled = true;
+            ReadedPixelsSetting verif;
+            if (readedPixSettingsDict.TryGetValue(currentReadedPixelsSettings.Id, out verif))
+            {
+                isRectsSettingModified = false;
+                saveRectBtn.Visible = isRectsSettingModified;
+                this.Enabled = false;
+                settingsManager.EditSetting(currentReadedPixelsSettings);
+                ManageReadedPixelSettings();
+                this.Enabled = true;
+            }
         }
 
         private void modifyRectBtn_Click(object sender, EventArgs e)
@@ -851,7 +508,10 @@ namespace ReadPixelImage
         {
             ReadedPixelsSetting settingToRemove;
             if (readedPixSettingsDict.TryGetValue((savedReadedPixelSettingsCb.SelectedItem as ReadedPixelsSetting).Id, out settingToRemove))
-                DeleteSetting(settingToRemove);
+            {
+                settingsManager.DeleteSetting(settingToRemove);
+                ManageReadedPixelSettings();
+            }
         }
 
         private void editCaptureSettBtn_Click(object sender, EventArgs e)
@@ -864,7 +524,8 @@ namespace ReadPixelImage
                 if (editForm.Result == DialogResult.OK)
                 {
                     captToEdit = editForm.CaptureSetting;
-                    EditSetting(captToEdit);
+                    settingsManager.EditSetting(captToEdit);
+                    settingsManager.LoadCaptureSettings(out captureSettingsDict);
                 }
             }
             else
@@ -875,7 +536,10 @@ namespace ReadPixelImage
         {
             CaptureSetting captSettToRemove;
             if (captureSettingsDict.TryGetValue((savedCaptureSettingsCb.SelectedItem as CaptureSetting).Id, out captSettToRemove))
-                DeleteSetting(captSettToRemove);
+            {
+                settingsManager.DeleteSetting(captSettToRemove);
+                settingsManager.LoadCaptureSettings(out captureSettingsDict);
+            }
         }
 
         private void readedPixelBtn_Click(object sender, EventArgs e)

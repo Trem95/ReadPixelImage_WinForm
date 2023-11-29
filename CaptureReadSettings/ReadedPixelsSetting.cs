@@ -14,7 +14,12 @@ namespace ReadPixelImage.CaptureReadSettings
         private string name;
         private List<Rectangle> rectangles;
 
-        public ReadedPixelsSetting() { }
+        public ReadedPixelsSetting() 
+        {
+            this.id = -1;
+            this.name = "TEMPORARY SETTINGS";
+            rectangles = new List<Rectangle>();
+        }
         public ReadedPixelsSetting(int id, string name, List<Rectangle> rects = null)
         {
             this.id = id;
