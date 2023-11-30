@@ -25,7 +25,8 @@ namespace ReadPixelImage.Forms
         CaptureSetting currentCaptureSetting;
         ReadedPixelsSetting currentReadedPixelsSetting;
         ScreenReader screenReader;
-        Bitmap currentImage;
+        Bitmap loadedImage;
+        Bitmap croppedImage;
         public HealthChecker()
         {
             //TODO start create method and behaviour for read pixel
@@ -93,7 +94,7 @@ namespace ReadPixelImage.Forms
         {
             Rectangle rect = currentReadedPixelsSetting.Rectangles[rectanglesLb.SelectedIndex];
 
-            Bitmap cropBitmap = new Bitmap(currentImage);
+            Bitmap cropBitmap = new Bitmap(croppedImage);
             readedPixels.Image = cropBitmap.Clone(rect, cropBitmap.PixelFormat);
             readedPixLb.Items.Clear();
             for (int i = 0; i < rect.Width; i++)
@@ -104,6 +105,7 @@ namespace ReadPixelImage.Forms
                 }
             }
             
+            healthCheckDisplay.SetAndDrawRectangles(currentReadedPixelsSetting.Rectangles, rectanglesLb.SelectedIndex);
             
         }
 
@@ -118,7 +120,7 @@ namespace ReadPixelImage.Forms
 
         private void DisplayImage()
         {
-            Bitmap cropImgToShow = screenReader.GetParametredCapture(currentCaptureSetting, currentImage);
+            croppedImage = screenReader.GetParametredCapture(currentCaptureSetting, loadedImage);
             if (captureSettCb.SelectedIndex == 0)//Default
             {
                 healthCheckDisplay.MaximumSize = new Size(0, 0);
@@ -127,11 +129,11 @@ namespace ReadPixelImage.Forms
             else
             {
                 healthCheckDisplay.WindowState = FormWindowState.Normal;
-                healthCheckDisplay.MaximumSize = cropImgToShow.Size + new Size(16, 39);
-                healthCheckDisplay.CaptureImg.Size = cropImgToShow.Size;
+                healthCheckDisplay.MaximumSize = croppedImage.Size + new Size(16, 39);
+                healthCheckDisplay.CaptureImg.Size = croppedImage.Size;
             }
 
-            healthCheckDisplay.CaptureImg.Image = cropImgToShow;
+            healthCheckDisplay.CaptureImg.Image = croppedImage;
             healthCheckDisplay.SetAndDrawRectangles(currentReadedPixelsSetting.Rectangles, currentReadedPixelsSetting.Rectangles.Count() > 0 ? 0 : -1);
             healthCheckDisplay.Show();
 
@@ -150,7 +152,7 @@ namespace ReadPixelImage.Forms
 
         private void imagesCb_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            currentImage = imagesDict[imagesCb.SelectedItem.ToString()];
+            loadedImage = imagesDict[imagesCb.SelectedItem.ToString()];
             CheckAndSetCanApplyBtn();
         }
 
