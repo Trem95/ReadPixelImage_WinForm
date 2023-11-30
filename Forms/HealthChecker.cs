@@ -26,7 +26,6 @@ namespace ReadPixelImage.Forms
         ReadedPixelsSetting currentReadedPixelsSetting;
         ScreenReader screenReader;
         Bitmap currentImage;
-
         public HealthChecker()
         {
             //TODO start create method and behaviour for read pixel
@@ -42,6 +41,7 @@ namespace ReadPixelImage.Forms
             ManageLoadedImages();
             ManageCaptureSettings(true);
             ManageReadedPixelSettings(true);
+            CheckAndSetCanApplyBtn();
 
         }
 
@@ -73,7 +73,38 @@ namespace ReadPixelImage.Forms
                 currentReadedPixelsSetting = readedPixelsSettingsDict[selIndex];
             else
                 currentReadedPixelsSetting = new ReadedPixelsSetting();
+        }
+        
+        private void ManageSelectedReadedPixelSetting()
+        {
+            rectanglesLb.Items.Clear();
+            foreach (Rectangle rect in currentReadedPixelsSetting.Rectangles)
+                rectanglesLb.Items.Add(rect);
 
+            if (rectanglesLb.Items.Count > 0)
+            {
+                rectanglesLb.SelectedIndex = 0;
+                ManageSelectedRectangle();
+            }
+            
+        }
+
+        private void ManageSelectedRectangle()
+        {
+            Rectangle rect = currentReadedPixelsSetting.Rectangles[rectanglesLb.SelectedIndex];
+
+            Bitmap cropBitmap = new Bitmap(currentImage);
+            readedPixels.Image = cropBitmap.Clone(rect, cropBitmap.PixelFormat);
+            readedPixLb.Items.Clear();
+            for (int i = 0; i < rect.Width; i++)
+            {
+                for (int j = 0; j < rect.Height; j++)
+                {
+                    readedPixLb.Items.Add(((Bitmap)readedPixels.Image).GetPixel(i, j));
+                }
+            }
+            
+            
         }
 
         private void ManageLoadedImages()
@@ -106,24 +137,38 @@ namespace ReadPixelImage.Forms
 
         }
 
+        private void CheckAndSetCanApplyBtn()
+        {
+            applyBtn.Enabled = imagesCb.SelectedIndex >= 0 && captureSettCb.SelectedIndex >= 0 && readedPixSettCb.SelectedIndex >= 0;
+        }
+
         private void applyBtn_Click(object sender, EventArgs e)
         {
             DisplayImage();
+            ManageSelectedReadedPixelSetting();
         }
 
         private void imagesCb_SelectionChangeCommitted(object sender, EventArgs e)
         {
             currentImage = imagesDict[imagesCb.SelectedItem.ToString()];
+            CheckAndSetCanApplyBtn();
         }
 
         private void captureSettCb_SelectionChangeCommitted(object sender, EventArgs e)
         {
             currentCaptureSetting = captureSettingsDict[(captureSettCb.SelectedItem as CaptureSetting).Id];
+            CheckAndSetCanApplyBtn();
         }
 
         private void readedPixSettCb_SelectionChangeCommitted(object sender, EventArgs e)
         {
             currentReadedPixelsSetting = readedPixelsSettingsDict[(readedPixSettCb.SelectedItem as ReadedPixelsSetting).Id];
+            CheckAndSetCanApplyBtn();
+        }
+
+        private void rectanglesLb_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ManageSelectedRectangle();
         }
     }
 }
