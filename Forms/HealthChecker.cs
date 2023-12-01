@@ -96,19 +96,22 @@ namespace ReadPixelImage.Forms
 
             Bitmap cropBitmap = new Bitmap(croppedImage);
             readedPixels.Image = cropBitmap.Clone(rect, cropBitmap.PixelFormat);
-            readedPixLb.Items.Clear();
+            dataGridView1.Rows.Clear();
             for (int i = 0; i < rect.Width; i++)
             {
                 for (int j = 0; j < rect.Height; j++)
                 {
-                    readedPixLb.Items.Add(((Bitmap)readedPixels.Image).GetPixel(i, j));
+                    Bitmap pixel = new Bitmap(1, 1);
+                    Color pixelColor = ((Bitmap)readedPixels.Image).GetPixel(i, j);
+                    pixel.SetPixel(0, 0, pixelColor);
+                    pixel = (Bitmap)screenReader.ResizeImage(pixel, new Size(200,20));
+                    dataGridView1.Rows.Add(screenReader.GetStringColor(pixelColor), pixel);
                 }
             }
             
             healthCheckDisplay.SetAndDrawRectangles(currentReadedPixelsSetting.Rectangles, rectanglesLb.SelectedIndex);
             
         }
-
         private void ManageLoadedImages()
         {
             settingsManager.LoadImages(out imagesDict);

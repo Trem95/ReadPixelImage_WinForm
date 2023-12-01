@@ -60,6 +60,12 @@ namespace ReadPixelImage
             return (System.Drawing.Image)b;
         }
 
+        public string GetStringColor(Color color) 
+        {
+            string colorToString = $"R: {color.R}; G: {color.G}; B: {color.B}";
+            return colorToString;
+        }
+
         public void SaveImage(Image imgToSave, string fileLoc = null)
         {
             if (fileLoc == null)
