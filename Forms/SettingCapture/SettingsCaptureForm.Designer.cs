@@ -570,6 +570,7 @@
             this.Name = "SettingsCaptureForm";
             this.Padding = new System.Windows.Forms.Padding(1);
             this.Text = "Form1";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SettingsCaptureForm_FormClosing);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.settingsGb.ResumeLayout(false);

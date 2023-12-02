@@ -49,6 +49,9 @@ namespace ReadPixelImage
             InitializeComponent();
             InitializeForm();
         }
+
+        public MainMenuForm OwnerForm { get; set; }
+
         private void InitializeForm()
         {
             imageDict = new Dictionary<string, Bitmap>();
@@ -60,6 +63,7 @@ namespace ReadPixelImage
 
             createSettFom = new CreateReadedPixelsSettingForm();
             captureForm = new CaptureDisplay();
+            captureForm.OwnerForm = this.OwnerForm;
             settingsManager = new SettingsManager();
 
             yCaptureNb.Maximum = Screen.PrimaryScreen.Bounds.Height;
@@ -338,7 +342,8 @@ namespace ReadPixelImage
             this.Hide();
             //Console.WriteLine("SCREEN SIZE : " + Screen.PrimaryScreen.Bounds.Width + " / " + Screen.PrimaryScreen.Bounds.Height);
             Thread.Sleep(400);
-            currentImage = screenReader.GetParametredCapture(currentCaptureSetting);
+            //currentImage = screenReader.GetParametredCapture(currentCaptureSetting);
+
             DisplayCapture();
             this.Show();
 
@@ -545,6 +550,12 @@ namespace ReadPixelImage
         private void readedPixelBtn_Click(object sender, EventArgs e)
         {
             saveRectBtn.Visible = isRectsSettingModified;
+        }
+
+        private void SettingsCaptureForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            OwnerForm.Show();
+            this.Hide();
         }
     }
 }

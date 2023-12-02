@@ -17,8 +17,7 @@ namespace ReadPixelImage
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new SettingsCaptureForm());
-            Application.Run(new HealthChecker());
+            Application.Run(new MainMenuForm());
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using ReadPixelImage.CaptureReadSettings;
 using ReadPixelImage.CaptureSettings;
+using ReadPixelImage.Forms.HealthChecker;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,14 +13,17 @@ using System.Windows.Forms;
 
 namespace ReadPixelImage.Forms
 {
-    public partial class HealthChecker : Form
+    public partial class HealthCheckerForm : Form
     {
 
         HealthCheckerDisplay healthCheckDisplay;
+        Display display;
 
         Dictionary<int, CaptureSetting> captureSettingsDict;
         Dictionary<int, ReadedPixelsSetting> readedPixelsSettingsDict;
         Dictionary<string, Bitmap> imagesDict;
+        Dictionary<int, string> statusDict;//TEST will be replace by a Dict.<int,bitmap>
+        List<Color> selectRectPixelsColor;
 
         SettingsManager settingsManager;
         CaptureSetting currentCaptureSetting;
@@ -27,18 +31,34 @@ namespace ReadPixelImage.Forms
         ScreenReader screenReader;
         Bitmap loadedImage;
         Bitmap croppedImage;
-        public HealthChecker()
+        public HealthCheckerForm()
         {
-            //TODO start create method and behaviour for read pixel
+            //TODO Check every RGB of pixel from rectangle, if RGB < 100;100;100 => life gone, set rect empty
             InitializeComponent();
             InitializeForm();
         }
 
-        private void InitializeForm() 
+        public MainMenuForm OwnerForm { get; set; }
+
+        private void InitializeForm()
         {
             healthCheckDisplay = new HealthCheckerDisplay();
+            display = new Display();
             settingsManager = new SettingsManager();
             screenReader = new ScreenReader();
+            selectRectPixelsColor = new List<Color>();
+            statusDict = new Dictionary<int, string>()//8
+            {
+                { 1, "FULL HEALTH" },
+                { 2, "80%" },
+                { 3, "65%" },
+                { 4, "50%" },
+                { 5, "45%" },
+                { 6, "30%" },
+                { 7, "15%" },
+                { 8, "DEAD%" },
+            };
+
             ManageLoadedImages();
             ManageCaptureSettings(true);
             ManageReadedPixelSettings(true);
@@ -75,7 +95,7 @@ namespace ReadPixelImage.Forms
             else
                 currentReadedPixelsSetting = new ReadedPixelsSetting();
         }
-        
+
         private void ManageSelectedReadedPixelSetting()
         {
             rectanglesLb.Items.Clear();
@@ -87,7 +107,7 @@ namespace ReadPixelImage.Forms
                 rectanglesLb.SelectedIndex = 0;
                 ManageSelectedRectangle();
             }
-            
+
         }
 
         private void ManageSelectedRectangle()
@@ -95,6 +115,7 @@ namespace ReadPixelImage.Forms
             Rectangle rect = currentReadedPixelsSetting.Rectangles[rectanglesLb.SelectedIndex];
 
             Bitmap cropBitmap = new Bitmap(croppedImage);
+            selectRectPixelsColor.Clear();
             readedPixels.Image = cropBitmap.Clone(rect, cropBitmap.PixelFormat);
             dataGridView1.Rows.Clear();
             for (int i = 0; i < rect.Width; i++)
@@ -103,14 +124,15 @@ namespace ReadPixelImage.Forms
                 {
                     Bitmap pixel = new Bitmap(1, 1);
                     Color pixelColor = ((Bitmap)readedPixels.Image).GetPixel(i, j);
+                    selectRectPixelsColor.Add(pixelColor);
                     pixel.SetPixel(0, 0, pixelColor);
-                    pixel = (Bitmap)screenReader.ResizeImage(pixel, new Size(200,20));
+                    pixel = (Bitmap)screenReader.ResizeImage(pixel, new Size(200, 20));
                     dataGridView1.Rows.Add(screenReader.GetStringColor(pixelColor), pixel);
                 }
             }
-            
+
             healthCheckDisplay.SetAndDrawRectangles(currentReadedPixelsSetting.Rectangles, rectanglesLb.SelectedIndex);
-            
+
         }
         private void ManageLoadedImages()
         {
@@ -119,6 +141,29 @@ namespace ReadPixelImage.Forms
             foreach (string name in imagesDict.Keys)
                 imagesCb.Items.Add(name);
             imagesCb.SelectedIndex = -1;
+        }
+
+        private void ManageMafia2HealthDisplay()
+        {
+            if (currentReadedPixelsSetting.Rectangles.Count() > 0 && selectRectPixelsColor.Count() > 0)
+            {
+                int r = 0, g = 0, b = 0, cpt = 0;
+                foreach (Color color in selectRectPixelsColor)
+                {
+                    cpt++;
+                    r += color.R;
+                    g += color.G;
+                    b += color.B;
+                }
+
+                r = r / cpt;
+                g = g / cpt;
+                b = b / cpt;
+
+                display.ResultLbl.Text = (r <= 100 && g <= 100 && b <= 100) ? "EMPTY" : "FULL"; 
+            }
+
+            display.Show();
         }
 
         private void DisplayImage()
@@ -174,6 +219,17 @@ namespace ReadPixelImage.Forms
         private void rectanglesLb_SelectedIndexChanged(object sender, EventArgs e)
         {
             ManageSelectedRectangle();
+        }
+
+        private void HealthCheckerForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            OwnerForm.Show();
+            this.Hide();
+        }
+
+        private void displayBtn_Click(object sender, EventArgs e)
+        {
+            ManageMafia2HealthDisplay();//TODO CONTINUE, automate process, add more rectangle in mafia 2 health settings for more precision
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReadPixelImage.Forms;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -21,6 +22,7 @@ namespace ReadPixelImage
             InitializeComponent();
         }
 
+        public MainMenuForm OwnerForm { get; set; }
         public PictureBox CaptureImg { get { return capturePicBox; }}
 
         public void SetAndDrawRectangles(List<Rectangle> rectangles, int selectRect = -1)
@@ -46,7 +48,8 @@ namespace ReadPixelImage
 
         private void CaptureForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Application.Exit();
+            OwnerForm.Show();
+            this.Hide();
         }
     }
 }

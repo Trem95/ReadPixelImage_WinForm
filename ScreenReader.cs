@@ -31,7 +31,8 @@ namespace ReadPixelImage
             else
             {
                 Bitmap cropBitmap = new Bitmap(img);
-                return cropBitmap.Clone(captureRectangle, cropBitmap.PixelFormat);
+                cropBitmap = cropBitmap.Clone(captureRectangle, cropBitmap.PixelFormat);
+                return cropBitmap;
             }
         }
 
