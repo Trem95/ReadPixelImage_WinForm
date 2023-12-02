@@ -102,16 +102,36 @@ namespace ReadPixelImage.Forms
 
         private void ManageSelectedReadedPixelSetting()
         {
-
-            rectanglesLb.Items.Clear();
-            foreach (Rectangle rect in currentReadedPixelsSetting.Rectangles)
-                rectanglesLb.Items.Add(rect);
-
-            CheckCurrentSettingsRectangles();
-            if (rectanglesLb.Items.Count > 0)
+            //TODO find solution to make thread inclusive writing easy ( like SDT)
+            if (rectanglesLb.InvokeRequired)
             {
-                rectanglesLb.SelectedIndex = 0;
-                DisplayRectangleColors(0);
+                rectanglesLb.Invoke((MethodInvoker)delegate
+                {
+                    rectanglesLb.Items.Clear();
+                    foreach (Rectangle rect in currentReadedPixelsSetting.Rectangles)
+                        rectanglesLb.Items.Add(rect);
+
+                    CheckCurrentSettingsRectangles();
+                    if (rectanglesLb.Items.Count > 0)
+                    {
+                        rectanglesLb.SelectedIndex = 0;
+                        DisplayRectangleColors(0);
+                    }
+                });
+            }
+            else
+            {
+
+                rectanglesLb.Items.Clear();
+                foreach (Rectangle rect in currentReadedPixelsSetting.Rectangles)
+                    rectanglesLb.Items.Add(rect);
+
+                CheckCurrentSettingsRectangles();
+                if (rectanglesLb.Items.Count > 0)
+                {
+                    rectanglesLb.SelectedIndex = 0;
+                    DisplayRectangleColors(0);
+                }
             }
 
         }
@@ -168,6 +188,7 @@ namespace ReadPixelImage.Forms
         {
             settingsManager.LoadImages(out imagesDict);
             imagesCb.Items.Clear();
+            imagesCb.Items.Add("Screen Capture");
             foreach (string name in imagesDict.Keys)
                 imagesCb.Items.Add(name);
             imagesCb.SelectedIndex = -1;
@@ -175,7 +196,13 @@ namespace ReadPixelImage.Forms
 
         private void ManageMafia2HealthDisplay()
         {
-            display.BeginInvoke((MethodInvoker)delegate { display.Show(); });
+            //TODO check if, even if make morte time, if it more effiscient to do from 90% to 100% 
+            //Check if it can fix issues when shop or quest icon appear in health bar
+            if (display.InvokeRequired)
+                display.BeginInvoke((MethodInvoker)delegate { display.Show(); });
+            else
+                display.Show();
+
             List<Rectangle> rectangles = currentReadedPixelsSetting.Rectangles;
             int rectCount = rectangles.Count - 1;
             //STEP 1 Check First, middle and last rectangle value (empty / full)
@@ -286,7 +313,7 @@ namespace ReadPixelImage.Forms
             return (r <= 100 && g <= 100 && b <= 100);
         }
 
-        private void DisplayResultThread()
+        private void DisplayResultFromImageThread()
         {
             try
             {
@@ -301,24 +328,62 @@ namespace ReadPixelImage.Forms
             }
         }
 
+        private void DisplayResultFromCaptureThread()
+        {
+            try
+            {
+                while (threadIsStarted)
+                {
+                    DisplayImage();
+                    ManageSelectedReadedPixelSetting();
+                    ManageMafia2HealthDisplay();
+                    Thread.Sleep(500);
+                }
+            }
+            catch (ThreadAbortException)
+            {
+            }
+        }
+
         private void DisplayImage()
         {
-            croppedImage = screenReader.GetParametredCapture(currentCaptureSetting, loadedImage);
-            if (captureSettCb.SelectedIndex == 0)//Default
+            if (loadedImage != null)
+                croppedImage = screenReader.GetParametredCapture(currentCaptureSetting, loadedImage);
+            else
+                croppedImage = screenReader.GetParametredCapture(currentCaptureSetting);
+
+            //if (captureSettCb.SelectedIndex == 0)//Default
+            //{
+            //    healthCheckDisplay.MaximumSize = new Size(0, 0);
+            //    healthCheckDisplay.WindowState = FormWindowState.Maximized;// Preset saved where (Width && Height == Screen.Primary.Bounds)
+            //}
+            //else
+            //{
+
+            //}
+
+            if (healthCheckDisplay.InvokeRequired)
             {
-                healthCheckDisplay.MaximumSize = new Size(0, 0);
-                healthCheckDisplay.WindowState = FormWindowState.Maximized;// Preset saved where (Width && Height == Screen.Primary.Bounds)
+                healthCheckDisplay.Invoke((MethodInvoker)delegate
+                {
+                    healthCheckDisplay.WindowState = FormWindowState.Normal;
+                    healthCheckDisplay.MaximumSize = croppedImage.Size + new Size(16, 39);
+                    healthCheckDisplay.CaptureImg.Size = croppedImage.Size;
+                    healthCheckDisplay.CaptureImg.Image = croppedImage;
+                    healthCheckDisplay.SetAndDrawRectangles(currentReadedPixelsSetting.Rectangles, currentReadedPixelsSetting.Rectangles.Count() > 0 ? 0 : -1);
+                    healthCheckDisplay.Show();
+                });
             }
             else
             {
                 healthCheckDisplay.WindowState = FormWindowState.Normal;
                 healthCheckDisplay.MaximumSize = croppedImage.Size + new Size(16, 39);
                 healthCheckDisplay.CaptureImg.Size = croppedImage.Size;
+                healthCheckDisplay.CaptureImg.Image = croppedImage;
+                healthCheckDisplay.SetAndDrawRectangles(currentReadedPixelsSetting.Rectangles, currentReadedPixelsSetting.Rectangles.Count() > 0 ? 0 : -1);
+                healthCheckDisplay.Show();
             }
 
-            healthCheckDisplay.CaptureImg.Image = croppedImage;
-            healthCheckDisplay.SetAndDrawRectangles(currentReadedPixelsSetting.Rectangles, currentReadedPixelsSetting.Rectangles.Count() > 0 ? 0 : -1);
-            healthCheckDisplay.Show();
 
         }
 
@@ -335,7 +400,10 @@ namespace ReadPixelImage.Forms
 
         private void imagesCb_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            loadedImage = imagesDict[imagesCb.SelectedItem.ToString()];
+            if (imagesCb.SelectedIndex > 0)
+                loadedImage = imagesDict[imagesCb.SelectedItem.ToString()];
+            else
+                loadedImage = null;
             CheckAndSetCanApplyBtn();
         }
 
@@ -370,14 +438,63 @@ namespace ReadPixelImage.Forms
             {
                 display.Show();
                 threadIsStarted = true;
-                healthCheckerThread = new Thread(new ThreadStart(DisplayResultThread));
+                healthCheckerThread = new Thread(new ThreadStart(DisplayResultFromImageThread));
                 healthCheckerThread.Start();
             }
             else
             {
-                display.Hide();
-                threadIsStarted = false;
                 healthCheckerThread.Abort();
+                this.Enabled = false;
+                while (healthCheckerThread.IsAlive)
+                {
+                    Thread.Sleep(500);
+                }
+                this.Enabled = true;
+                display.Show();
+                threadIsStarted = true;
+                healthCheckerThread = new Thread(new ThreadStart(DisplayResultFromImageThread));
+                healthCheckerThread.Start();
+            }
+        }
+
+        private void displayCurrCaptureBtn_Click(object sender, EventArgs e)
+        {
+            if (!threadIsStarted)
+            {
+                display.Show();
+                threadIsStarted = true;
+                healthCheckerThread = new Thread(new ThreadStart(DisplayResultFromCaptureThread));
+                healthCheckerThread.Start();
+            }
+            else
+            {
+                healthCheckerThread.Abort();
+                this.Enabled = false;
+                while (healthCheckerThread.IsAlive)
+                {
+                    Thread.Sleep(500);
+                }
+                this.Enabled = true;
+                display.Show();
+                threadIsStarted = true;
+                healthCheckerThread = new Thread(new ThreadStart(DisplayResultFromCaptureThread));
+                healthCheckerThread.Start();
+            }
+        }
+
+        private void stopBtn_Click(object sender, EventArgs e)
+        {
+            if (threadIsStarted)
+            {
+                display.Hide();
+                healthCheckerThread.Abort();
+                this.Enabled = false;
+                while (healthCheckerThread.IsAlive)
+                {
+                    Thread.Sleep(500);
+                }
+                this.Enabled = true;
+                threadIsStarted = false;
             }
         }
     }
