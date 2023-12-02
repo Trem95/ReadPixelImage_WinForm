@@ -175,13 +175,97 @@ namespace ReadPixelImage.Forms
 
         private void ManageMafia2HealthDisplay()
         {
+            display.BeginInvoke((MethodInvoker)delegate { display.Show(); });
             List<Rectangle> rectangles = currentReadedPixelsSetting.Rectangles;
+            int rectCount = rectangles.Count - 1;
             //STEP 1 Check First, middle and last rectangle value (empty / full)
 
-            //Check first rectangle 
-            //TODO continue algorithme and test
 
-            display.Show();
+            List<bool> truthTable = new List<bool>();
+            for (int i = 0; i < rectangles.Count; i++)
+            {
+                truthTable.Add(CheckIsRectangleEmpty(i));
+            }
+
+            //Check first rectangle 
+            if (!CheckIsRectangleEmpty(0))
+            {
+                Console.WriteLine("FULL HEALTH");
+                display.ResultLbl.BeginInvoke((MethodInvoker)delegate { display.ResultLbl.Text = "FULL HEALTH"; });//Full rectangle not empty, full live
+
+            }
+            else
+            {
+
+                if (CheckIsRectangleEmpty(rectCount / 2))//Health is below half
+                {
+                    if (CheckIsRectangleEmpty((rectCount / 2) + (rectCount / 4)))//Health is between 25 and 0%
+                    {
+                        for (int i = (rectCount / 2) + (rectCount / 4); i <= rectCount; i++)
+                        {
+                            if (!CheckIsRectangleEmpty(i))
+                            {
+                                Console.WriteLine("RECT INDEX : " + i);
+                                if (display.ResultLbl.InvokeRequired)
+                                    display.ResultLbl.BeginInvoke((MethodInvoker)delegate { display.ResultLbl.Text = "RECT INDEX : " + i; });
+                                else
+                                    display.ResultLbl.Text = "RECT INDEX : " + i;
+                                break;
+                            }
+                        }
+                    }
+                    else//Health is between 25 and 50%
+                    {
+                        for (int i = rectCount / 2; i < (rectCount / 2) + (rectCount / 4); i++)
+                        {
+                            if (!CheckIsRectangleEmpty(i))
+                            {
+                                Console.WriteLine("RECT INDEX : " + i);
+                                if (display.ResultLbl.InvokeRequired)
+                                    display.ResultLbl.BeginInvoke((MethodInvoker)delegate { display.ResultLbl.Text = "RECT INDEX : " + i; });
+                                else
+                                    display.ResultLbl.Text = "RECT INDEX : " + i;
+                                break;
+                            }
+                        }
+                    }
+                }
+                else//Health is above half
+                {
+                    if (CheckIsRectangleEmpty((rectCount / 2) / 2))//Health is between 75 and 50%
+                    {
+                        for (int i = (rectCount / 2) / 2; i <= rectCount / 2; i++)
+                            if (!CheckIsRectangleEmpty(i))
+                            {
+                                Console.WriteLine("RECT INDEX : " + i);
+                                if (display.ResultLbl.InvokeRequired)
+                                    display.ResultLbl.BeginInvoke((MethodInvoker)delegate { display.ResultLbl.Text = "RECT INDEX : " + i; });
+                                else
+                                    display.ResultLbl.Text = "RECT INDEX : " + i;
+                                break;
+                            }
+                    }
+                    else//Health is between 75 and 100%
+                    {
+                        for (int i = 0; i < (rectCount / 2) / 2; i++)
+                            if (!CheckIsRectangleEmpty(i))
+                            {
+                                Console.WriteLine("RECT INDEX : " + i);
+                                if (display.ResultLbl.InvokeRequired)
+                                    display.ResultLbl.BeginInvoke((MethodInvoker)delegate { display.ResultLbl.Text = "RECT INDEX : " + i; });
+                                else
+                                    display.ResultLbl.Text = "RECT INDEX : " + i;
+                                break;
+                            }
+                    }
+                }
+            }
+
+            //TODO continue algorithme and test
+            if (display.ResultLbl.InvokeRequired)
+                display.ResultLbl.BeginInvoke((MethodInvoker)delegate { display.Refresh(); });
+            else
+                display.Refresh();
         }
 
         private bool CheckIsRectangleEmpty(int rectIndex)
@@ -206,10 +290,10 @@ namespace ReadPixelImage.Forms
         {
             try
             {
-                while (true)
+                while (threadIsStarted)
                 {
                     ManageMafia2HealthDisplay();
-                    Thread.Sleep(1000);
+                    Thread.Sleep(500);
                 }
             }
             catch (ThreadAbortException)
@@ -279,10 +363,22 @@ namespace ReadPixelImage.Forms
             this.Hide();
         }
 
+        bool threadIsStarted = false;
         private void displayBtn_Click(object sender, EventArgs e)
         {
-            healthCheckerThread = new Thread(new ThreadStart(ManageMafia2HealthDisplay));
-            healthCheckerThread.Start();
+            if (!threadIsStarted)
+            {
+                display.Show();
+                threadIsStarted = true;
+                healthCheckerThread = new Thread(new ThreadStart(DisplayResultThread));
+                healthCheckerThread.Start();
+            }
+            else
+            {
+                display.Hide();
+                threadIsStarted = false;
+                healthCheckerThread.Abort();
+            }
         }
     }
 }
