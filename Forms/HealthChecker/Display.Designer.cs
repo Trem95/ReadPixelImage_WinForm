@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.resultLbl = new System.Windows.Forms.Label();
+            this.pictureBox = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // resultLbl
@@ -45,16 +47,28 @@
             this.resultLbl.Text = "RESULT";
             this.resultLbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // pictureBox
+            // 
+            this.pictureBox.BackColor = System.Drawing.SystemColors.HotTrack;
+            this.pictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBox.Location = new System.Drawing.Point(0, 0);
+            this.pictureBox.Name = "pictureBox";
+            this.pictureBox.Size = new System.Drawing.Size(410, 301);
+            this.pictureBox.TabIndex = 1;
+            this.pictureBox.TabStop = false;
+            // 
             // Display
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(410, 301);
+            this.Controls.Add(this.pictureBox);
             this.Controls.Add(this.resultLbl);
             this.MaximumSize = new System.Drawing.Size(426, 340);
             this.MinimumSize = new System.Drawing.Size(426, 340);
             this.Name = "Display";
             this.Text = "Display";
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -63,5 +77,6 @@
         #endregion
 
         private System.Windows.Forms.Label resultLbl;
+        private System.Windows.Forms.PictureBox pictureBox;
     }
 }

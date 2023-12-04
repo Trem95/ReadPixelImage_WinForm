@@ -18,5 +18,6 @@ namespace ReadPixelImage.Forms.HealthChecker
         }
 
         public Label ResultLbl { get { return resultLbl; } set { resultLbl = value;} }
+        public PictureBox PictureBox { get { return pictureBox; } set { pictureBox = value;} }
     }
 }

@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.imagesCb = new System.Windows.Forms.ComboBox();
             this.captureSettCb = new System.Windows.Forms.ComboBox();
             this.readedPixSettCb = new System.Windows.Forms.ComboBox();
@@ -38,14 +38,15 @@
             this.captureSettLbl = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.pixelsRdGb = new System.Windows.Forms.GroupBox();
+            this.displayCurrentStream = new System.Windows.Forms.Button();
+            this.stopBtn = new System.Windows.Forms.Button();
+            this.displayCurrCaptureBtn = new System.Windows.Forms.Button();
             this.displayLoadImagesBtn = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.ColorCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColorImage = new System.Windows.Forms.DataGridViewImageColumn();
             this.readedPixels = new System.Windows.Forms.PictureBox();
             this.rectanglesLb = new System.Windows.Forms.ListBox();
-            this.displayCurrCaptureBtn = new System.Windows.Forms.Button();
-            this.stopBtn = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.pixelsRdGb.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -100,9 +101,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.applyBtn.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.applyBtn.Location = new System.Drawing.Point(169, 153);
+            this.applyBtn.Location = new System.Drawing.Point(169, 141);
             this.applyBtn.Name = "applyBtn";
-            this.applyBtn.Size = new System.Drawing.Size(75, 23);
+            this.applyBtn.Size = new System.Drawing.Size(75, 35);
             this.applyBtn.TabIndex = 3;
             this.applyBtn.Text = "Apply";
             this.applyBtn.UseVisualStyleBackColor = true;
@@ -163,7 +164,7 @@
             this.groupBox1.Font = new System.Drawing.Font("Verdana", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(534, 194);
+            this.groupBox1.Size = new System.Drawing.Size(534, 233);
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Display Settings";
@@ -173,6 +174,7 @@
             this.pixelsRdGb.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.pixelsRdGb.Controls.Add(this.displayCurrentStream);
             this.pixelsRdGb.Controls.Add(this.stopBtn);
             this.pixelsRdGb.Controls.Add(this.displayCurrCaptureBtn);
             this.pixelsRdGb.Controls.Add(this.displayLoadImagesBtn);
@@ -182,10 +184,52 @@
             this.pixelsRdGb.Font = new System.Drawing.Font("Verdana", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.pixelsRdGb.Location = new System.Drawing.Point(552, 12);
             this.pixelsRdGb.Name = "pixelsRdGb";
-            this.pixelsRdGb.Size = new System.Drawing.Size(828, 194);
+            this.pixelsRdGb.Size = new System.Drawing.Size(828, 233);
             this.pixelsRdGb.TabIndex = 8;
             this.pixelsRdGb.TabStop = false;
             this.pixelsRdGb.Text = "Pixels Readed";
+            // 
+            // displayCurrentStream
+            // 
+            this.displayCurrentStream.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.displayCurrentStream.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.displayCurrentStream.Location = new System.Drawing.Point(638, 153);
+            this.displayCurrentStream.Name = "displayCurrentStream";
+            this.displayCurrentStream.Size = new System.Drawing.Size(184, 25);
+            this.displayCurrentStream.TabIndex = 10;
+            this.displayCurrentStream.Text = "Display Current Stream";
+            this.displayCurrentStream.UseVisualStyleBackColor = true;
+            this.displayCurrentStream.Click += new System.EventHandler(this.displayCurrentStream_Click);
+            // 
+            // stopBtn
+            // 
+            this.stopBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.stopBtn.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.stopBtn.Location = new System.Drawing.Point(635, 196);
+            this.stopBtn.Name = "stopBtn";
+            this.stopBtn.Size = new System.Drawing.Size(184, 25);
+            this.stopBtn.TabIndex = 9;
+            this.stopBtn.Text = "Stop";
+            this.stopBtn.UseVisualStyleBackColor = true;
+            this.stopBtn.Click += new System.EventHandler(this.stopBtn_Click);
+            // 
+            // displayCurrCaptureBtn
+            // 
+            this.displayCurrCaptureBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.displayCurrCaptureBtn.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.displayCurrCaptureBtn.Location = new System.Drawing.Point(635, 122);
+            this.displayCurrCaptureBtn.Name = "displayCurrCaptureBtn";
+            this.displayCurrCaptureBtn.Size = new System.Drawing.Size(184, 25);
+            this.displayCurrCaptureBtn.TabIndex = 8;
+            this.displayCurrCaptureBtn.Text = "Display Current Capture";
+            this.displayCurrCaptureBtn.UseVisualStyleBackColor = true;
+            this.displayCurrCaptureBtn.Click += new System.EventHandler(this.displayCurrCaptureBtn_Click);
             // 
             // displayLoadImagesBtn
             // 
@@ -195,7 +239,7 @@
             this.displayLoadImagesBtn.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.displayLoadImagesBtn.Location = new System.Drawing.Point(635, 93);
             this.displayLoadImagesBtn.Name = "displayLoadImagesBtn";
-            this.displayLoadImagesBtn.Size = new System.Drawing.Size(184, 23);
+            this.displayLoadImagesBtn.Size = new System.Drawing.Size(184, 25);
             this.displayLoadImagesBtn.TabIndex = 7;
             this.displayLoadImagesBtn.Text = "Display Loaded Images";
             this.displayLoadImagesBtn.UseVisualStyleBackColor = true;
@@ -218,11 +262,11 @@
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridView1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(376, 158);
+            this.dataGridView1.Size = new System.Drawing.Size(376, 203);
             this.dataGridView1.TabIndex = 3;
             // 
             // ColorCode
@@ -254,48 +298,19 @@
             this.rectanglesLb.ItemHeight = 14;
             this.rectanglesLb.Location = new System.Drawing.Point(15, 21);
             this.rectanglesLb.Name = "rectanglesLb";
-            this.rectanglesLb.Size = new System.Drawing.Size(232, 158);
+            this.rectanglesLb.Size = new System.Drawing.Size(232, 200);
             this.rectanglesLb.TabIndex = 0;
             this.rectanglesLb.SelectedIndexChanged += new System.EventHandler(this.rectanglesLb_SelectedIndexChanged);
-            // 
-            // displayCurrCaptureBtn
-            // 
-            this.displayCurrCaptureBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.displayCurrCaptureBtn.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.displayCurrCaptureBtn.Location = new System.Drawing.Point(635, 122);
-            this.displayCurrCaptureBtn.Name = "displayCurrCaptureBtn";
-            this.displayCurrCaptureBtn.Size = new System.Drawing.Size(184, 23);
-            this.displayCurrCaptureBtn.TabIndex = 8;
-            this.displayCurrCaptureBtn.Text = "Display Current Capture";
-            this.displayCurrCaptureBtn.UseVisualStyleBackColor = true;
-            this.displayCurrCaptureBtn.Click += new System.EventHandler(this.displayCurrCaptureBtn_Click);
-            // 
-            // stopBtn
-            // 
-            this.stopBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.stopBtn.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.stopBtn.Location = new System.Drawing.Point(638, 151);
-            this.stopBtn.Name = "stopBtn";
-            this.stopBtn.Size = new System.Drawing.Size(184, 23);
-            this.stopBtn.TabIndex = 9;
-            this.stopBtn.Text = "Stop";
-            this.stopBtn.UseVisualStyleBackColor = true;
-            this.stopBtn.Click += new System.EventHandler(this.stopBtn_Click);
             // 
             // HealthCheckerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1392, 212);
+            this.ClientSize = new System.Drawing.Size(1392, 251);
             this.Controls.Add(this.pixelsRdGb);
             this.Controls.Add(this.groupBox1);
             this.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.MaximumSize = new System.Drawing.Size(1408, 251);
             this.MinimumSize = new System.Drawing.Size(1408, 251);
             this.Name = "HealthCheckerForm";
             this.Text = "HealthChecker";
@@ -328,5 +343,6 @@
         private System.Windows.Forms.PictureBox readedPixels;
         private System.Windows.Forms.Button displayCurrCaptureBtn;
         private System.Windows.Forms.Button stopBtn;
+        private System.Windows.Forms.Button displayCurrentStream;
     }
 }

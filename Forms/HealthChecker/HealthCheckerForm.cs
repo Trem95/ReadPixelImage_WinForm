@@ -31,6 +31,7 @@ namespace ReadPixelImage.Forms
         CaptureSetting currentCaptureSetting;
         ReadedPixelsSetting currentReadedPixelsSetting;
         ScreenReader screenReader;
+        StreamReader streamReader;
         Bitmap loadedImage;
         Bitmap croppedImage;
         public HealthCheckerForm()
@@ -377,16 +378,6 @@ namespace ReadPixelImage.Forms
             else
                 croppedImage = screenReader.GetParametredCapture(currentCaptureSetting);
 
-            //if (captureSettCb.SelectedIndex == 0)//Default
-            //{
-            //    healthCheckDisplay.MaximumSize = new Size(0, 0);
-            //    healthCheckDisplay.WindowState = FormWindowState.Maximized;// Preset saved where (Width && Height == Screen.Primary.Bounds)
-            //}
-            //else
-            //{
-
-            //}
-
             if (healthCheckDisplay.InvokeRequired)
             {
                 healthCheckDisplay.Invoke((MethodInvoker)delegate
@@ -415,6 +406,35 @@ namespace ReadPixelImage.Forms
         private void CheckAndSetCanApplyBtn()
         {
             applyBtn.Enabled = imagesCb.SelectedIndex >= 0 && captureSettCb.SelectedIndex >= 0 && readedPixSettCb.SelectedIndex >= 0;
+        }
+
+        private void AbortAllThread()
+        {
+            if (threadIsStarted)
+            {
+                this.Enabled = false;
+                display.Hide();
+                if (healthCheckDisplay != null)
+                {
+                    healthCheckerThread.Abort();
+                    while (healthCheckerThread.IsAlive)
+                    {
+                        Thread.Sleep(500);
+                    }
+
+                }
+
+                if (streamReader != null)
+                {
+                    streamReader.CaptureThread.Abort();
+                    while (streamReader.CaptureThread.IsAlive)
+                    {
+                        Thread.Sleep(500);
+                    }
+                }
+                this.Enabled = true;
+                threadIsStarted = false;
+            }
         }
 
         private void applyBtn_Click(object sender, EventArgs e)
@@ -478,13 +498,7 @@ namespace ReadPixelImage.Forms
                 }
                 else
                 {
-                    healthCheckerThread.Abort();
-                    this.Enabled = false;
-                    while (healthCheckerThread.IsAlive)
-                    {
-                        Thread.Sleep(500);
-                    }
-                    this.Enabled = true;
+                    AbortAllThread();
                     display.Show();
                     threadIsStarted = true;
                     healthCheckerThread = new Thread(new ThreadStart(DisplayResultFromImageThread));
@@ -508,13 +522,7 @@ namespace ReadPixelImage.Forms
                 }
                 else
                 {
-                    healthCheckerThread.Abort();
-                    this.Enabled = false;
-                    while (healthCheckerThread.IsAlive)
-                    {
-                        Thread.Sleep(500);
-                    }
-                    this.Enabled = true;
+                    AbortAllThread();
                     display.Show();
                     threadIsStarted = true;
                     healthCheckerThread = new Thread(new ThreadStart(DisplayResultFromCaptureThread));
@@ -525,17 +533,26 @@ namespace ReadPixelImage.Forms
 
         private void stopBtn_Click(object sender, EventArgs e)
         {
-            if (threadIsStarted)
+            AbortAllThread();
+        }
+
+        private void displayCurrentStream_Click(object sender, EventArgs e)
+        {
+            if (captureSettCb.SelectedIndex >= 0 && readedPixSettCb.SelectedIndex >= 0 && imagesCb.SelectedIndex >= 0)
             {
-                display.Hide();
-                healthCheckerThread.Abort();
-                this.Enabled = false;
-                while (healthCheckerThread.IsAlive)
+                streamReader = new StreamReader(@"https://youtu.be/_ExAbZ_eBv8", currentReadedPixelsSetting, currentCaptureSetting);
+                //streamReader = new StreamReader(@"C:\Users\Public\Documents\ReadPixelImage\Images\Loaded\Mafia 2 Test HealthChecker_Full-HD_60fps.mp4", currentReadedPixelsSetting, currentCaptureSetting);
+
+                if (!threadIsStarted)
                 {
-                    Thread.Sleep(500);
+                    threadIsStarted = true;
+                    streamReader.StartStreamCapture();
                 }
-                this.Enabled = true;
-                threadIsStarted = false;
+                else
+                {
+                    AbortAllThread();
+                    streamReader.StartStreamCapture();
+                }
             }
         }
     }
