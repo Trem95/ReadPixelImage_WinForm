@@ -555,6 +555,7 @@ namespace ReadPixelImage
         private void SettingsCaptureForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             OwnerForm.Show();
+            captureForm.Hide();
             this.Hide();
         }
     }

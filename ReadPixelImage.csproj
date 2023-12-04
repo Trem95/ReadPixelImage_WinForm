@@ -175,6 +175,9 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="AForge.Video">
+      <Version>2.2.5</Version>
+    </PackageReference>
     <PackageReference Include="ExcelLibrary">
       <Version>1.2011.7.31</Version>
     </PackageReference>

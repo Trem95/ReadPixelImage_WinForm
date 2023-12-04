@@ -220,21 +220,21 @@ namespace ReadPixelImage.Forms
                 textToShow = "FULL HEALTH";
             else
             {
-                for (int i = 1;i < rectangles.Count ;i++)
+                for (int i = 1; i < rectangles.Count; i++)
                 {
                     if (!CheckIsRectangleEmpty(i))
                     {
-                        textToShow = $"{(100/rectCount) * ( rectCount - (i-1))}%";
+                        textToShow = $"{(100 / rectCount) * (rectCount - (i - 1))}%";
                         break;
 
                     };
                 }
             }
 
-                if (display.ResultLbl.InvokeRequired)
-                    display.ResultLbl.BeginInvoke((MethodInvoker)delegate { display.ResultLbl.Text = textToShow; });
-                else
-                    display.ResultLbl.Text = textToShow;
+            if (display.ResultLbl.InvokeRequired)
+                display.ResultLbl.BeginInvoke((MethodInvoker)delegate { display.ResultLbl.Text = textToShow; });
+            else
+                display.ResultLbl.Text = textToShow;
             #region ManageMafia2HealthDisplay V1 
 
 
@@ -452,6 +452,12 @@ namespace ReadPixelImage.Forms
 
         private void HealthCheckerForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            healthCheckerThread.Abort();
+            while (healthCheckerThread.IsAlive)
+            {
+                Thread.Sleep(500);
+            }
+
             display.Hide();
             healthCheckDisplay.Hide();
             OwnerForm.Show();
@@ -461,51 +467,59 @@ namespace ReadPixelImage.Forms
         bool threadIsStarted = false;
         private void displayBtn_Click(object sender, EventArgs e)
         {
-            if (!threadIsStarted)
+            if (captureSettCb.SelectedIndex >= 0 && readedPixSettCb.SelectedIndex >= 0 && imagesCb.SelectedIndex >= 0)
             {
-                display.Show();
-                threadIsStarted = true;
-                healthCheckerThread = new Thread(new ThreadStart(DisplayResultFromImageThread));
-                healthCheckerThread.Start();
-            }
-            else
-            {
-                healthCheckerThread.Abort();
-                this.Enabled = false;
-                while (healthCheckerThread.IsAlive)
+                if (!threadIsStarted)
                 {
-                    Thread.Sleep(500);
+                    display.Show();
+                    threadIsStarted = true;
+                    healthCheckerThread = new Thread(new ThreadStart(DisplayResultFromImageThread));
+                    healthCheckerThread.Start();
                 }
-                this.Enabled = true;
-                display.Show();
-                threadIsStarted = true;
-                healthCheckerThread = new Thread(new ThreadStart(DisplayResultFromImageThread));
-                healthCheckerThread.Start();
+                else
+                {
+                    healthCheckerThread.Abort();
+                    this.Enabled = false;
+                    while (healthCheckerThread.IsAlive)
+                    {
+                        Thread.Sleep(500);
+                    }
+                    this.Enabled = true;
+                    display.Show();
+                    threadIsStarted = true;
+                    healthCheckerThread = new Thread(new ThreadStart(DisplayResultFromImageThread));
+                    healthCheckerThread.Start();
+                }
+
             }
+
         }
 
         private void displayCurrCaptureBtn_Click(object sender, EventArgs e)
         {
-            if (!threadIsStarted)
+            if (captureSettCb.SelectedIndex >= 0 && readedPixSettCb.SelectedIndex >= 0 && imagesCb.SelectedIndex >= 0)
             {
-                display.Show();
-                threadIsStarted = true;
-                healthCheckerThread = new Thread(new ThreadStart(DisplayResultFromCaptureThread));
-                healthCheckerThread.Start();
-            }
-            else
-            {
-                healthCheckerThread.Abort();
-                this.Enabled = false;
-                while (healthCheckerThread.IsAlive)
+                if (!threadIsStarted)
                 {
-                    Thread.Sleep(500);
+                    display.Show();
+                    threadIsStarted = true;
+                    healthCheckerThread = new Thread(new ThreadStart(DisplayResultFromCaptureThread));
+                    healthCheckerThread.Start();
                 }
-                this.Enabled = true;
-                display.Show();
-                threadIsStarted = true;
-                healthCheckerThread = new Thread(new ThreadStart(DisplayResultFromCaptureThread));
-                healthCheckerThread.Start();
+                else
+                {
+                    healthCheckerThread.Abort();
+                    this.Enabled = false;
+                    while (healthCheckerThread.IsAlive)
+                    {
+                        Thread.Sleep(500);
+                    }
+                    this.Enabled = true;
+                    display.Show();
+                    threadIsStarted = true;
+                    healthCheckerThread = new Thread(new ThreadStart(DisplayResultFromCaptureThread));
+                    healthCheckerThread.Start();
+                }
             }
         }
 
