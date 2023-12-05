@@ -48,7 +48,6 @@ namespace ReadPixelImage
 
         private void CaptureForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            OwnerForm.Show();
             this.Hide();
         }
     }

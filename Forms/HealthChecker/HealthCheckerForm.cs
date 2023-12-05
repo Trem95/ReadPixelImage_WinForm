@@ -32,6 +32,9 @@ namespace ReadPixelImage.Forms
         ReadedPixelsSetting currentReadedPixelsSetting;
         ScreenReader screenReader;
         StreamReader streamReader;
+
+        StreamDisplay streamDisplay;
+
         Bitmap loadedImage;
         Bitmap croppedImage;
         public HealthCheckerForm()
@@ -61,6 +64,9 @@ namespace ReadPixelImage.Forms
                 { 7, "15%" },
                 { 8, "DEAD%" },
             };
+
+            streamDisplay = new StreamDisplay();
+            streamDisplay.Show();
 
             ManageLoadedImages();
             ManageCaptureSettings(true);
@@ -538,22 +544,26 @@ namespace ReadPixelImage.Forms
 
         private void displayCurrentStream_Click(object sender, EventArgs e)
         {
-            if (captureSettCb.SelectedIndex >= 0 && readedPixSettCb.SelectedIndex >= 0 && imagesCb.SelectedIndex >= 0)
-            {
-                streamReader = new StreamReader(@"https://youtu.be/_ExAbZ_eBv8", currentReadedPixelsSetting, currentCaptureSetting);
-                //streamReader = new StreamReader(@"C:\Users\Public\Documents\ReadPixelImage\Images\Loaded\Mafia 2 Test HealthChecker_Full-HD_60fps.mp4", currentReadedPixelsSetting, currentCaptureSetting);
+            streamDisplay.WebView.Source = new Uri(@"https://player.twitch.tv/?channel=aypierre&parent=localhost\", false);
+            streamDisplay.Show();
 
-                if (!threadIsStarted)
-                {
-                    threadIsStarted = true;
-                    streamReader.StartStreamCapture();
-                }
-                else
-                {
-                    AbortAllThread();
-                    streamReader.StartStreamCapture();
-                }
-            }
+
+            //if (captureSettCb.SelectedIndex >= 0 && readedPixSettCb.SelectedIndex >= 0 && imagesCb.SelectedIndex >= 0)
+            //{
+            //    streamReader = new StreamReader(@"https://www.twitch.tv/aypierre", currentReadedPixelsSetting, currentCaptureSetting);
+            //    //streamReader = new StreamReader(@"C:\Users\Public\Documents\ReadPixelImage\Images\Loaded\Mafia 2 Test HealthChecker_Full-HD_60fps.mp4", currentReadedPixelsSetting, currentCaptureSetting);
+
+            //    if (!threadIsStarted)
+            //    {
+            //        threadIsStarted = true;
+            //        streamReader.StartStreamCapture();
+            //    }
+            //    else
+            //    {
+            //        AbortAllThread();
+            //        streamReader.StartStreamCapture();
+            //    }
+            //}
         }
     }
 }

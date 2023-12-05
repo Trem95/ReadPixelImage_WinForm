@@ -29,7 +29,6 @@ namespace ReadPixelImage
         CaptureSetting captureSetting;
         Bitmap displayedImage;
         Thread captureThread;
-        Stream dataStream;
 
         string streamUrl;
 

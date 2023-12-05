@@ -74,6 +74,12 @@
     <Compile Include="Forms\HealthChecker\HealthCheckerDisplay.Designer.cs">
       <DependentUpon>HealthCheckerDisplay.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\HealthChecker\StreamDisplay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\HealthChecker\StreamDisplay.Designer.cs">
+      <DependentUpon>StreamDisplay.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\MainMenuForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -111,6 +117,9 @@
     <Compile Include="StreamReader.cs" />
     <EmbeddedResource Include="Forms\HealthChecker\Display.resx">
       <DependentUpon>Display.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\HealthChecker\StreamDisplay.resx">
+      <DependentUpon>StreamDisplay.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SettingCapture\CaptureDisplay.resx">
       <DependentUpon>CaptureDisplay.cs</DependentUpon>
@@ -182,20 +191,14 @@
     <Content Include="TestImages\4 - MAFIA II  LIFE VERY LOW.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Emgu.CV">
-      <Version>4.8.1.5350</Version>
-    </PackageReference>
-    <PackageReference Include="Emgu.CV.Bitmap">
-      <Version>4.8.1.5350</Version>
-    </PackageReference>
-    <PackageReference Include="Emgu.CV.runtime.windows">
-      <Version>4.8.1.5350</Version>
-    </PackageReference>
     <PackageReference Include="ExcelLibrary">
       <Version>1.2011.7.31</Version>
     </PackageReference>
     <PackageReference Include="LibVLCSharp">
       <Version>3.8.2</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Web.WebView2">
+      <Version>1.0.2151.40</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
