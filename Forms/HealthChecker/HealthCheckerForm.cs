@@ -33,8 +33,6 @@ namespace ReadPixelImage.Forms
         ScreenReader screenReader;
         StreamReader streamReader;
 
-        StreamDisplay streamDisplay;
-
         Bitmap loadedImage;
         Bitmap croppedImage;
         public HealthCheckerForm()
@@ -64,9 +62,6 @@ namespace ReadPixelImage.Forms
                 { 7, "15%" },
                 { 8, "DEAD%" },
             };
-
-            streamDisplay = new StreamDisplay();
-            streamDisplay.Show();
 
             ManageLoadedImages();
             ManageCaptureSettings(true);
@@ -109,7 +104,7 @@ namespace ReadPixelImage.Forms
 
         private void ManageSelectedReadedPixelSetting()
         {
-            //TODO find solution to make thread inclusive writing easy ( like SDT)
+            //TODO find solution to make thread inclusive writing easy
             if (rectanglesLb.InvokeRequired)
             {
                 rectanglesLb.Invoke((MethodInvoker)delegate
@@ -222,17 +217,24 @@ namespace ReadPixelImage.Forms
             }
 
             string textToShow = "NOT SET";
+            //TOOD When picto is in rect, check if next rect is green to do other check
             //"RECT INDEX : " + i
+                int cptTEST = 0;
+
             if (!CheckIsRectangleEmpty(0))
                 textToShow = "FULL HEALTH";
             else
             {
-                for (int i = 1; i < rectangles.Count; i++)
+                for (int i = 0; i < rectangles.Count - 1; i++)
                 {
+                    cptTEST = i;
                     if (!CheckIsRectangleEmpty(i))
                     {
-                        textToShow = $"{(100 / rectCount) * (rectCount - (i - 1))}%";
-                        break;
+                        if (!CheckIsRectangleEmpty(i + 1)) //|| i+1 == rectangles.Count)//TODO create condition to resolve problem with last square showing "NOT SET"
+                        {
+                            textToShow = $"{(100 / rectCount) * (rectCount - (i - 1))}%";
+                            break;
+                        }
 
                     };
                 }
@@ -370,6 +372,22 @@ namespace ReadPixelImage.Forms
                     ManageSelectedReadedPixelSetting();
                     ManageMafia2HealthDisplay();
                     Thread.Sleep(500);
+                }
+            }
+            catch (ThreadAbortException)
+            {
+            }
+        }
+
+        private void DisplayResultFromStreamCaptureThread()
+        {
+            try
+            {
+                while (threadIsStarted)
+                {
+                    ManageSelectedReadedPixelSetting();
+                    ManageMafia2HealthDisplay();
+                    Thread.Sleep(250);
                 }
             }
             catch (ThreadAbortException)
@@ -544,26 +562,12 @@ namespace ReadPixelImage.Forms
 
         private void displayCurrentStream_Click(object sender, EventArgs e)
         {
-            streamDisplay.WebView.Source = new Uri(@"https://player.twitch.tv/?channel=aypierre&parent=localhost\", false);
-            streamDisplay.Show();
+            threadIsStarted = true;//TODO manage quitting and restart thread ( all )
+            streamReader = new StreamReader("", currentReadedPixelsSetting, currentCaptureSetting, healthCheckDisplay);
+            streamReader.StartStreamCapture();
+            healthCheckerThread = new Thread(new ThreadStart(DisplayResultFromStreamCaptureThread));
+            healthCheckerThread.Start();
 
-
-            //if (captureSettCb.SelectedIndex >= 0 && readedPixSettCb.SelectedIndex >= 0 && imagesCb.SelectedIndex >= 0)
-            //{
-            //    streamReader = new StreamReader(@"https://www.twitch.tv/aypierre", currentReadedPixelsSetting, currentCaptureSetting);
-            //    //streamReader = new StreamReader(@"C:\Users\Public\Documents\ReadPixelImage\Images\Loaded\Mafia 2 Test HealthChecker_Full-HD_60fps.mp4", currentReadedPixelsSetting, currentCaptureSetting);
-
-            //    if (!threadIsStarted)
-            //    {
-            //        threadIsStarted = true;
-            //        streamReader.StartStreamCapture();
-            //    }
-            //    else
-            //    {
-            //        AbortAllThread();
-            //        streamReader.StartStreamCapture();
-            //    }
-            //}
         }
     }
 }

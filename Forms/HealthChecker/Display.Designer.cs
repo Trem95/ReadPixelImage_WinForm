@@ -56,6 +56,7 @@
             this.pictureBox.Size = new System.Drawing.Size(410, 301);
             this.pictureBox.TabIndex = 1;
             this.pictureBox.TabStop = false;
+            this.pictureBox.Visible = false;
             // 
             // Display
             // 

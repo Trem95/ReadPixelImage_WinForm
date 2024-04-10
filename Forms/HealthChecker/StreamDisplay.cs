@@ -18,6 +18,7 @@ namespace ReadPixelImage.Forms.HealthChecker
             InitializeComponent();
         }
 
-        public WebView2 WebView { get { return streamView; } set {streamView = value ;} }
+        public PictureBox PictureBox { get { return pictureBox; } set { pictureBox = value;} }
+
     }
 }

@@ -1,5 +1,5 @@
-﻿using LibVLCSharp;
-using LibVLCSharp.Shared;
+﻿using AForge.Video.DirectShow;
+using AForge.Video;
 using ReadPixelImage.CaptureReadSettings;
 using ReadPixelImage.CaptureSettings;
 using ReadPixelImage.Forms;
@@ -54,12 +54,25 @@ namespace ReadPixelImage
 
         private void StartStreamReading()
         {
-            LibVLC libVLC = new LibVLC();
-            //TODO check documentation ( last stack overflow page)
-
+            // enumerate video devices
+            FilterInfoCollection videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+            // create video source
+            VideoCaptureDevice videoSource = new VideoCaptureDevice(videoDevices[1].MonikerString);
+            // set NewFrame event handler
+            videoSource.NewFrame += new NewFrameEventHandler(video_NewFrame);
+            // start the video source
+            videoSource.Start();
+            // ...
+            //videoSource.Stop();
 
         }
-
+        private void video_NewFrame(object sender, NewFrameEventArgs eventArgs)
+        {
+            // get new frame
+            Bitmap bitmap = eventArgs.Frame;
+            ShowImage(bitmap);
+            // process the frame
+        }
         private void ShowImage(Bitmap image)
         {
             displayedImage = screenReader.GetParametredCapture(captureSetting, image);
@@ -74,7 +87,7 @@ namespace ReadPixelImage
                     streamCaptureDisplay.CaptureImg.Size = displayedImage.Size;
                     streamCaptureDisplay.CaptureImg.Image = displayedImage;
                     streamCaptureDisplay.SetAndDrawRectangles(readedPixelSetting.Rectangles, readedPixelSetting.Rectangles.Count() > 0 ? 0 : -1);
-                    streamCaptureDisplay.Show();
+                    //streamCaptureDisplay.Show();
                 });
             }
             else
@@ -84,7 +97,7 @@ namespace ReadPixelImage
                 streamCaptureDisplay.CaptureImg.Size = displayedImage.Size;
                 streamCaptureDisplay.CaptureImg.Image = displayedImage;
                 streamCaptureDisplay.SetAndDrawRectangles(readedPixelSetting.Rectangles, readedPixelSetting.Rectangles.Count() > 0 ? 0 : -1);
-                streamCaptureDisplay.Show();
+                //streamCaptureDisplay.Show();
             }
         }
 

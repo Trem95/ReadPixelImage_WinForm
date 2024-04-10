@@ -28,38 +28,36 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.streamView = new Microsoft.Web.WebView2.WinForms.WebView2();
-            ((System.ComponentModel.ISupportInitialize)(this.streamView)).BeginInit();
+            this.pictureBox = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.SuspendLayout();
             // 
-            // streamView
+            // pictureBox
             // 
-            this.streamView.AllowExternalDrop = true;
-            this.streamView.CreationProperties = null;
-            this.streamView.DefaultBackgroundColor = System.Drawing.Color.White;
-            this.streamView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.streamView.Location = new System.Drawing.Point(0, 0);
-            this.streamView.Name = "streamView";
-            this.streamView.Size = new System.Drawing.Size(533, 386);
-            this.streamView.Source = new System.Uri("https://www.google.com", System.UriKind.Absolute);
-            this.streamView.TabIndex = 0;
-            this.streamView.ZoomFactor = 1D;
+            this.pictureBox.BackColor = System.Drawing.SystemColors.Highlight;
+            this.pictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBox.Location = new System.Drawing.Point(0, 0);
+            this.pictureBox.Name = "pictureBox";
+            this.pictureBox.Size = new System.Drawing.Size(533, 386);
+            this.pictureBox.TabIndex = 0;
+            this.pictureBox.TabStop = false;
+            this.pictureBox.Visible = false;
             // 
             // StreamDisplay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(533, 386);
-            this.Controls.Add(this.streamView);
+            this.Controls.Add(this.pictureBox);
             this.Name = "StreamDisplay";
             this.Text = "StreamDisplay";
-            ((System.ComponentModel.ISupportInitialize)(this.streamView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private Microsoft.Web.WebView2.WinForms.WebView2 streamView;
+        private System.Windows.Forms.PictureBox pictureBox;
     }
 }
